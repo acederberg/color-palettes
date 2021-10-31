@@ -1,0 +1,16 @@
+version : '3.7'
+services :
+  api :
+    build : '.'
+    container_name : 'api'
+    environment :
+      - PORT=10000
+    ports :
+      - target :  10000
+        published : 10000
+        protocol : 'tcp'
+    volumes :
+      - source : '.'
+        target : '/home/node/app'
+        type : 'bind'
+    tty : true
