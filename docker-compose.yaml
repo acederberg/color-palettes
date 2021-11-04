@@ -5,6 +5,9 @@ services :
     container_name : 'api'
     environment :
       - PORT=10000
+      - DB_URI=10000
+    networks :
+      back : {}
     ports :
       - target :  10000
         published : 10000
@@ -14,3 +17,17 @@ services :
         target : '/home/node/app'
         type : 'bind'
     tty : true
+  mongodb :
+    container_name : 'mongodb'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME : 'dev'
+      MONGO_INITDB_ROOT_PASSWORD : 'goofy'
+    image : 'mongo'
+    networks :
+      back : {}
+    ports :
+      - 27017
+networks :
+  back :
+    driver : 'bridge'
+    attachable : true
