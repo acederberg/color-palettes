@@ -5,7 +5,7 @@ const metadata_schema_args = {
 		type : Date,
 		required : true
 	},
-	desctiption : String,
+	description : String,
 	modified : {
 		type : [ Date ],
 		required : true

@@ -4,13 +4,13 @@ services :
     build : '.'
     container_name : 'api'
     environment :
-      - PORT=10000
-      - DB_URI=10000
+      PORT : 1337
+      DB_URI : 'mongodb://dev:goofy@mongodb?directConnection=true&serverSelectionTimeoutMS=2000'
     networks :
       back : {}
     ports :
-      - target :  10000
-        published : 10000
+      - target :  1337
+        published : 1337
         protocol : 'tcp'
     volumes :
       - source : '.'
