@@ -16,7 +16,7 @@ function create_new( model : ColorsModel, raw : ColorsSafe ) : ManyColors
 			modified : [],
 			name : raw.metadata.name,
 			tags : raw.metadata.tags,
-			varients : raw.metadata.varients.map( value => new mongoose.mongo.ObjectId( value ) )
+			varients : raw.metadata.varients ? raw.metadata.varients.map( value => new mongoose.mongo.ObjectId( value ) ) : []
 		}
 	})
 	out.save()
