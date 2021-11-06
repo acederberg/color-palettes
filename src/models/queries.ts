@@ -12,13 +12,13 @@ export function ids( model : ColorsModel, _ids : ObjectId[] ) : Query
 		$in : _ids			  
 	} } )
 }
-export function intersecting_tags( model : ColorsModel, tags : [ String ] ) : Query
+export function intersecting_tags( model : ColorsModel, tags : [ string ] ) : Query
 {
 	return model.find( { 
 		'metadata.tags' : { "$in" : tags }
 	} )
 }
-export function containing_tags( model : ColorsModel, tags : [ String ] ): Query
+export function containing_tags( model : ColorsModel, tags : [ string ] ): Query
 {
 	// https://docs.mongodb.com/manual/reference/operator/query/all/
 	// For some reason nested shapes don't work, thus why the dot is used.

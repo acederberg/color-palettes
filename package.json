@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc-watch --project '.'  --outDir ./dist --onSuccess 'nodemon ./dist/src/index.js'",
+    "test": "tsc-watch --project '.' --outDir ./dist --onSuccess 'jest ./dist/tests/'",
     "build": "rm -rf './dist' && tsc"
   },
   "author": "Adrian Cederberg",
@@ -15,6 +16,7 @@
     "mongoose": "^6.0.12",
     "nodemon": "^2.0.14",
     "supertest": "^6.1.6",
+    "ts-jest": "^27.0.7",
     "tsc-watch": "^4.5.0",
     "typescript": "^4.4.4"
   },

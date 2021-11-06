@@ -1,14 +1,17 @@
 import queries from './queries'
-import { ColorsSafe, ColorsModel, ColorsDocument, ColorsAndId } from './types'
-import mongoose from 'mongoose'
+import { ColorsSafe, ColorsModel, ColorsDocument, ColorsAndId, Msg } from './types'
+import validate from './validate'
 
 type ManyColors = ColorsAndId | Promise<ColorsDocument[] | ColorsDocument> | ColorsDocument[] | null;
 
 // The sole creator.
-function create_new( model : ColorsModel, raw : ColorsSafe ) : ManyColors
+async function create_new( model : ColorsModel, raw : ColorsSafe ) : Promise<ColorsDocument[] | ColorsDocument | Msg | boolean>
 {
 	// Turn a raw request into a database object.
-	const out = new model({
+	const validated = validate( raw )
+	if ( validated !== true ){ return validated }
+	console.log( model )
+	const args = {
 		colors : raw.colors,
 		metadata : {
 			created : new Date(),
@@ -16,11 +19,14 @@ function create_new( model : ColorsModel, raw : ColorsSafe ) : ManyColors
 			modified : [],
 			name : raw.metadata.name,
 			tags : raw.metadata.tags,
-			varients : raw.metadata.varients ? raw.metadata.varients.map( value => new mongoose.mongo.ObjectId( value ) ) : []
+			varients : []
 		}
-	})
-	out.save()
-	return out
+	}
+	console.log( args )
+	const new_model = new model( args )
+	const err = await new_model.save().catch( ( err ) => { msg : err } )
+	console.log( new_model )
+	return err ? err : new_model
 }
 
 

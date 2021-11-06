@@ -6,12 +6,13 @@ const metadata_schema_args = {
 		required : true
 	},
 	description : String,
+	name : String,
 	modified : {
 		type : [ Date ],
 		required : true
 	},
 	tags : [ String ],
-	varients : mongoose.Schema.Types.ObjectId
+	varients : [ String ]//mongoose.Schema.Types.ObjectId
 }
 
 export const colors_schema = new Schema( {
@@ -20,8 +21,5 @@ export const colors_schema = new Schema( {
 		type : Object,
 		required : true
 	},
-	metadata : {
-		type : metadata_schema_args,
-		required : true
-	}
+	metadata : metadata_schema_args
 } )

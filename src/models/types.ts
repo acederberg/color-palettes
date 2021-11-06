@@ -8,10 +8,10 @@ export type Query = mongoose.Query< ColorsAndId[], ColorsAndId, {}, ColorsDocume
 // Shape of user submittable metadata
 export interface MetadataSafe
 {
-	description?: String;
-        name?: String;
-        tags?: [ String ] | [] ;
-        varients?: [ ObjectId ] | [] ;
+	description?: string;
+        name?: string;
+        tags?: string[];
+        varients?: any ;
 }
 
 
@@ -26,7 +26,7 @@ export interface ColorsSafe
 // New fields are not to be input by the user.
 export interface Metadata extends MetadataSafe
 {
-	modified : [ Date ];
+	modified : Date[];
 	created : Date;	
 }
 
@@ -45,5 +45,5 @@ export interface ColorsModel extends Model<ColorsDocument>{};
 // Validation
 export interface Msg
 {
-	msg : String ;
+	msg : string ;
 }
