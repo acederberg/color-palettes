@@ -12,7 +12,7 @@ const metadata_defaults : MetadataSafe = {
 	varients : []
 }
 function create_dummy( metadata : Object ){ return { 
-	colors : {}, 
+	colors : { itty : '#ffffff', was : '#ffffff', a : '#ffffff', test : '#ffffff' }, 
 	metadata : { ...metadata_defaults, ...metadata } 
 }}
 function create_colors_dummy( colors : Object ){ return {
@@ -114,7 +114,7 @@ describe(
 			colors_[ key ] = value
 			const colors : ColorsSafe = create_colors_dummy( colors_ )
 			return static_methods.creators.create_new( tests, colors )
-				.then( result => expect( result ).toEqual( params.colors.bad_value_format( key, value ) ) )
+				.then( result => expect( result ).toEqual( { msg : [ params.colors.bad_value_format( key, value ) ] } ) )
 		} )
 	}
 )

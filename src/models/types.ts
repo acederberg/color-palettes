@@ -45,5 +45,5 @@ export interface ColorsModel extends Model<ColorsDocument>{};
 // Validation
 export interface Msg
 {
-	msg : string ;
+	msg : ( string | boolean )[]
 }

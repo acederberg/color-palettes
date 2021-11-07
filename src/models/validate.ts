@@ -2,21 +2,20 @@ import { ColorsSafe, MetadataSafe, Msg, ObjectId } from './types'
 
 function create_msg( msg : string ) : Msg
 {
-	return { msg : msg }
+	return { msg : [ msg ] }
 }
-const alphas = /^[A-Za-z0-9 -]+$/g
+const alphas = /^[A-Za-z0-9 -]*$/g
 export const params = {
 	illegal_length : ( field_name, field_value, length ) => create_msg( `Field '${ field_name }' with value '${ field_value }' must contain only '${ length }' characters at most. Current length = '${ field_value.length }'.` ),
 	illegal_characters : ( field_name, field_value ) => create_msg( `Field '${ field_name }' with value '${ field_value }' has illegal characters.` ),
 	colors : {
-		max_key_size : 32,
-		value_size : 6,
+		max_key_length : 32,
 		max_length : 64,
-		key_regex : alphas, 
-		value_regex : /#^[ABCDEFabcdef0-9]*/,
+		key_regex : /^[a-z]*$/, 
+		value_regex : /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
 		too_many : () => create_msg( `The colors field can contain only '${ params.colors.max_length }' fields.` ),
-		bad_value_format : ( key, value ) => create_msg( `Value '${ value }' in field '${ key }' does not follow rgb format.` ),
-		bad_key_format : ( key ) => create_msg( `Key '${ key }' in colors is too long or contains illegal characters. It can be at most '${ params.colors.max_key_size }' characters long using alphanumeric characters.` )
+		bad_value_format : ( key, value ) => `Value '${ value }' in field '${ key }' does not follow rgb format.`,
+		bad_key_format : ( key ) => `Key '${ key }' in colors is too long or contains illegal characters. It can be at most '${ params.colors.max_key_length }' characters long using alphanumeric characters.`
 	},
 	name : {
 		max_length : 64,
@@ -52,20 +51,37 @@ export function validate_colors( colors : Object ) : boolean | Msg
 		return params.colors.too_many() 
 	}
 	// Check the colors keys and values using regex and length.
-	for ( const [ key, value ] of Object.entries( colors ) )
-	{
-		if ( 
-		    ( params.colors.max_key_size < key.length ) || !params.colors.key_regex.test( key ) 
-		){
-			return params.colors.bad_key_format( key ) 
-		}
-		else if ( 
-		    !( params.colors.value_size === value.length ) || !( params.colors.value_regex.test( value ) )
-	        ){ 
-			return params.colors.bad_value_format( key, value ) 
-		}
-	}
-	return true
+	
+	const errs = Object.keys( colors ).map( key => {
+			const value = colors[ key ]		
+			const key_passes_regex = params.colors.key_regex.test( key ) 
+			const key_has_legal_length = ( params.colors.max_key_length > key.length )
+			const value_passes_regex = params.colors.value_regex.test( value )
+
+			console.log({ 
+				key, 
+				value, 
+				key_passes_regex, 
+				key_regex : params.colors.key_regex, 
+				key_has_legal_length, 
+				value_regex : params.colors.value_regex, 
+				value_passes_regex : params.colors.value_regex.test( value ) 
+			})
+
+			if ( key_passes_regex && key_has_legal_length && value_passes_regex ){ 
+				return true
+			}
+			else if ( !key_passes_regex || !key_has_legal_length ){ 
+				return params.colors.bad_key_format( key )
+			}
+			else{ 
+				return params.colors.bad_value_format( key, value ) 
+			}
+
+	})
+	const filtered = errs.filter( item => item !== true )
+	
+	return ( filtered.length > 0 ) ? { msg : filtered } : true
 }
 
 function validate_string( key, value )

@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose"
 
 const metadata_schema_args = {
 	created : {
-		type : Date,
+		type : Date, 
 		required : true
 	},
 	description : String,
@@ -17,9 +17,6 @@ const metadata_schema_args = {
 
 export const colors_schema = new Schema( {
 	_id : mongoose.Schema.Types.ObjectId,
-	colors : {
-		type : Object,
-		required : true
-	},
+	colors : Object,
 	metadata : metadata_schema_args
 } )

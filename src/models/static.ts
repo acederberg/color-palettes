@@ -10,7 +10,7 @@ async function create_new( model : ColorsModel, raw : ColorsSafe ) : Promise<Col
 	// Turn a raw request into a database object.
 	const validated = validate( raw )
 	if ( validated !== true ){ return validated }
-	console.log( model )
+	console.log( 'model=', model )
 	const args = {
 		colors : raw.colors,
 		metadata : {
@@ -22,10 +22,10 @@ async function create_new( model : ColorsModel, raw : ColorsSafe ) : Promise<Col
 			varients : []
 		}
 	}
-	console.log( args )
+	console.log( 'args=', args )
 	const new_model = new model( args )
 	const err = await new_model.save().catch( ( err ) => { msg : err } )
-	console.log( new_model )
+	console.log( 'new_model=', new_model )
 	return err ? err : new_model
 }
 
@@ -49,6 +49,7 @@ export function with_update( method : Function ) : Function
 		return method( model, ...args ).exec()
 	}
 }
+
 
 
 export default {
