@@ -4,14 +4,14 @@ function create_msg( msg : string ) : Msg
 {
 	return { msg : [ msg ] }
 }
-const alphas = /^[A-Za-z0-9 -]*$/g
+const alphas = /^[A-Za-z0-9 ]*$/
 export const params = {
 	illegal_length : ( field_name, field_value, length ) => create_msg( `Field '${ field_name }' with value '${ field_value }' must contain only '${ length }' characters at most. Current length = '${ field_value.length }'.` ),
 	illegal_characters : ( field_name, field_value ) => create_msg( `Field '${ field_name }' with value '${ field_value }' has illegal characters.` ),
 	colors : {
 		max_key_length : 32,
 		max_length : 64,
-		key_regex : /^[a-z]*$/, 
+		key_regex : alphas, 
 		value_regex : /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
 		too_many : () => create_msg( `The colors field can contain only '${ params.colors.max_length }' fields.` ),
 		bad_value_format : ( key, value ) => `Value '${ value }' in field '${ key }' does not follow rgb format.`,
@@ -32,7 +32,7 @@ export const params = {
 	tags : {
 		max_length : 32,
 		max_tags : 24,
-		regex : alphas,
+		regex : alphas, 
 		illegal_length : ( tag ) => params.illegal_length( 'tag in tags', tag, params.tags.max_length ),
 		illegal_tags_length : ( tags ) => create_msg( `The tags field can contain at most '${ params.tags.max_tags }' tags. ( current size = '${ tags.length }' )` ),
 		illegal_characters : ( description ) => params.illegal_characters( 'description', description )
@@ -58,7 +58,7 @@ export function validate_colors( colors : Object ) : boolean | Msg
 			const key_has_legal_length = ( params.colors.max_key_length > key.length )
 			const value_passes_regex = params.colors.value_regex.test( value )
 
-			console.log({ 
+			/*console.log({ 
 				key, 
 				value, 
 				key_passes_regex, 
@@ -66,7 +66,7 @@ export function validate_colors( colors : Object ) : boolean | Msg
 				key_has_legal_length, 
 				value_regex : params.colors.value_regex, 
 				value_passes_regex : params.colors.value_regex.test( value ) 
-			})
+			})*/
 
 			if ( key_passes_regex && key_has_legal_length && value_passes_regex ){ 
 				return true
