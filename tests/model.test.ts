@@ -20,11 +20,23 @@ function create_colors_dummy( colors : Object ){ return {
 	metadata : metadata_defaults
 }}
 
+beforeAll( async() => { 
+	const uri : string = process.env.DB_URI || 'mongodb://localhost:27017/test' 
+	await mongoose.connect( uri ).catch( err => { throw err })
+})
+afterAll( async() => {
+	var _ids = await tests.find()
+	_ids = await _ids.map( item => item._id )
+	await tests.deleteMany({ _id : {
+		$in : _ids
+	} })
+	await mongoose.connection.close()
+})
 describe( 
 	"Testing model creation with various metadata.description parameters.",
 	function(){
 
-		it( "Bad data. ( Description too long )",  async () => {
+		it( "Bad data. ( Description too long )", () => {
 			expect.assertions( 1 )
 			const description = 'a '.repeat( params.description.max_length + 1 ) 
 			const colors : ColorsSafe = create_dummy( { description : description } )
@@ -187,3 +199,17 @@ describe(
 		})
 	}
 )
+/*
+describe( "Testing the 'read_all' method", 
+	 function(){
+		it( "Reading all data", () => {
+			expect.assertions( 1 )
+			return static_methods.readers.read_all( tests )
+				.then( result => {
+					console.log( result )
+					expect( result ).not.toBe( [] )
+			})
+		})
+	}
+)
+*/

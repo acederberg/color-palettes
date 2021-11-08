@@ -1,15 +1,14 @@
 // From the markdowns boilerplate.
 import mongoose from 'mongoose'
 
-let connection : mongoose.Connection ;
+let connection : any
 
-export default function create_db() : mongoose.Connection 
+export default async function create_db() 
 {
 	if ( !process.env.DB_URI ){ 
-		throw Error( `DB_URI=${ process.env.DB } if false-y.` )
+		throw Error( `DB_URI=${ process.env.DB_URI } if false-y.` )
 	}
-	mongoose.connect( process.env.DB_URI )     
-	return connection 
+	connection = await mongoose.connect( process.env.DB_URI )     
 }
 
 export async function listCollections() : Promise<String[]> 
