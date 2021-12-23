@@ -1,24 +1,17 @@
-import { ColorsModel, ColorsSafe, MetadataSafe } from '../src/models/types'
+import { ColorsSafe } from '../src/models/types'
 import mongoose from 'mongoose'
-import { create_model_for_user } from  '../src/models'
 import static_methods from '../src/models/static'
 import { params } from '../src/models/validate'
+import { tests, create_dummy, create_colors_dummy } from './base'
 
+/*
 const tests : ColorsModel = create_model_for_user( "tester" ) ;
 const metadata_defaults : MetadataSafe = {
 	description : '',
 	name : '',
 	tags : [],
 	varients : []
-}
-function create_dummy( metadata : Object ){ return { 
-	colors : { itty : '#ffffff', was : '#ffffff', a : '#ffffff', test : '#ffffff' }, 
-	metadata : { ...metadata_defaults, ...metadata } 
-}}
-function create_colors_dummy( colors : Object ){ return {
-	colors : colors,
-	metadata : metadata_defaults
-}}
+}*/
 
 beforeAll( async() => { 
 	const uri : string = process.env.DB_URI || 'mongodb://localhost:27017/test' 
