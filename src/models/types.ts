@@ -9,9 +9,9 @@ export type Query = mongoose.Query< ColorsAndId[], ColorsAndId, {}, ColorsDocume
 export interface MetadataSafe
 {
 	description?: string;
-        name?: string;
-        tags?: string[];
-        varients?: any ;
+	name?: string;
+	tags?: string[];
+	varients?: any ;
 }
 
 

@@ -3,9 +3,36 @@ import { ColorsSafe, ColorsModel, ColorsDocument, ColorsAndId, Msg } from './typ
 import validate from './validate'
 import mongoose from 'mongoose'
 
+
 type ManyColors = ColorsAndId | Promise<ColorsDocument[] | ColorsDocument> | ColorsDocument[] | null;
 
-// The sole created
+
+// DECORATORS ----------------------------------------------------------------------------/
+
+// For the get methods.
+function with_exec( method : Function ) : Function
+{
+	return function ( model : ColorsModel, ...args ) : ManyColors
+	{
+		return method( model, ...args ).exec()
+	}
+}
+
+
+// Update methods will have similar decorators but will additionally update the 'modified' field every time.
+// Also, certian fields must not be  updatable, e.g. 'created' and 'modified'
+export function with_update( method : Function ) : Function 
+{
+	return function ( model : ColorsModel, content : ColorsSafe, ...args ) : ManyColors
+	{
+		method( model, args ).update( content )
+		return method( model, ...args ).exec()
+	}
+}
+
+
+// CREATE ----------------------------------------------------------------------------/
+
 async function create_new( model : ColorsModel, raw : ColorsSafe ) : Promise<Msg | void | boolean | ColorsAndId >
 {
 	// Turn a raw request into a database object.
@@ -28,26 +55,13 @@ async function create_new( model : ColorsModel, raw : ColorsSafe ) : Promise<Msg
 }
 
 
-// For the get methods.
-function with_exec( method : Function ) : Function
-{
-	return function ( model : ColorsModel, ...args ) : ManyColors
-	{
-		return method( model, ...args ).exec()
-	}
-}
+// READ METHODS ----------------------------------------------------------------------------/ 
 
-// Update methods will have similar decorators but will additionally update the 'modified' field every time.
-// Also, certian fields must not be  updatable, e.g. 'created' and 'modified'
-export function with_update( method : Function ) : Function 
-{
-	return function ( model : ColorsModel, content : ColorsSafe, ...args ) : ManyColors
-	{
-		method( model, args ).update( content )
-		return method( model, ...args ).exec()
-	}
-}
 
+// UPDATE METHODS ----------------------------------------------------------------------------/ 
+
+
+// DELETE METHODS ----------------------------------------------------------------------------/ 
 
 
 export default {
