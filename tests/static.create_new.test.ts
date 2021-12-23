@@ -17,6 +17,8 @@ beforeAll( async() => {
 	const uri : string = process.env.DB_URI || 'mongodb://localhost:27017/test' 
 	await mongoose.connect( uri ).catch( err => { throw err })
 })
+
+
 afterAll( async() => {
 	var _ids = await tests.find()
 	_ids = await _ids.map( item => item._id )
@@ -25,6 +27,8 @@ afterAll( async() => {
 	} })
 	await mongoose.connection.close()
 })
+
+
 describe( 
 	"Testing model creation with various metadata.description parameters.",
 	function(){

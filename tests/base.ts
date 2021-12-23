@@ -8,7 +8,7 @@ const metadata_defaults : MetadataSafe = {
         varients : []
 }
 export function create_dummy( metadata : Object ){ return {
-        colors : { itty : '#ffffff', was : '#ffffff', a : '#ffffff', test : '#ffffff' },
+        colors : { it : '#ffffff', was : '#ffffff', a : '#ffffff', test : '#ffffff' },
         metadata : { ...metadata_defaults, ...metadata }
 }}
 export function create_colors_dummy( colors : Object ){ return {
