@@ -15,19 +15,26 @@ export const metadata_defaults : MetadataSafe = {
 }
 
 
-export function create_dummy( metadata : Object ){ 
+export function create_dummy_with_colors( metadata : Object, color : string )
+{ 
   return {
     colors : { 
-      it : '#ffffff', 
-      is : '#ffffff', 
-      a : '#ffffff', 
-      test : '#ffffff' 
+      it : color, 
+      is : color, 
+      a : color, 
+      test : color 
     },
     metadata : { 
       ...metadata_defaults, 
       ...metadata 
     }
   }
+}
+
+
+export function create_dummy( metadata : Object )
+{
+  return create_dummy_with_colors( metadata, '#fff' )
 }
 
 
