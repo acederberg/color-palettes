@@ -43,11 +43,9 @@ export function with_delete( method : Function ) : Function
 		// Find the documents in the collection corresponding to `model`, save them for return, and `delete` them.
 		return (
 			async result => {
-				const results : ManyColors = await method( model, ...args ).exec() 
-				return {
-					count : method( model, ...args ).delete(),
-					removed : results
-				}
+				const results = await method( model, ...args ).exec()
+				await method( model, ...args ).remove().exec()
+				return results
 			}
 		)()
 			
@@ -102,6 +100,7 @@ export default {
 		create_new : create_new
 	},
 	deleters : {
+		delete_all : with_delete( queries.all )
 	},
 	updaters : {
 

@@ -5,6 +5,8 @@ export function filter( model : ColorsModel, filter : Object ) : Query
 	// Look for exact matches.
 	return model.find( filter )
 }
+
+
 export function ids( model : ColorsModel, _ids : ObjectId[] ) : Query
 {
 	// Look for _id in _ids
@@ -12,12 +14,16 @@ export function ids( model : ColorsModel, _ids : ObjectId[] ) : Query
 		$in : _ids			  
 	} } )
 }
+
+
 export function intersecting_tags( model : ColorsModel, tags : [ string ] ) : Query
 {
 	return model.find( { 
 		'metadata.tags' : { "$in" : tags }
 	} )
 }
+
+
 export function containing_tags( model : ColorsModel, tags : [ string ] ): Query
 {
 	// https://docs.mongodb.com/manual/reference/operator/query/all/
@@ -28,10 +34,15 @@ export function containing_tags( model : ColorsModel, tags : [ string ] ): Query
 		'metadata.tags' : { $all : tags }
 	} )
 }
+
+
 export function all( model : ColorsModel ) : Query
 {
 	return model.find()
 }
+
+
+
 export default { 
 	all, 
 	filter, 

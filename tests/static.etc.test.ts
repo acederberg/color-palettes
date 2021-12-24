@@ -5,6 +5,8 @@ import static_methods from '../src/models/static'
 
 const tags = [ 'this', 'is', 'a', 'test' ]
 const tags_again = [ 'another', 'test' ]
+const with_tags : ColorsSafe = create_dummy({ tags : tags })
+const with_tags_again : ColorsSafe = create_dummy_with_colors({ tags : tags_again }, '#ff8a77')
 
 
 beforeAll( async () => await setUp() )
@@ -15,8 +17,6 @@ describe(
 	"Testing `static_methods.readers`.",
 	function(){
 
-		const with_tags : ColorsSafe = create_dummy({ tags : tags })
-		const with_tags_again : ColorsSafe = create_dummy_with_colors({ tags : tags_again }, '#ff8a77')
 		const create_new = ( with_some_tags ) => {
 			expect.assertions( 1 )
 			return static_methods.creators.create_new( tests, with_some_tags ) 
@@ -130,3 +130,41 @@ describe(
 	}
 )
 
+
+describe(
+	"Test 'static_methods.delete'. Only tests delete all since we have tested the other queries theroughly.",
+	function(){
+
+		it( "Delete all of the previous tests.", () => {
+			expect.assertions( 2 )
+			return static_methods.deleters.delete_all( tests )
+				.then(
+					( result ) => {
+						expect( result ).toEqual(
+							expect.arrayContaining([
+								expect.objectContaining( {
+									metadata : expect.objectContaining({ tags : tags }),
+								}),
+								expect.objectContaining( { 
+									metadata :  expect.objectContaining({ tags :  tags_again }) 
+								})
+							])
+						)
+						expect( result.length ).toEqual( 2 )
+					}
+				)
+		})
+
+
+		it( "Check that the documents were actually deleted.", () => {
+			
+			return static_methods.readers.read_all( tests )
+				.then(
+					( result ) => expect( result.length ).toEqual( 0 )
+				)
+		
+		})
+
+		
+	}
+)
