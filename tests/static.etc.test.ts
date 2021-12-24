@@ -1,23 +1,10 @@
-import { tests, create_dummy/*, create_colors_dummy */} from './base'
+import { tests, create_dummy, cleanUp, setUp/*, create_colors_dummy */} from './base'
 import { ColorsSafe } from '../src/models'
 import static_methods from '../src/models/static'
-import mongoose from 'mongoose'
 
 
-beforeAll( async() => {
-        const uri : string = process.env.DB_URI || 'mongodb://localhost:27017/test'
-        await mongoose.connect( uri ).catch( err => { throw err })
-})
-
-
-afterAll( async() => {
-        var _ids = await tests.find()
-        _ids = await _ids.map( item => item._id )
-        await tests.deleteMany({ _id : {
-                $in : _ids
-        } })
-        await mongoose.connection.close()
-})
+beforeAll( async () => await setUp() )
+afterAll( cleanUp )
 
 
 describe( 
@@ -33,5 +20,4 @@ describe(
     })
 	}
 )
-
 

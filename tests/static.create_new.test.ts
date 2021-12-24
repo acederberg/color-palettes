@@ -1,32 +1,13 @@
-import { ColorsSafe } from '../src/models/types'
 import mongoose from 'mongoose'
+
+import { tests, create_dummy, create_colors_dummy, setUp, cleanUp } from './base'
+import { ColorsSafe } from '../src/models/types'
 import static_methods from '../src/models/static'
 import { params } from '../src/models/validate'
-import { tests, create_dummy, create_colors_dummy } from './base'
-
-/*
-const tests : ColorsModel = create_model_for_user( "tester" ) ;
-const metadata_defaults : MetadataSafe = {
-	description : '',
-	name : '',
-	tags : [],
-	varients : []
-}*/
-
-beforeAll( async() => { 
-	const uri : string = process.env.DB_URI || 'mongodb://localhost:27017/test' 
-	await mongoose.connect( uri ).catch( err => { throw err })
-})
 
 
-afterAll( async() => {
-	var _ids = await tests.find()
-	_ids = await _ids.map( item => item._id )
-	await tests.deleteMany({ _id : {
-		$in : _ids
-	} })
-	await mongoose.connection.close()
-})
+beforeAll( setUp )
+afterAll( cleanUp ) 
 
 
 describe( 
