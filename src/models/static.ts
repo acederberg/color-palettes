@@ -25,13 +25,15 @@ function with_exec( method : Function ) : Function
 // Also, certian fields must not be  updatable, e.g. 'created' and 'modified'
 export function with_update( method : Function ) : Function 
 {
-	return function ( model : ColorsModel, content : ColorsSafe, ...args ) : Object
+	return function ( model : ColorsModel, content : Object, ...args ) : Object
 	{
-		const count = method( model, ...args ).update( content )
-		return {
-			result : method( model, ...args ).exec(),
-			count : count
-		}
+		return (
+			async () => {
+				await method( model, ...args ).update( content ).exec()
+				const result = await method( model, ...args ).exec()
+				return result
+			}
+		)()
 	}
 }
 
@@ -100,9 +102,12 @@ export default {
 		create_new : create_new
 	},
 	deleters : {
-		delete_all : with_delete( queries.all )
+		delete_all : with_delete( queries.all ),
+		delete_ids : with_delete( queries.ids )
 	},
 	updaters : {
-
+		update_all : with_delete( queries.all ),
+		update_ids : with_delete( queries.containing_tags ),
+		update_filter : with_update( queries.filter )
 	}
 }

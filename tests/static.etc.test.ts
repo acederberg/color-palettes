@@ -5,6 +5,8 @@ import static_methods from '../src/models/static'
 
 const tags = [ 'this', 'is', 'a', 'test' ]
 const tags_again = [ 'another', 'test' ]
+const colors = { grey : '#888888' }
+const colors_again = { blue : '#338a57', red : '#ff8888' }
 const with_tags : ColorsSafe = create_dummy({ tags : tags })
 const with_tags_again : ColorsSafe = create_dummy_with_colors({ tags : tags_again }, '#ff8a77')
 
@@ -131,11 +133,45 @@ describe(
 )
 
 
+describe( "Tests for the `update` methods.", 
+	function(){
+
+		const update_with_filter = ( updates, filter, result ) => {
+			expect.assertions(2)
+			return static_methods.updaters.update_filter( tests, updates, filter )
+				.then( 
+					( result_ ) => {
+						expect( result_ ).toEqual(
+							expect.arrayContaining([
+								expect.objectContaining( result )
+							])
+						)
+						expect( result_.length ).toEqual( 1 )
+					}
+				)
+		}
+
+		[ colors, colors_again ].map( somebody => it( 
+				"Update an entries body. Check that body was updated", 
+				() => update_with_filter(
+					{ '$set' : { colors : colors } },
+					{ 'metadata.tags' : tags },
+					{ colors : colors }
+				) 
+			)
+		)
+
+
+	}
+)
+
+
 describe(
 	"Test 'static_methods.delete'. Only tests delete all since we have tested the other queries theroughly.",
 	function(){
 
 		it( "Delete all of the previous tests.", () => {
+
 			expect.assertions( 2 )
 			return static_methods.deleters.delete_all( tests )
 				.then(
@@ -153,6 +189,7 @@ describe(
 						expect( result.length ).toEqual( 2 )
 					}
 				)
+
 		})
 
 
