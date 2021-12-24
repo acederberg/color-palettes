@@ -3,6 +3,8 @@ import { ColorsSafe, ColorsModel, ColorsDocument, ColorsAndId, Msg } from './typ
 import validate from './validate'
 import mongoose from 'mongoose'
 
+// NB : Most of the exports are decorated functions contained in the exports section.
+
 
 type ManyColors = ColorsAndId | Promise<ColorsDocument[] | ColorsDocument> | ColorsDocument[] | null;
 
@@ -23,12 +25,35 @@ function with_exec( method : Function ) : Function
 // Also, certian fields must not be  updatable, e.g. 'created' and 'modified'
 export function with_update( method : Function ) : Function 
 {
-	return function ( model : ColorsModel, content : ColorsSafe, ...args ) : ManyColors
+	return function ( model : ColorsModel, content : ColorsSafe, ...args ) : Object
 	{
-		method( model, args ).update( content )
-		return method( model, ...args ).exec()
+		const count = method( model, ...args ).update( content )
+		return {
+			result : method( model, ...args ).exec(),
+			count : count
+		}
 	}
 }
+
+
+export function with_delete( method : Function ) : Function
+{
+	return function ( model : ColorsModel, content : ColorsSafe, ...args ) : Object
+	{
+		// Find the documents in the collection corresponding to `model`, save them for return, and `delete` them.
+		return (
+			async result => {
+				const results : ManyColors = await method( model, ...args ).exec() 
+				return {
+					count : method( model, ...args ).delete(),
+					removed : results
+				}
+			}
+		)()
+			
+	}
+}
+
 
 
 // CREATE ----------------------------------------------------------------------------/
@@ -55,6 +80,7 @@ async function create_new( model : ColorsModel, raw : ColorsSafe ) : Promise<Msg
 }
 
 
+
 // READ METHODS ----------------------------------------------------------------------------/ 
 
 
@@ -68,11 +94,16 @@ export default {
 	readers : {
 		read_all : with_exec( queries.all ),
 		read_ids : with_exec( queries.ids ),
-		read_intesecting_tags : with_exec( queries.intersecting_tags ),
+		read_intersecting_tags : with_exec( queries.intersecting_tags ),
 		read_containing_tags : with_exec( queries.containing_tags ),
 		read_filter : with_exec( queries.filter )
 	},
 	creators : {
 		create_new : create_new
+	},
+	deleters : {
+	},
+	updaters : {
+
 	}
 }

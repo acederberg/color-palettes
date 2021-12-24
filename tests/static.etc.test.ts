@@ -12,7 +12,7 @@ afterAll( cleanUp )
 
 
 describe( 
-	"Testing the `read_containing_tags` static methods.",
+	"Testing `static_methods.readers`.",
 	function(){
 
 		const with_tags : ColorsSafe = create_dummy({ tags : tags })
@@ -109,9 +109,22 @@ describe(
 
 
 		// Read using a filter.
-		/*(
-
-		)*/
+		it( "Using filter.", () => {
+			expect.assertions( 2 )
+			return static_methods.readers.read_filter( tests, { 'metadata.tags' : tags } )
+				.then( 
+					( result ) => {
+						expect( result ).toEqual(
+							expect.arrayContaining([
+								expect.objectContaining(
+									{ metadata : expect.objectContaining( { tags : tags } ) }
+								)
+							])
+						)
+						expect( result.length ).toEqual( 1 )
+					}
+				)
+		})
 
 	
 	}
