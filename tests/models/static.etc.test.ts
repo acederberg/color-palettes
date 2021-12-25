@@ -1,6 +1,6 @@
-import { tests, create_dummy, create_dummy_with_colors, cleanUp, setUp/*, create_colors_dummy */} from './base'
-import { ColorsSafe } from '../src/models'
-import static_methods from '../src/models/static'
+import { tests, create_dummy, create_dummy_with_colors, cleanUp, setUp/*, create_colors_dummy */} from '../base'
+import { ColorsSafe } from '../../src/models'
+import static_methods from '../../src/models/static'
 
 
 const tags = [ 'this', 'is', 'a', 'test' ]

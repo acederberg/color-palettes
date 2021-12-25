@@ -1,9 +1,9 @@
 import mongoose from 'mongoose'
 
-import { tests, create_dummy, create_colors_dummy, setUp, cleanUp } from './base'
-import { ColorsSafe } from '../src/models/types'
-import static_methods from '../src/models/static'
-import { params } from '../src/models/validate'
+import { tests, create_dummy, create_colors_dummy, setUp, cleanUp } from './../base'
+import { ColorsSafe } from '../../src/models/types'
+import static_methods from '../../src/models/static'
+import { params } from '../../src/models/validate'
 
 
 beforeAll( setUp )
