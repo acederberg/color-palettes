@@ -30,7 +30,6 @@ describe(
 			return static_methods.readers.read_containing_tags( tests, some_tags )
 				.then(
 					( result ) => {
-						console.log( result )
 						if ( result === [] ){
 							expect.assertions( 2 )
 							expect( result[ index ].metadata ).toEqual(
@@ -52,7 +51,6 @@ describe(
 			return static_methods.readers.read_intersecting_tags( tests, some_tags )
 				.then(
 					( result ) => {
-						console.log( result )
 						if ( result.length !== 0 )
 						{
 							expect.assertions( 2 )
@@ -136,17 +134,28 @@ describe(
 describe( "Tests for the `update` methods.", 
 	function(){
 
+		const get_modified_length = result => result[0].metadata.modified.length
 		const update_with_filter = ( updates, filter, result ) => {
-			expect.assertions(2)
-			return static_methods.updaters.update_filter( tests, updates, filter )
+			// Assumes that the length of the filtered results is 1
+			expect.assertions(3)
+
+			return static_methods.readers.read_filter( tests, filter )
 				.then( 
-					( result_ ) => {
-						expect( result_ ).toEqual(
+					async ( before ) => {
+						const after = await static_methods.updaters.update_filter( tests, updates, filter )
+						return { before, after }
+					}
+				)
+				.then( 
+						({ before, after }) => {
+						expect( after ).toEqual(
 							expect.arrayContaining([
 								expect.objectContaining( result )
 							])
 						)
-						expect( result_.length ).toEqual( 1 )
+						expect( after.length ).toEqual( 1 )
+						console.log( before, after )
+						expect( get_modified_length( after ) ).toEqual( get_modified_length( before ) + 1 )
 					}
 				)
 		}

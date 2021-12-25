@@ -27,9 +27,22 @@ export function with_update( method : Function ) : Function
 {
 	return function ( model : ColorsModel, content : Object, ...args ) : Object
 	{
+		// Should limit keys in content.
 		return (
 			async () => {
-				await method( model, ...args ).update( content ).exec()
+				const now = await Date.now()
+				/*const args = { 
+				}*/
+				await method( model, content )
+					.update(
+						{
+							...content, 
+							'$push' : { 
+								'metadata.modified' : now 
+							}
+						} 
+					)
+					.exec()
 				const result = await method( model, ...args ).exec()
 				return result
 			}
