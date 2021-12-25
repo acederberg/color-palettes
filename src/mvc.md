@@ -1,3 +1,5 @@
+# vim: set wrap :
+
 # [ Learn MVC Pattern with ExpressJS and NodeJS - Tutorial Begginer ](https://www.youtube.com/watch?v=Cgvopu9zg8Y)
 
 This example uses an api, which is very convenient for my purposes. The idea is that the controller is entry point for requests, it will then use functions defined in the controller to make the model do something, e.g. get a value fitting some contraint. The view will then determine what will be done with the result, in the case of an API, this will be something like serializing and jsonifying the models.
