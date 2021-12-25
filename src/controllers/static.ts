@@ -4,7 +4,7 @@ import { ColorsModel } from '../models/types'
 
 
 //const { readers, creators, deleters, updaters } = static_methods
-export const TAGS_REQUIRES_ITEMS = Error( "Request including tags as an object must include a tags field and it must be an array." )
+export const TAGS_REQUIRES_ITEMS = "Request including tags as an object must include a tags field and it must be an array."
 export const TAGS_CONTAINMENT_VALUE : boolean = true
 
 
@@ -30,7 +30,7 @@ export function parse_tags( request : Request ) : Request
 			out[ 'tags' ][ 'containment' ] = TAGS_CONTAINMENT_VALUE
 		}
 	}
-	else throw TAGS_REQUIRES_ITEMS
+	else throw Error( TAGS_REQUIRES_ITEMS )
 
 	return out
 
