@@ -107,6 +107,7 @@ export default {
 	readers : {
 		read_all : with_exec( queries.all ),
 		read_ids : with_exec( queries.ids ),
+		read_id : with_exec( queries.ids ),
 		read_intersecting_tags : with_exec( queries.intersecting_tags ),
 		read_containing_tags : with_exec( queries.containing_tags ),
 		read_filter : with_exec( queries.filter )
@@ -116,11 +117,13 @@ export default {
 	},
 	deleters : {
 		delete_all : with_delete( queries.all ),
+		delete_id : with_delete( queries.id ),
 		delete_ids : with_delete( queries.ids )
 	},
 	updaters : {
 		update_all : with_delete( queries.all ),
-		update_ids : with_delete( queries.containing_tags ),
+		update_id : with_delete( queries.id ),
+		update_ids : with_delete( queries.ids ),
 		update_filter : with_update( queries.filter )
 	}
 }

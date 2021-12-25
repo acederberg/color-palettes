@@ -16,6 +16,12 @@ export function ids( model : ColorsModel, _ids : ObjectId[] ) : Query
 }
 
 
+export function id( model : ColorsModel, _id : ObjectId ) : Query
+{
+	return model.find({ _id : _id })
+}
+
+
 export function intersecting_tags( model : ColorsModel, tags : [ string ] ) : Query
 {
 	return model.find( { 
@@ -46,6 +52,7 @@ export function all( model : ColorsModel ) : Query
 export default { 
 	all, 
 	filter, 
+	id,
 	ids, 
 	containing_tags,
 	intersecting_tags, 
