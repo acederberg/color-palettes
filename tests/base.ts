@@ -1,10 +1,9 @@
 import mongoose from 'mongoose'
 
-import { ColorsModel, MetadataSafe } from '../src/models/types'
-import { create_model_for_user } from '../src/models'
+import { create_model_for_user/*, static_methods */, ColorsModel, MetadataSafe } from '../src/models'
 
 
-export const database_uri = process.env.DB_URI || 'mongodb://mongodb:27017/test'
+export const database_uri = process.env.DB_URI || 'mongodb://mongodb:27017/test?connectTimeoutMS=10000'
 
 
 export const metadata_defaults : MetadataSafe = {
@@ -51,9 +50,7 @@ export const tests : ColorsModel = create_model_for_user( "tester" ) ;
 
 export async function setUp()
 {
-  console.log( 'setUp starting...' )
   await mongoose.connect( database_uri ).catch( err => { throw err })
-  console.log( 'setUp complete!' )
 }
 
 
@@ -73,3 +70,5 @@ export async function cleanUp()
   await mongoose.connection.close()
 
 }
+
+

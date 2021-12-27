@@ -22,6 +22,7 @@ describe(
 				.then( result => expect( result ).toEqual( params.description.illegal_length( colors.metadata.description ) ) )
 		})
 
+
 		it( "Bad data. ( Description with illegal characters)", () => {
 			expect.assertions( 1 )
 			const description = '!@#$%!#$%&agheogbaerA0'.substring( 0, params.description.max_length )
@@ -29,13 +30,18 @@ describe(
 			return static_methods.creators.create_new( tests, colors )
 				.then( result => expect( result ).toEqual( params.description.illegal_characters( colors.metadata.description ) ) )
 		})
+
+
 		it( "Good data. ( Description has legal characters and is not too long )", () => {
 			const description = 'This is a test'.substring( 0, params.description.max_length - 1 ) 
 			const dummy = create_dummy({ description : description }) 
 			return static_methods.creators.create_new( tests, dummy )
 				.then( result => expect( result ).toMatchObject( dummy ) ) 
 		})
+
+
 	}
+
 )
 describe(
 	"Testing model creation with various metadata.name parameters", 
