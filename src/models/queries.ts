@@ -35,22 +35,22 @@ export function containing_tags( model : ColorsModel, tags : [ string ] ): Query
 	// https://docs.mongodb.com/manual/reference/operator/query/all/
 	// For some reason nested shapes don't work, thus why the dot is used.
 	// I suspect this has to do with the metadata interface being used to specify the colors interface.
-	if ( !tags ) return all( model )
+	if ( !tags ) return all_( model )
 	return model.find( {
 		'metadata.tags' : { $all : tags }
 	} )
 }
 
 
-export function all( model : ColorsModel ) : Query
+export function all_( model : ColorsModel ) : Query
 {
-	return model.find()
+	return model.find({})
 }
 
 
 
 export default { 
-	all, 
+	all_, 
 	filter, 
 	id,
 	ids, 

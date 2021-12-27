@@ -5,7 +5,7 @@ import mongoose from 'mongoose'
 
 // NB : Most of the exports are decorated functions contained in the exports section.
 
-
+ 
 type ManyColors = ColorsAndId | Promise<ColorsDocument[] | ColorsDocument> | ColorsDocument[] | null;
 
 
@@ -93,7 +93,6 @@ async function create_new( model : ColorsModel, raw : ColorsSafe ) : Promise<Msg
 }
 
 
-
 // READ METHODS ----------------------------------------------------------------------------/ 
 
 
@@ -105,7 +104,7 @@ async function create_new( model : ColorsModel, raw : ColorsSafe ) : Promise<Msg
 
 export default {
 	readers : {
-		read_all : with_exec( queries.all ),
+		read_all : with_exec( queries.all_ ),
 		read_ids : with_exec( queries.ids ),
 		read_id : with_exec( queries.ids ),
 		read_intersecting_tags : with_exec( queries.intersecting_tags ),
@@ -116,14 +115,14 @@ export default {
 		create_new : create_new
 	},
 	deleters : {
-		delete_all : with_delete( queries.all ),
+		delete_all : with_delete( queries.all_ ),
 		delete_id : with_delete( queries.id ),
 		delete_ids : with_delete( queries.ids )
 	},
 	updaters : {
-		update_all : with_delete( queries.all ),
-		update_id : with_delete( queries.id ),
-		update_ids : with_delete( queries.ids ),
+		update_all : with_update( queries.all_ ),
+		update_id : with_update( queries.id ),
+		update_ids : with_update( queries.ids ),
 		update_filter : with_update( queries.filter )
 	}
 }
