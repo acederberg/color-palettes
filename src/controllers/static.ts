@@ -1,14 +1,16 @@
-import { Request } from './types'
+import { Msg, Request, RequestParsed } from './types'
 import { ColorsModel } from '../models/types'
-//import static_methods from '../models/static'
+import static_methods from '../models/static'
 
 
-//const { readers, creators, deleters, updaters } = static_methods
+const { readers/*, creators, deleters, updaters */} = static_methods
+export const FIELDS = [ 'id', 'ids', 'filter', 'tags' ]
 export const TAGS_REQUIRES_ITEMS = "Request including tags as an object must include a tags field and it must be an array."
 export const TAGS_CONTAINMENT_VALUE : boolean = true
+export const READERS_NO_UNDEFINED_FIELDS : string = "On of the following fields must be used: ${}."
 
 
-export function parse_tags( request : Request ) : Request
+export function parse_tags( request : Request ) : RequestParsed
 {
 	// Only called by decide when tags take precedence.
 	// Functional parser.
@@ -37,10 +39,11 @@ export function parse_tags( request : Request ) : Request
 }
 
 
+
 // Decorators.
 
 
-export function with_decide({ method_id, method_ids, method_filter, method_tags }, otherwise )
+export function with_decide({ method_id, method_ids, method_filter, method_intersecting_tags, method_containing_tags }, otherwise )
 {
 	return function ( model : ColorsModel, request : Request )
 	{
@@ -48,31 +51,48 @@ export function with_decide({ method_id, method_ids, method_filter, method_tags 
 		// Precidence : `id` > `_ids` > `filter` > `tags`
 		if ( request.id !== undefined )
 		{
-			method_id( model, request.id )
+			return method_id( model, request.id )
 		}
 		else if ( request.ids !== undefined )
 		{
-			method_ids( model, request.ids )
+			return method_ids( model, request.ids )
 		}
 		else if ( request.filter !== undefined )
 		{
-			method_id( model, request.filter )
+			return method_filter( model, request.filter )
 		}
 		else if ( request.tags !== undefined )
 		{
-			method_tags( parse_tags( request ), request.tags )
+			const parsed = parse_tags( request )
+			return parsed.tags?.containment 
+				? method_containing_tags( parsed, request.tags )
+				: method_intersecting_tags( parsed, request.tags )
 		}
 		else 
 		{
-			otherwise( model, request )
+			return otherwise( model, request )
 		}
 	}
 }
 
 
-export function get_pallete( request : Request )
+export function msg( msg_ : string ) : Function
 {
-
-	return 
-
+	// Takes these arguements since such arguements will be passed down by the decorators.
+	return function( model : ColorsModel, args : any ) : Msg
+	{
+		return { msg : msg_ }
+	}
 }
+
+
+export const get_pallete = with_decide(
+	{
+		method_id : readers.read_id,
+		method_ids : readers.read_ids,
+		method_filter : readers.read_filter,
+		method_containing_tags : readers.read_containing_tags,
+		method_intersecting_tags : readers.read_intersecting_tags
+	}, 
+	msg( READERS_NO_UNDEFINED_FIELDS )  
+)

@@ -24,4 +24,13 @@ export interface Request{
 }
 
 
+export interface RequestParsed extends Request
+{
+	tags ?: Tags
+}
 
+
+export interface Msg
+{
+	msg : string | string[]
+}
