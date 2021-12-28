@@ -22,6 +22,7 @@ export interface ColorsSafe
 	metadata : MetadataSafe;
 }
 
+
 // Shape of metadata
 // New fields are not to be input by the user.
 export interface Metadata extends MetadataSafe
@@ -29,6 +30,7 @@ export interface Metadata extends MetadataSafe
 	modified : Date[];
 	created : Date;	
 }
+
 
 // Shape of data
 export interface Colors extends ColorsSafe
