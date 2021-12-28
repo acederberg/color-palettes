@@ -3,11 +3,11 @@ import { ColorsModel } from '../models/types'
 import static_methods from '../models/static'
 
 
-const { readers/*, creators, deleters, updaters */} = static_methods
+const { readers, deleters, updaters } = static_methods
 export const FIELDS = [ 'id', 'ids', 'filter', 'tags' ]
 export const TAGS_REQUIRES_ITEMS = "Request including tags as an object must include a tags field and it must be an array."
 export const TAGS_CONTAINMENT_VALUE : boolean = true
-export const READERS_NO_UNDEFINED_FIELDS : string = "On of the following fields must be used: ${}."
+export const NO_UNDEFINED_FIELDS : string = "On of the following fields must be used: ${}."
 
 
 export function parse_tags( request : Request ) : RequestParsed
@@ -45,28 +45,29 @@ export function parse_tags( request : Request ) : RequestParsed
 
 export function with_decide({ method_id, method_ids, method_filter, method_intersecting_tags, method_containing_tags }, otherwise )
 {
-	return function ( model : ColorsModel, request : Request )
+	return function ( model : ColorsModel, request : Request, ...args )
 	{
 		// Decides what to do when multiple snippets are provided in a request.
+		// Unpack args in the middle since methods decorated with 'with_update' need it.
 		// Precidence : `id` > `_ids` > `filter` > `tags`
 		if ( request.id !== undefined )
 		{
-			return method_id( model, request.id )
+			return method_id( model, ...args, request.id )
 		}
 		else if ( request.ids !== undefined )
 		{
-			return method_ids( model, request.ids )
+			return method_ids( model, ...args, request.ids )
 		}
 		else if ( request.filter !== undefined )
 		{
-			return method_filter( model, request.filter )
+			return method_filter( model, ...args, request.filter )
 		}
 		else if ( request.tags !== undefined )
 		{
 			const parsed = parse_tags( request )
 			return parsed.tags?.containment 
-				? method_containing_tags( parsed, request.tags )
-				: method_intersecting_tags( parsed, request.tags )
+				? method_containing_tags( parsed, ...args, request.tags )
+				: method_intersecting_tags( parsed, ...args, request.tags )
 		}
 		else 
 		{
@@ -85,8 +86,14 @@ export function msg( msg_ : string ) : Function
 	}
 }
 
+const NO_FILTER = "Filtering is not supported."
+const NO_TAGS = "Tags are not supported."
 
-export const get_pallete = with_decide(
+const no_undefined_fields = msg( NO_UNDEFINED_FIELDS )
+const no_filter = msg( NO_FILTER )
+const no_tags = msg( NO_TAGS )
+
+export const read_palletes = with_decide(
 	{
 		method_id : readers.read_id,
 		method_ids : readers.read_ids,
@@ -94,5 +101,29 @@ export const get_pallete = with_decide(
 		method_containing_tags : readers.read_containing_tags,
 		method_intersecting_tags : readers.read_intersecting_tags
 	}, 
-	msg( READERS_NO_UNDEFINED_FIELDS )  
+	no_undefined_fields
+)
+
+
+export const delete_palletes = with_decide(
+	{
+		method_id : deleters.delete_id,
+		method_ids : deleters.delete_ids,
+		method_filter : no_filter,
+		method_containing_tags : no_tags,
+		method_intersecting_tags : no_tags
+	},
+	no_undefined_fields
+)
+
+
+export const update_palletes = with_decide(
+	{
+		method_id : updaters.update_id,
+		method_ids : updaters.update_ids,
+		method_filter : updaters.update_filter,
+		method_containing_tags : updaters.update_containing_tags,
+		method_intersecting_tags : updaters.update_intersecting_tags
+	},
+	no_undefined_fields
 )

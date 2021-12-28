@@ -27,13 +27,14 @@ export function with_update( method : Function ) : Function
 {
 	return function ( model : ColorsModel, content : Object, ...args ) : Object
 	{
+		console.log( content, ...args )
 		// Should limit keys in content.
 		return (
 			async () => {
 				const now = await Date.now()
 				/*const args = { 
 				}*/
-				await method( model, content )
+				await method( model, ...args )
 					.update(
 						{
 							...content, 
@@ -53,7 +54,7 @@ export function with_update( method : Function ) : Function
 
 export function with_delete( method : Function ) : Function
 {
-	return function ( model : ColorsModel, content : ColorsSafe, ...args ) : Object
+	return function ( model : ColorsModel, ...args ) : Object
 	{
 		// Find the documents in the collection corresponding to `model`, save them for return, and `delete` them.
 		return (
@@ -123,6 +124,8 @@ export default {
 		update_all : with_update( queries.all_ ),
 		update_id : with_update( queries.id ),
 		update_ids : with_update( queries.ids ),
-		update_filter : with_update( queries.filter )
+		update_filter : with_update( queries.filter ),
+		update_intersecting_tags : with_update( queries.intersecting_tags ),
+    update_containing_tags : with_update( queries.containing_tags )
 	}
 }
