@@ -41,7 +41,6 @@ describe(
 
 
 	}
-
 )
 
 
@@ -244,6 +243,7 @@ describe( "Testing the 'create_new_from_existing'.",
 	function(){
 		
 		const N_TESTS = 5
+		const IDS : any = []
 
 		Array.from( Array( N_TESTS ).keys() ).map( index => it( "Add some junk data to the 'tests' collection.", async () => {
 			
@@ -259,30 +259,68 @@ describe( "Testing the 'create_new_from_existing'.",
 					}
 				)
 			)
+			IDS.push( result['_id'] )
 
 		}))
 
 		
-		it( "Test 'create_new_from_existing'.", () => {
-			
-			static_methods.creators.create_new_from_existing(
-				tests, 
+		it( "Test create_new_from_existing_by_id", async() => {
+
+			const result = await static_methods.creators.create_new_from_existing_by_id(
+				tests,
 				more_tests,
-				{ 'metadata.tags' : { $all : TAGS.slice( 0, 1 ) } },
+				IDS[ 3 ],
 				{ 
-					'$set' : { 
-						colors : { 
-							blue : '#0057ff',
-							red : '#ff0000',
-							yellow : '#fff000'
-						} 
+					$set : { 
+						'metadata.tags' : TAGS.slice( 0, 4 ) 
 					}
 				}
+			)
+			
+			expect( result ).toEqual(
+				expect.objectContaining(
+					{
+						metadata : expect.objectContaining(
+							{ tags : TAGS.slice( 0, 4 ) }
+						)
+					}
+				)
 			)
 
 		})
 
+		/*
+		it( "Test 'create_new_from_existing'.", async () => {
+			
+			const colors = { 
+				blue : '#0057ff',
+				red : '#ff0000',
+				yellow : '#fff000'
+			} 
 
+			const result = await static_methods.creators.create_new_from_existing(
+				tests, 
+				more_tests,
+				{},
+				{ 
+					'$set' : { 
+						colors : colors
+					}
+				}
+			)
+			console.log( result )
+
+			expect( result ).toEqual(
+				expect.arrayContaining([
+					expect.objectContaining(
+						{ colors : colors }
+					)
+				])
+			)
+			expect( result.length ).toEqual( N_TESTS )
+
+		})
+		*/
 
 	}
 ) 

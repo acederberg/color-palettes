@@ -7,7 +7,6 @@ export const database_uri = process.env.DB_URI || 'mongodb://mongodb:27017/test?
 export const TAGS = [ 'look', 'these', 'are', 'more', 'tests' ]
 
 
-
 export const metadata_defaults : MetadataSafe = {
   description : '',
   name : '',
@@ -79,7 +78,7 @@ export async function cleanUp()
   await tests.deleteMany(
     {
       _id : {
-          $in : _ids
+        $in : _ids
       }
     }
   )
