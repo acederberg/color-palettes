@@ -154,7 +154,6 @@ describe( "Tests for the `update` methods.",
 							])
 						)
 						expect( after.length ).toEqual( 1 )
-						console.log( before, after )
 						expect( get_modified_length( after ) ).toEqual( get_modified_length( before ) + 1 )
 					}
 				)
