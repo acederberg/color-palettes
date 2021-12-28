@@ -89,8 +89,25 @@ async function create_new( model : ColorsModel, raw : ColorsSafe ) : Promise<Msg
 			varients : raw.metadata.varients ? raw.metadata.varients : []
 		}
 	}
-	const err = await model.create( args ).catch( err => { msg : err } ) 
+	const err = await model.create( args )
+		.catch( err => { msg : err } ) 
 	return err
+}
+
+
+async function create_new_from_existing( origin : ColorsModel, target : ColorsModel, filter : Object, ammendments : Object ) 
+{
+	// Take documents matching the filter in the 'origin' collection and
+	// add them to the 'target' collection with ammendments applied.
+	const results = await static_methods.readers.read_filter( origin, filter )
+	return results.map(
+		async ( result ) => {
+			// Create new, add amendments.
+			const initialized = await create_new( target, { ...result._doc, colors : {} } )
+			const finalized = await target.findByIdAndUpdate( initialized[ '_id' ], ammendments ).exec()
+			return finalized
+		}
+	)
 }
 
 
@@ -103,7 +120,7 @@ async function create_new( model : ColorsModel, raw : ColorsSafe ) : Promise<Msg
 // DELETE METHODS ----------------------------------------------------------------------------/ 
 
 
-export default {
+const static_methods = {
 	readers : {
 		read_all : with_exec( queries.all_ ),
 		read_ids : with_exec( queries.ids ),
@@ -113,7 +130,8 @@ export default {
 		read_filter : with_exec( queries.filter )
 	},
 	creators : {
-		create_new : create_new
+		create_new,
+		create_new_from_existing 
 	},
 	deleters : {
 		delete_all : with_delete( queries.all_ ),
@@ -129,3 +147,5 @@ export default {
     update_containing_tags : with_update( queries.containing_tags )
 	}
 }
+export default static_methods
+
