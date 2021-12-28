@@ -13,7 +13,7 @@ type ManyColors = ColorsAndId | Promise<ColorsDocument[] | ColorsDocument> | Col
 // DECORATORS ----------------------------------------------------------------------------/
 
 // For the get methods.
-function with_exec( method : Function ) : Function
+export function with_exec( method : Function ) : Function
 {
 	return function ( model : ColorsModel, ...args ) : ManyColors
 	{

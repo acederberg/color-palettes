@@ -1,5 +1,6 @@
 import { ColorsSafe } from '../models'
 
+
 export type StringArray = Array<string>
 
 

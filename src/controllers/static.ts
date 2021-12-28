@@ -1,14 +1,21 @@
 import { CreateRequest, Msg, Request, RequestParsed } from './types'
-import { ColorsModel } from '../models/types'
-import static_methods from '../models/static'
-import { create_model_for_user } from '../models'
+import { create_model_for_user, static_methods, ColorsModel } from '../models'
 
 
 const { creators, readers, deleters, updaters } = static_methods
+
+
 export const FIELDS = [ 'id', 'ids', 'filter', 'tags' ]
+export const NO_FILTER = "Filtering is not supported."
+export const NO_TAGS = "Tags are not supported."
+export const NO_UNDEFINED_FIELDS : string = "On of the following fields must be used: ${}."
 export const TAGS_REQUIRES_ITEMS = "Request including tags as an object must include a tags field and it must be an array."
 export const TAGS_CONTAINMENT_VALUE : boolean = true
-export const NO_UNDEFINED_FIELDS : string = "On of the following fields must be used: ${}."
+
+
+const no_undefined_fields = msg( NO_UNDEFINED_FIELDS )
+const no_filter = msg( NO_FILTER )
+const no_tags = msg( NO_TAGS )
 
 
 export function parse_tags( request : Request ) : RequestParsed
@@ -77,6 +84,7 @@ export function with_decide({ method_id, method_ids, method_filter, method_inter
 	}
 }
 
+
 // const CREATE_REQUEST_FROM_EXISTING_KEYS = [ 'origin_id', 'origin', 'amendments' ]
 
 export function create_palletes( model : ColorsModel, request : CreateRequest )
@@ -101,12 +109,6 @@ export function msg( msg_ : string ) : Function
 	}
 }
 
-const NO_FILTER = "Filtering is not supported."
-const NO_TAGS = "Tags are not supported."
-
-const no_undefined_fields = msg( NO_UNDEFINED_FIELDS )
-const no_filter = msg( NO_FILTER )
-const no_tags = msg( NO_TAGS )
 
 export const read_palletes = with_decide(
 	{
