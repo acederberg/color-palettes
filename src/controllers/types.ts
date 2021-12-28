@@ -12,14 +12,28 @@ export interface Tags
 }
 
 
-export interface Request{
+export interface Request
+{
 
 	collection : string ;
 	limit ?: number ;
 	id ?: string ;
 	ids ?: Array<string> ;
-	filter ?: ColorsSafe ;
+	filter ?: any ;
 	tags ?: Tags | Array<string> ;
+
+}
+
+
+export interface CreateRequest
+{
+	// From existing
+	origin ?: string ;
+	origin_id : any ;
+	amendments : any ;
+
+	// New
+	content ?: ColorsSafe ;
 
 }
 

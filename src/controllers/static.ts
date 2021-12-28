@@ -1,9 +1,10 @@
-import { Msg, Request, RequestParsed } from './types'
+import { CreateRequest, Msg, Request, RequestParsed } from './types'
 import { ColorsModel } from '../models/types'
 import static_methods from '../models/static'
+import { create_model_for_user } from '../models'
 
 
-const { readers, deleters, updaters } = static_methods
+const { creators, readers, deleters, updaters } = static_methods
 export const FIELDS = [ 'id', 'ids', 'filter', 'tags' ]
 export const TAGS_REQUIRES_ITEMS = "Request including tags as an object must include a tags field and it must be an array."
 export const TAGS_CONTAINMENT_VALUE : boolean = true
@@ -74,6 +75,20 @@ export function with_decide({ method_id, method_ids, method_filter, method_inter
 			return otherwise( model, request )
 		}
 	}
+}
+
+// const CREATE_REQUEST_FROM_EXISTING_KEYS = [ 'origin_id', 'origin', 'amendments' ]
+
+export function create_palletes( model : ColorsModel, request : CreateRequest )
+{
+	if ( request[ 'content' ] !== undefined ) return creators.create_new( model, request[ 'content' ] )
+	else if ( request[ 'origin' ] !== undefined && request[ 'origin_id' ] !== undefined && request[ 'amendments' ] !== undefined )
+	{
+		const origin = create_model_for_user( request[ 'origin' ] )
+		return creators.create_new_from_existing_by_id( origin, model, request[ 'origin_id' ], request[ 'amendments' ] )
+	}
+	else
+	return
 }
 
 
