@@ -14,11 +14,18 @@ export {
 
 
 export { colors_schema } from './schemas'
+
+
 export { 
 	with_exec,
 	with_update,
 	with_delete,
 	default as static_methods 
 } from './static'
+
+
 export { create_model_for_user } from './models'
+
+
+export { PARAMS } from './validate'
 

@@ -4,8 +4,12 @@ function create_msg( msg : string ) : Msg
 {
 	return { msg : [ msg ] }
 }
+
+
 const alphas = /^[A-Za-z0-9 ]*$/
-export const params = {
+
+
+export const PARAMS = {
 	illegal_length : ( field_name, field_value, length ) => create_msg( `Field '${ field_name }' with value '${ field_value }' must contain only '${ length }' characters at most. Current length = '${ field_value.length }'.` ),
 	illegal_characters : ( field_name, field_value ) => create_msg( `Field '${ field_name }' with value '${ field_value }' has illegal characters.` ),
 	colors : {
@@ -13,33 +17,33 @@ export const params = {
 		max_length : 64,
 		key_regex : alphas, 
 		value_regex : /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
-		too_many : () => create_msg( `The colors field can contain only '${ params.colors.max_length }' fields.` ),
+		too_many : () => create_msg( `The colors field can contain only '${ PARAMS.colors.max_length }' fields.` ),
 		bad_value_format : ( key, value ) => `Value '${ value }' in field '${ key }' does not follow rgb format.`,
-		bad_key_format : ( key ) => `Key '${ key }' in colors is too long or contains illegal characters. It can be at most '${ params.colors.max_key_length }' characters long using alphanumeric characters.`
+		bad_key_format : ( key ) => `Key '${ key }' in colors is too long or contains illegal characters. It can be at most '${ PARAMS.colors.max_key_length }' characters long using alphanumeric characters.`
 	},
 	name : {
 		max_length : 64,
 		regex : alphas,
-		illegal_length : ( name ) => params.illegal_length( 'name', name, params.name.max_length ),
-		illegal_characters : ( name ) => params.illegal_characters( 'name', name )
+		illegal_length : ( name ) => PARAMS.illegal_length( 'name', name, PARAMS.name.max_length ),
+		illegal_characters : ( name ) => PARAMS.illegal_characters( 'name', name )
 	},
 	description : {
 		max_length : 256,
 		regex : alphas,
-		illegal_length : ( description ) => params.illegal_length( 'description', description, params.description.max_length ),
-		illegal_characters : ( description ) => params.illegal_characters( 'description', description )
+		illegal_length : ( description ) => PARAMS.illegal_length( 'description', description, PARAMS.description.max_length ),
+		illegal_characters : ( description ) => PARAMS.illegal_characters( 'description', description )
 	},
 	tags : {
 		max_length : 32,
 		max_tags : 24,
 		regex : alphas, 
-		illegal_length : ( tag ) => params.illegal_length( 'tag in tags', tag, params.tags.max_length ),
-		illegal_tags_length : ( tags ) => create_msg( `The tags field can contain at most '${ params.tags.max_tags }' tags. ( current size = '${ tags.length }' )` ),
-		illegal_characters : ( description ) => params.illegal_characters( 'description', description )
+		illegal_length : ( tag ) => PARAMS.illegal_length( 'tag in tags', tag, PARAMS.tags.max_length ),
+		illegal_tags_length : ( tags ) => create_msg( `The tags field can contain at most '${ PARAMS.tags.max_tags }' tags. ( current size = '${ tags.length }' )` ),
+		illegal_characters : ( description ) => PARAMS.illegal_characters( 'description', description )
 	},
 	varients : {
 		max_length : 32,
-		illegal_length : ( varients ) => params.illegal_length( 'varients', varients, params.varients.max_length ),
+		illegal_length : ( varients ) => PARAMS.illegal_length( 'varients', varients, PARAMS.varients.max_length ),
 	}
 }
 
@@ -47,35 +51,35 @@ export const params = {
 export function validate_colors( colors : Object ) : boolean | Msg
 {
 	const keys = Object.keys( colors )
-	if ( keys.length > params.colors.max_length ){ 
-		return params.colors.too_many() 
+	if ( keys.length > PARAMS.colors.max_length ){ 
+		return PARAMS.colors.too_many() 
 	}
 	// Check the colors keys and values using regex and length.
 	
 	const errs = Object.keys( colors ).map( key => {
 			const value = colors[ key ]		
-			const key_passes_regex = params.colors.key_regex.test( key ) 
-			const key_has_legal_length = ( params.colors.max_key_length > key.length )
-			const value_passes_regex = params.colors.value_regex.test( value )
+			const key_passes_regex = PARAMS.colors.key_regex.test( key ) 
+			const key_has_legal_length = ( PARAMS.colors.max_key_length > key.length )
+			const value_passes_regex = PARAMS.colors.value_regex.test( value )
 
 			/*console.log({ 
 				key, 
 				value, 
 				key_passes_regex, 
-				key_regex : params.colors.key_regex, 
+				key_regex : PARAMS.colors.key_regex, 
 				key_has_legal_length, 
-				value_regex : params.colors.value_regex, 
-				value_passes_regex : params.colors.value_regex.test( value ) 
+				value_regex : PARAMS.colors.value_regex, 
+				value_passes_regex : PARAMS.colors.value_regex.test( value ) 
 			})*/
 
 			if ( key_passes_regex && key_has_legal_length && value_passes_regex ){ 
 				return true
 			}
 			else if ( !key_passes_regex || !key_has_legal_length ){ 
-				return params.colors.bad_key_format( key )
+				return PARAMS.colors.bad_key_format( key )
 			}
 			else{ 
-				return params.colors.bad_value_format( key, value ) 
+				return PARAMS.colors.bad_value_format( key, value ) 
 			}
 
 	})
@@ -86,7 +90,7 @@ export function validate_colors( colors : Object ) : boolean | Msg
 
 function validate_string( key, value )
 {
-	const that = params[ key ]
+	const that = PARAMS[ key ]
 	// that.length === 0 b/c regex fails for empty
 	if ( !value ){ return true }
 	else if ( that.max_length < value.length )
@@ -113,7 +117,7 @@ type ObjectIds = ObjectId[] | [] | undefined
 export function validate_tags( tags : strings ) : boolean | Msg
 {
 	if ( !tags ) return true
-	if ( tags.length > params.tags.max_tags ){ return params.tags.illegal_tags_length( tags ) }
+	if ( tags.length > PARAMS.tags.max_tags ){ return PARAMS.tags.illegal_tags_length( tags ) }
 	let validated ;
 	for ( const tag in tags )
 	{
@@ -125,7 +129,7 @@ export function validate_tags( tags : strings ) : boolean | Msg
 export function validate_varients( varients : ObjectIds )
 {
 	if ( !varients ) return true
-	if ( varients.length > params.varients.max_length ) { return params.varients.illegal_length( varients ) }
+	if ( varients.length > PARAMS.varients.max_length ) { return PARAMS.varients.illegal_length( varients ) }
 	return true
 }
 
