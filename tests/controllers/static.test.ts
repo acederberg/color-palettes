@@ -1,7 +1,7 @@
 import { static_methods } from '../../src/models/'
 import { parse_tags, read_palletes, update_palletes, delete_palletes, NO_UNDEFINED_FIELDS, TAGS_CONTAINMENT_VALUE, TAGS_REQUIRES_ITEMS  } from '../../src/controllers/static'
 import { Request } from '../../src/controllers/types'
-import { cleanUp, tests, setUp } from '../base'
+import { cleanUp, create_data, tests, setUp, TAGS } from '../base'
 
 beforeAll( setUp )
 afterAll( cleanUp )
@@ -71,9 +71,6 @@ describe(
 )
 
 
-const TAGS = [ 'look', 'these', 'are', 'more', 'tests' ]
-
-
 describe(
   "Testing the with_decide decorator via its application to static read methods from 'model' ",
   function(){
@@ -81,19 +78,6 @@ describe(
     var IDS
     const N_TESTS = 5
 
-    const create_data = index => static_methods.creators.create_new(
-        tests,
-        { 
-          colors : {},
-          metadata : {
-            name : `name${index}`,
-            description : `This is the ${index}rd description`,
-            tags : TAGS.slice( 0, index )
-          }
-        }
-      )
-
-    
     var filler = {}
     const send_request = () => read_palletes(
         tests,

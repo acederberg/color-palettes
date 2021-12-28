@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-import { tests, create_dummy, create_colors_dummy, setUp, cleanUp } from './../base'
+import { tests, more_tests, create_data, create_dummy, create_colors_dummy, setUp, cleanUp, TAGS } from './../base'
 import { ColorsSafe } from '../../src/models/types'
 import static_methods from '../../src/models/static'
 import { params } from '../../src/models/validate'
@@ -43,9 +43,12 @@ describe(
 	}
 
 )
+
+
 describe(
 	"Testing model creation with various metadata.name parameters", 
 	function(){
+
 		it( "Bad data. ( Name too long )", () => {
 			expect.assertions( 1 )
 			const name = 'a'.repeat( params.name.max_length + 1 )
@@ -54,7 +57,9 @@ describe(
 				.then( 
 				      ( result ) => expect( result ).toEqual( params.name.illegal_length( colors.metadata.name ) )
 				)
-		})
+		} )
+
+
 		it( "Bad data. ( Name with illegal characters )", () => {
 			expect.assertions( 1 )
 			const name = 'a#$@!%EARWGQR#E'.substring( 0, params.description.max_length )
@@ -62,6 +67,8 @@ describe(
 			return static_methods.creators.create_new( tests, colors )
 				.then( result => expect( result ).toEqual( params.name.illegal_characters( colors.metadata.name ) ) )
 		} )
+
+
 		it( "Good data. ( Name with legal characters of appropriate length )", () => {
 			expect.assertions( 1 )
 			const  name = 'This is a test name'.substring( 0, params.description.max_length )
@@ -69,11 +76,16 @@ describe(
 			return static_methods.creators.create_new( tests, colors )
 				.then( result => expect( result ).toMatchObject( colors ) )
 		} )
+
+
 	}
 )
+
+
 describe(
 	"Testing model creation with various metadata.tags parameters",
 	function(){
+		
 		it( "Bad data. ( Tags too long )", () => {
 			expect.assertions( 1 )
 			const tags = 'ab'.repeat( params.tags.max_tags + 1 ).split( 'b' )
@@ -81,6 +93,8 @@ describe(
 			return static_methods.creators.create_new( tests, colors )
 				.then( result => expect( result ).toEqual( params.tags.illegal_tags_length( colors.metadata.tags ) ) )
 		} )
+
+
 		it( "Bad data. ( A tag is too long )", () => {
 			expect.assertions( 1 )
 			const tags : Array<string> = [ 'a'.repeat( params.tags.max_length + 100 ) ] 
@@ -88,13 +102,17 @@ describe(
 			return static_methods.creators.create_new( tests, colors )
 				.then( result => expect( result ).toEqual( params.tags.illegal_length( tags[ 0 ] ) ))
 		} )
+
+
 		it( "Bad data. ( A tag has illegal characters )", () => {
 			expect.assertions( 1 )
 			const tags : Array<string> = [ 'awrgh0pi2345hyQ#$T#!Q$T$@%!$TRFERGQ#$%Q'.substring( 0, params.tags.max_length ) ]
 			const colors : ColorsSafe = create_dummy( { tags : tags } )
 			return static_methods.creators.create_new( tests, colors )
 				.then( result => expect( result ).toEqual( params.tags.illegal_characters( tags[ 0 ] ) ) )
-		})
+		} )
+
+
 		it( "Good data. ( a legal set of tags of approiate length ).", () => {
 			const tags : Array<string> = 'a'
 				.repeat( params.tags.max_tags - 1 )
@@ -104,11 +122,16 @@ describe(
 			return static_methods.creators.create_new( tests, colors )
 				.then( result => expect( result ).toMatchObject( colors ) )
 		} )
+
+
 	}
 )
+
+
 describe(
 	"Testing model creation with various metadata.varients parameters",
 	function(){
+
 		it( "Bad data. ( Too many varients. )", () => {
 			expect.assertions( 1 )
 			const varients = 'a'.repeat( params.varients.max_length + 1 ).split('a').map( value => new mongoose.Types.ObjectId() )
@@ -116,6 +139,8 @@ describe(
 			return static_methods.creators.create_new( tests, colors )
 				.then( result => expect( result ).toEqual( params.varients.illegal_length( varients ) ) )
 		} )
+
+
 		it( "Good data. ( An appropriate number of varients )", () => {
 			expect.assertions( 1 )
 			const varients = [ 'This is a test. Tests make your code suck less.'.substring( 0, params.varients.max_length - 1 ) ]
@@ -125,11 +150,16 @@ describe(
 					console.log( result )
 					return expect( result ).toMatchObject( colors ) } )
 		} )
+
+
 	}
 )
+
+
 describe(
 	"Testing model creation with various colors parameters",
 	function(){
+
 		it( "Bad data. ( Bad RBG code ( contains illegal letters  ) )", () => {
 			expect.assertions( 1 )
 			const key = 'red'
@@ -140,6 +170,8 @@ describe(
 			return static_methods.creators.create_new( tests, colors )
 				.then( result => expect( result ).toEqual( { msg : [ params.colors.bad_value_format( key, value ) ] } ) )
 		} )
+
+
 		it( "Bad data. ( Key has illegal characters )", () => {
 			expect.assertions( 1 )
 			const key = 'QWEGQ@!#$^#$%#$RERs'.substring( 0, params.colors.max_key_length )
@@ -150,6 +182,8 @@ describe(
 			return static_methods.creators.create_new( tests, colors ) 
 				.then( result => expect( result ).toEqual( { msg : [ params.colors.bad_key_format( key ) ] } ) )
 		} )
+
+
 		it( "Bad data. ( Key is too long )", () => {
 			expect.assertions( 1 )
 			const key = 'a'.repeat( params.colors.max_key_length ) 
@@ -160,6 +194,8 @@ describe(
 			return static_methods.creators.create_new( tests, colors )
 				.then( result => expect(result).toEqual( { msg : [ params.colors.bad_key_format( key ) ] } ) )
 		})
+
+
 		/*it( "Bad data. ( Too many colors )", () => {
 			expect.assertions( 1 )
 			const key = 'a'.repeat( params.colors.max - 1 )
@@ -171,6 +207,8 @@ describe(
 			return static_methods.creators.create_new( tests, colors )
 				.then( result => expect( result ).toEqual){ msg : [ 
 		})*/
+
+
 		it( "Good data. ( 3 long rgbs and 6 long rgbs )", () => {
 			expect.assertions( 1 )
 			const colors : ColorsSafe  = create_colors_dummy( {
@@ -181,8 +219,12 @@ describe(
 			return static_methods.creators.create_new( tests, colors )
 				.then( result => expect( result ).toMatchObject( colors ) )
 		})
+
+
 	}
 )
+
+
 /*
 describe( "Testing the 'read_all' method", 
 	 function(){
@@ -197,3 +239,50 @@ describe( "Testing the 'read_all' method",
 	}
 )
 */
+
+describe( "Testing the 'create_new_from_existing'.",
+	function(){
+		
+		const N_TESTS = 5
+
+		Array.from( Array( N_TESTS ).keys() ).map( index => it( "Add some junk data to the 'tests' collection.", async () => {
+			
+			const result = await create_data( index )
+			expect( result ).toEqual( 
+				expect.objectContaining(
+					{ 
+						metadata : expect.objectContaining(
+							{ 
+								tags : TAGS.slice( 0, index )
+							}
+						)
+					}
+				)
+			)
+
+		}))
+
+		
+		it( "Test 'create_new_from_existing'.", () => {
+			
+			static_methods.creators.create_new_from_existing(
+				tests, 
+				more_tests,
+				{ 'metadata.tags' : { $all : TAGS.slice( 0, 1 ) } },
+				{ 
+					'$set' : { 
+						colors : { 
+							blue : '#0057ff',
+							red : '#ff0000',
+							yellow : '#fff000'
+						} 
+					}
+				}
+			)
+
+		})
+
+
+
+	}
+) 
