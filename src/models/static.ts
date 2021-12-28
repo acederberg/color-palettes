@@ -1,9 +1,10 @@
 import queries from './queries'
-import { ColorsSafe, ColorsModel, ColorsDocument, ColorsAndId, Msg } from './types'
+import { ColorsSafe, ColorsModel, ColorsDocument, ColorsAndId, Msg, ObjectId } from './types'
 import validate from './validate'
 import mongoose from 'mongoose'
 
 // NB : Most of the exports are decorated functions contained in the exports section.
+export const NO_SUCH_TARGET = "The specified target does not exist."
 
  
 type ManyColors = ColorsAndId | Promise<ColorsDocument[] | ColorsDocument> | ColorsDocument[] | null;
@@ -95,20 +96,55 @@ async function create_new( model : ColorsModel, raw : ColorsSafe ) : Promise<Msg
 }
 
 
-async function create_new_from_existing( origin : ColorsModel, target : ColorsModel, filter : Object, ammendments : Object ) 
+function to_raw( not_raw : ColorsAndId ) : ColorsSafe
+{
+	return {
+		colors : not_raw.colors || {},
+		metadata : not_raw.metadata
+	}
+}
+
+
+async function create_new_from_existing_by_id( origin : ColorsModel, target : ColorsModel, _id : ObjectId, amendments : Object )
+{
+
+	// Create new, add amendments.
+	const result = await origin.findById( _id )
+	if ( !result ) return { msg : NO_SUCH_TARGET } 
+
+	const initialized = await create_new( target, to_raw( result ) )
+		.then( result => result[ '_id' ] )
+	await target.findById( initialized ).then( console.log )
+	await target.findByIdAndUpdate( initialized, amendments ).exec()
+	return target.findById( initialized ).exec()
+
+}
+
+/*
+async function create_new_from_existing( origin : ColorsModel, target : ColorsModel, filter : Object, amendments : Object ) 
 {
 	// Take documents matching the filter in the 'origin' collection and
 	// add them to the 'target' collection with ammendments applied.
+	const _ids : any = [] 
 	const results = await static_methods.readers.read_filter( origin, filter )
 	return results.map(
-		async ( result ) => {
-			// Create new, add amendments.
-			const initialized = await create_new( target, { ...result._doc, colors : {} } )
-			const finalized = await target.findByIdAndUpdate( initialized[ '_id' ], ammendments ).exec()
-			return finalized
-		}
-	)
+		result => create_new(
+			target,
+			to_raw( result )
+		)
+			.then( created => {
+					console.log( created[ '_id' ] )
+					_ids.push( created[ '_id' ] )
+			})
+			.then( () => {
+					console.log( _ids )
+					queries.ids( target, _ids ).update( amendments ).exec()
+					return static_methods.readers.read_ids( target, _ids )
+			})
+	)	
+
 }
+*/
 
 
 // READ METHODS ----------------------------------------------------------------------------/ 
@@ -131,7 +167,8 @@ const static_methods = {
 	},
 	creators : {
 		create_new,
-		create_new_from_existing 
+		create_new_from_existing_by_id,
+		//create_new_from_existing 
 	},
 	deleters : {
 		delete_all : with_delete( queries.all_ ),
