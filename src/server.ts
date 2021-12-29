@@ -5,11 +5,9 @@ export default function create_app() : Express
 {
 	
 	const app : Express = express()
-	const port : Number | String = process.env.PORT || 8000
-	app.listen( 
-		   port, 
-		   () => console.log( `Listening on ${ port }.` ) 
-	)
+	
+	app.use( express.json() )
+
 	return app
 
 }

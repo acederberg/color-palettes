@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc-watch --project '.'  --outDir ./dist --onSuccess 'node ./dist/src/index.js'",
-    "test": "env-cmd --file .env.dev tsc-watch --onSuccess 'jest ./tests --forceExit'",
+    "test": "tsc-watch --onSuccess 'jest ./tests --forceExit'",
     "build": "rm -rf './dist' && tsc"
   },
   "author": "Adrian Cederberg",

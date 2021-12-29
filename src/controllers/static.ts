@@ -8,7 +8,8 @@ const { creators, readers, deleters, updaters } = static_methods
 export const FIELDS = [ 'id', 'ids', 'filter', 'tags' ]
 export const NO_FILTER = "Filtering is not supported."
 export const NO_TAGS = "Tags are not supported."
-export const NO_UNDEFINED_FIELDS : string = "On of the following fields must be used: ${}."
+export const NO_UNDEFINED_FIELDS : string = "One of the following fields must be used: ${FIELDS}."
+export const REQUEST_REQUIRED : string = "A request is required."
 export const TAGS_REQUIRES_ITEMS = "Request including tags as an object must include a tags field and it must be an array."
 export const TAGS_CONTAINMENT_VALUE : boolean = true
 
@@ -89,6 +90,7 @@ export function with_decide({ method_id, method_ids, method_filter, method_inter
 
 export function create_palletes( model : ColorsModel, request : CreateRequest )
 {
+	if ( !request ) return { msg : REQUEST_REQUIRED }
 	if ( request[ 'content' ] !== undefined ) return creators.create_new( model, request[ 'content' ] )
 	else if ( request[ 'origin' ] !== undefined && request[ 'origin_id' ] !== undefined && request[ 'amendments' ] !== undefined )
 	{
