@@ -5,12 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc-watch --project '.'  --outDir ./dist --onSuccess 'node ./dist/src/index.js'",
-    "test": "tsc-watch --onSuccess 'jest ./tests --forceExit'",
+    "test": "env-cmd --file .env.dev tsc-watch --onSuccess 'jest ./tests --forceExit'",
     "build": "rm -rf './dist' && tsc"
   },
   "author": "Adrian Cederberg",
   "license": "ISC",
   "dependencies": {
+    "env-cmd": "^10.1.0",
     "express": "^4.17.1",
     "jest": "^27.3.1",
     "mongoose": "^6.0.12",
