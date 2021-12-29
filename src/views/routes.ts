@@ -13,7 +13,7 @@ export default function with_routes( app : Express )
 {
 	with_route( app, 'post', URI_CREATE, create_palletes )
 	with_route( app, 'post', URI_READ, read_palletes )
-	with_route( app, 'put', URI_READ, update_palletes )
+	with_route( app, 'put', URI_UPDATE, update_palletes )
 	with_route( app, 'delete', URI_DELETE, delete_palletes )
 }
 
