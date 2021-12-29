@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-import { create_model_for_user, static_methods, ColorsModel, MetadataSafe } from '../src/models'
+import { create_model_for_user, static_methods, ColorsModel, MetadataSafe, ColorsSafe } from '../src/models'
 
 
 // Various constants.
@@ -26,16 +26,22 @@ export const metadata_defaults : MetadataSafe = {
 
 
 export const create_data = index => static_methods.creators.create_new(
-    tests,
-    {
-      colors : {},
-      metadata : {
-        name : `name${index}`,
-        description : `This is the ${index}rd description`,
-        tags : TAGS.slice( 0, index )
-      }
+  tests,
+  create_dummy_from_integer( index )
+)
+
+
+export function create_dummy_from_integer( index ) : ColorsSafe
+{
+  return {
+    colors : {},
+    metadata : {
+      name : `name${index}`,
+      description : `This is the ${index}rd description`,
+      tags : TAGS.slice( 0, index )
     }
-  )
+  }
+}
 
 
 export function create_dummy_with_colors( metadata : Object, color : string )
