@@ -22,6 +22,7 @@ export interface Request
 	ids ?: string[] ;
 	filter ?: any ;
 	tags ?: Tags | string[] ;
+	varients ?: string[] ;
 
 }
 

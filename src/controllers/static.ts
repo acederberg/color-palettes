@@ -52,7 +52,7 @@ export function parse_tags( request : Request ) : RequestParsed
 // Decorators.
 
 
-export function with_decide({ method_id, method_ids, method_filter, method_intersecting_tags, method_containing_tags }, otherwise )
+export function with_decide({ method_id, method_ids, method_filter, method_intersecting_tags, method_containing_tags, method_varients }, otherwise )
 {
 	return function ( model : ColorsModel, request : Request, ...args )
 	{
@@ -77,6 +77,9 @@ export function with_decide({ method_id, method_ids, method_filter, method_inter
 			return parsed.tags?.containment 
 				? method_containing_tags( parsed, ...args, request.tags )
 				: method_intersecting_tags( parsed, ...args, request.tags )
+		}
+		else if ( request.varients !== undefined )
+		{
 		}
 		else 
 		{
@@ -139,7 +142,8 @@ export const read_palletes = with_decide(
 		method_ids : readers.read_ids,
 		method_filter : readers.read_filter,
 		method_containing_tags : readers.read_containing_tags,
-		method_intersecting_tags : readers.read_intersecting_tags
+		method_intersecting_tags : readers.read_intersecting_tags,
+		method_varients : readers.read_varients
 	}, 
 	no_undefined_fields
 )
@@ -151,7 +155,8 @@ export const delete_palletes = with_decide(
 		method_ids : deleters.delete_ids,
 		method_filter : no_filter,
 		method_containing_tags : no_tags,
-		method_intersecting_tags : no_tags
+		method_intersecting_tags : no_tags,
+		method_varients : deleters.delete_varients
 	},
 	no_undefined_fields
 )
@@ -163,7 +168,8 @@ export const update_palletes = with_decide(
 		method_ids : updaters.update_ids,
 		method_filter : updaters.update_filter,
 		method_containing_tags : updaters.update_containing_tags,
-		method_intersecting_tags : updaters.update_intersecting_tags
+		method_intersecting_tags : updaters.update_intersecting_tags,
+		method_varients : updaters.update_varients
 	},
 	no_undefined_fields
 )

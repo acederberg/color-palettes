@@ -42,6 +42,20 @@ export function containing_tags( model : ColorsModel, tags : [ string ] ): Query
 }
 
 
+export function varients( model : ColorsModel, _id : ObjectId ) : Query
+{
+	// Provided an id, find a list of varients.
+	const varients = model.findOne({ _id : _id }).then( result => result?.metadata.varients )
+	return model.find(
+		{
+			_id : {
+				'$any' : varients
+			}
+		}
+	)
+}
+
+
 export function all_( model : ColorsModel ) : Query
 {
 	return model.find({})
@@ -51,10 +65,11 @@ export function all_( model : ColorsModel ) : Query
 
 export default { 
 	all_, 
+	containing_tags,
 	filter, 
 	id,
 	ids, 
-	containing_tags,
 	intersecting_tags, 
+	varients
 }
 

@@ -5,6 +5,12 @@ import mongoose from 'mongoose'
 
 // NB : Most of the exports are decorated functions contained in the exports section.
 export const NO_SUCH_TARGET = "The specified target does not exist."
+export const CREATE_VARIENTS_PUSHER = ( some_id ) => { return {
+	'$push' : {
+		'metadata.varients' :	some_id
+	}
+}}
+	
 
  
 type ManyColors = ColorsAndId | Promise<ColorsDocument[] | ColorsDocument> | ColorsDocument[] | null;
@@ -28,7 +34,6 @@ export function with_update( method : Function ) : Function
 {
 	return function ( model : ColorsModel, content : Object, ...args ) : Object
 	{
-		console.log( content, ...args )
 		// Should limit keys in content.
 		return (
 			async () => {
@@ -109,43 +114,23 @@ function to_raw( not_raw : ColorsAndId ) : ColorsSafe
 async function create_new_from_existing_by_id( origin : ColorsModel, target : ColorsModel, _id : ObjectId, amendments : Object )
 {
 
-	// Create new, add amendments.
-	const result = await origin.findById( _id )
-	if ( !result ) return { msg : NO_SUCH_TARGET } 
+	// Find original
+	const original = await origin.findById( _id )
+	if ( !original ) return { msg : NO_SUCH_TARGET } 
 
-	const initialized = await create_new( target, to_raw( result ) )
-		.then( result => result[ '_id' ] )
-	await target.findById( initialized ).then( console.log )
+	// Make target using original and applying the amendments
+	const initialized = await create_new( target, to_raw( original ) )
 	await target.findByIdAndUpdate( initialized, amendments ).exec()
-	return target.findById( initialized ).exec()
+
+	// UPDATES
+	// Update the varients sections.
+	await link_as_varients( 
+		origin, target, 
+		original[ '_id' ], initialized[ '_id' ]
+	)
+	return target.findById( initialized[ '_id' ] ).exec()
 
 }
-
-/*
-async function create_new_from_existing( origin : ColorsModel, target : ColorsModel, filter : Object, amendments : Object ) 
-{
-	// Take documents matching the filter in the 'origin' collection and
-	// add them to the 'target' collection with ammendments applied.
-	const _ids : any = [] 
-	const results = await static_methods.readers.read_filter( origin, filter )
-	return results.map(
-		result => create_new(
-			target,
-			to_raw( result )
-		)
-			.then( created => {
-					console.log( created[ '_id' ] )
-					_ids.push( created[ '_id' ] )
-			})
-			.then( () => {
-					console.log( _ids )
-					queries.ids( target, _ids ).update( amendments ).exec()
-					return static_methods.readers.read_ids( target, _ids )
-			})
-	)	
-
-}
-*/
 
 
 // READ METHODS ----------------------------------------------------------------------------/ 
@@ -154,17 +139,32 @@ async function create_new_from_existing( origin : ColorsModel, target : ColorsMo
 // UPDATE METHODS ----------------------------------------------------------------------------/ 
 
 
+export async function link_as_varients( origin : ColorsModel, target : ColorsModel, origin_id : ObjectId, target_id : ObjectId )
+{
+	await origin.findByIdAndUpdate( 
+		origin_id, 
+		CREATE_VARIENTS_PUSHER( target_id ) 
+	).exec().then( console.log )
+	
+	await target.findByIdAndUpdate( 
+		target_id, 
+		CREATE_VARIENTS_PUSHER( origin_id ) 
+	).exec().then( console.log )
+}
+
+
 // DELETE METHODS ----------------------------------------------------------------------------/ 
 
 
 const static_methods = {
 	readers : {
 		read_all : with_exec( queries.all_ ),
+		read_containing_tags : with_exec( queries.containing_tags ),
+		read_filter : with_exec( queries.filter ),
 		read_ids : with_exec( queries.ids ),
 		read_id : with_exec( queries.ids ),
 		read_intersecting_tags : with_exec( queries.intersecting_tags ),
-		read_containing_tags : with_exec( queries.containing_tags ),
-		read_filter : with_exec( queries.filter )
+		read_varients : with_exec( queries.varients ),
 	},
 	creators : {
 		create_new,
@@ -174,15 +174,17 @@ const static_methods = {
 	deleters : {
 		delete_all : with_delete( queries.all_ ),
 		delete_id : with_delete( queries.id ),
-		delete_ids : with_delete( queries.ids )
+		delete_ids : with_delete( queries.ids ),
+		delete_varients : with_delete( queries.varients )
 	},
 	updaters : {
 		update_all : with_update( queries.all_ ),
+    update_containing_tags : with_update( queries.containing_tags ),
+		update_filter : with_update( queries.filter ),
 		update_id : with_update( queries.id ),
 		update_ids : with_update( queries.ids ),
-		update_filter : with_update( queries.filter ),
 		update_intersecting_tags : with_update( queries.intersecting_tags ),
-    update_containing_tags : with_update( queries.containing_tags )
+		update_varients : with_update( queries.varients )
 	}
 }
 export default static_methods
