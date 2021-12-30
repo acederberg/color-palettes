@@ -9,7 +9,7 @@ export const URI_UPDATE = '/:collection_name/update'
 export const URI_DELETE = '/:collection_name/delete'
 
 
-export default function with_routes( app : Express )
+export default function create_routes( app : Express )
 {
 	with_route( app, 'post', URI_CREATE, create_palletes )
 	with_route( app, 'post', URI_READ, read_palletes )

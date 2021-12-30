@@ -1,8 +1,39 @@
 import { Express } from 'express'
+
+import { Request } from '../controllers'
 import { create_model_for_user } from '../models'
 
 
 const REQUIRES_BODY = "Requests made to this endpoint require a 'JSON' body."	
+const DELIMETER = ','
+
+
+export function parse_uri_query( params : any, queries : any ) : Request
+{
+	// For `GET` requests.
+	//
+	// Existing Parameters :
+	// - `collection_name` -- This will be used later.
+	//
+	// Additional Parameters :
+	// - `_id` -- A string for an objectId_.
+	// - `_ids` -- Comma separed following the above format.
+	// - `tags` -- A comma separated string of tags.
+	// - `containment` -- Determines if a all or a few of the tags
+
+	const request : Request = {
+		collection : 'foo',
+		id : <string>params._id ,
+		ids : ( queries._ids as string ).split( DELIMETER ),
+		tags : {
+			items : ( queries.tags as string ).split( DELIMETER ),
+			containment : queries.containment
+		}
+	}
+
+	return request
+
+}
 
 
 export function with_route( app : Express, http_method : string, route : string, method : Function, no_json : boolean = false )

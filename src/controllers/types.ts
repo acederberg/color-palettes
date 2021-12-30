@@ -1,13 +1,13 @@
 import { ColorsSafe } from '../models'
 
 
-export type StringArray = Array<string>
+export type StringArray = string[]
 
 
 export interface Tags
 {
 
-	items ?: Array<string> ;
+	items ?: string[] ;
 	containment ?: boolean ;
 
 }
@@ -19,9 +19,9 @@ export interface Request
 	collection : string ;
 	limit ?: number ;
 	id ?: string ;
-	ids ?: Array<string> ;
+	ids ?: string[] ;
 	filter ?: any ;
-	tags ?: Tags | Array<string> ;
+	tags ?: Tags | string[] ;
 
 }
 

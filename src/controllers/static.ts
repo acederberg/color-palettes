@@ -49,7 +49,6 @@ export function parse_tags( request : Request ) : RequestParsed
 }
 
 
-
 // Decorators.
 
 
@@ -105,7 +104,6 @@ export async function create_palletes( model : ColorsModel, request : CreateRequ
 		output = { msg : INSUFFICIENT_FIELDS }
 	}
 
-	console.log( output )
 	return output
 
 }
