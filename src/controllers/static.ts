@@ -6,7 +6,7 @@ const { creators, readers, deleters, updaters } = static_methods
 
 
 export const FIELDS = [ 'id', 'ids', 'filter', 'tags' ]
-export const INSUFFICIENT_FIELDS = "Insufficiently few fields to complete request."
+export const INSUFFICIENT_FIELDS = "Insufficient fields."
 export const NO_FILTER = "Filtering is not supported."
 export const NO_TAGS = "Tags are not supported."
 export const NO_UNDEFINED_FIELDS : string = `One of the following fields must be used: ${FIELDS}.`
@@ -86,7 +86,21 @@ export function with_decide({ method_id, method_ids, method_filter, method_inter
 }
 
 
-// const CREATE_REQUEST_FROM_EXISTING_KEYS = [ 'origin_id', 'origin', 'amendments' ]
+const CREATE_REQUEST_FROM_EXISTING_KEYS = [ 'origin_id', 'origin', 'amendments' ]
+
+
+function find_missing_fields( request : CreateRequest )
+{
+	const fields = Object.keys( request )
+	return CREATE_REQUEST_FROM_EXISTING_KEYS
+		.filter( 
+			( field ) => !fields.includes( field )
+		)
+		.map( 
+			( field ) => `'${field}'`
+		)
+}
+
 
 export async function create_palletes( model : ColorsModel, request : CreateRequest )
 {
@@ -101,7 +115,7 @@ export async function create_palletes( model : ColorsModel, request : CreateRequ
 	}
 	else
 	{
-		output = { msg : INSUFFICIENT_FIELDS }
+		output = { msg : INSUFFICIENT_FIELDS + ` Missing the following mutually necessary fields ${ find_missing_fields( request ).join(',') } or the mutually exclusive 'content' field.` }
 	}
 
 	return output
