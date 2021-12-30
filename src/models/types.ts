@@ -11,7 +11,7 @@ export interface MetadataSafe
 	description?: string;
 	name?: string;
 	tags?: string[];
-	varients?: any ;
+	varients?: ObjectId[] ;
 }
 
 
