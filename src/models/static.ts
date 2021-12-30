@@ -7,7 +7,6 @@ import mongoose from 'mongoose'
 // NB : Most of the exports are decorated functions contained in the exports section.
 export const NO_SUCH_TARGET = "The specified target does not exist."
 export const CREATE_VARIENTS_PUSHER = ( some_id ) => { 
-	console.log( some_id )
 	return {
 	'$push' : {
 		'metadata.varients' :	some_id
@@ -99,7 +98,6 @@ async function create_new( model : ColorsModel, raw : ColorsSafe ) : Promise<Msg
 	}
 	const err = await model.create( args )
 		.catch( err => { msg : err } ) 
-	console.log( err )
 	return err
 }
 
@@ -146,12 +144,12 @@ export async function link_as_varients( origin : ColorsModel, target : ColorsMod
 	await origin.findByIdAndUpdate( 
 		origin_id, 
 		CREATE_VARIENTS_PUSHER( target_id ) 
-	).exec().then( console.log )
+	).exec()
 	
 	await target.findByIdAndUpdate( 
 		target_id, 
 		CREATE_VARIENTS_PUSHER( origin_id ) 
-	).exec().then( console.log )
+	).exec()
 }
 
 
