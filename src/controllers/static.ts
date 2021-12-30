@@ -7,22 +7,32 @@ const { creators, readers, deleters, updaters } = static_methods
 
 // MESSAGES and FIELDS
 
+//const DELIMETER = ', '
 export const CREATE_REQUEST_FROM_EXISTING_KEYS = [ 'origin_id', 'origin', 'amendments' ]
 export const FIELDS = [ 'id', 'ids', 'filter', 'tags' ]
 export const INSUFFICIENT_FIELDS = "Insufficient fields."
 export const NO_FILTER = "Filtering is not supported."
 export const NO_TAGS = "Tags are not supported."
-export const NO_UNDEFINED_FIELDS : string = `One of the following fields must be used: ${FIELDS}.`
+export const NO_UNDEFINED_FIELDS : string = `At least one field is required.`
 export const REQUEST_REQUIRED : string = "A request is required."
 export const TAGS_CONTAINMENT_VALUE : boolean = true
 export const TAGS_FIELDS_UNDEFINED : string = "All tags fields are undefined. Did you mean to add a uri query?"
 export const TAGS_REQUIRES_ITEMS = "Request including tags as an object must include a tags field and it must be an array."
 
 
-const tags_fields_undefined = msg( TAGS_FIELDS_UNDEFINED )
-const no_undefined_fields = msg( NO_UNDEFINED_FIELDS )
+const create_request_insufficient_fields = ( model, request ) => { 
+	return {
+		msg : INSUFFICIENT_FIELDS + ` Missing the following mutually necessary fields ${ find_missing_fields( request, CREATE_REQUEST_FROM_EXISTING_KEYS ).join(',') } or the mutually exclusive 'content' field.` 
+	}
+}
+export const no_undefined_fields = ( model, request ) => {
+	return {
+		msg : NO_UNDEFINED_FIELDS + find_missing_fields( request, FIELDS )
+	}
+}
 const no_filter = msg( NO_FILTER )
 const no_tags = msg( NO_TAGS )
+const tags_fields_undefined = msg( TAGS_FIELDS_UNDEFINED )
 
 
 export function msg( msg_ : string ) : Function
@@ -35,10 +45,10 @@ export function msg( msg_ : string ) : Function
 }
 
 
-function find_missing_fields( request : CreateRequest )
+function find_missing_fields( request : CreateRequest, FIELDS : string[] )
 {
 	const fields = Object.keys( request )
-	return CREATE_REQUEST_FROM_EXISTING_KEYS
+	return FIELDS
 		.filter( 
 			( field ) => !fields.includes( field )
 		)
@@ -139,7 +149,7 @@ export async function create_palletes( model : ColorsModel, request : CreateRequ
 	}
 	else
 	{
-		output = { msg : INSUFFICIENT_FIELDS + ` Missing the following mutually necessary fields ${ find_missing_fields( request ).join(',') } or the mutually exclusive 'content' field.` }
+		output = create_request_insufficient_fields( model, request )
 	}
 
 	return output

@@ -2,8 +2,9 @@ import { static_methods } from '../../src/models/'
 import { 
   parse_tags, read_palletes, update_palletes, delete_palletes, 
   Request,
-  NO_UNDEFINED_FIELDS, TAGS_CONTAINMENT_VALUE, TAGS_REQUIRES_ITEMS  
+  TAGS_CONTAINMENT_VALUE, TAGS_REQUIRES_ITEMS  
 } from '../../src/controllers'
+import { no_undefined_fields } from '../../src/controllers/static'
 import { cleanUp, create_data, tests, setUp, TAGS } from '../base'
 
 beforeAll( setUp )
@@ -116,7 +117,7 @@ describe(
       const result = await send_request()
       expect( result.length ).toEqual( undefined )
       expect( result ).toEqual(
-        expect.objectContaining({ msg : NO_UNDEFINED_FIELDS })
+        expect.objectContaining( no_undefined_fields( null, [] ) )
       )
     })
 
