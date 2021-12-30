@@ -2,6 +2,7 @@ export {
 	ObjectId,
 	MetadataSafe,
 	Metadata, 
+	Msg,
 	Colors, 
 	ColorsDocument, 
 	ColorsModel, 

@@ -1,9 +1,11 @@
 import { Document, Model } from 'mongoose'
 import mongoose from 'mongoose'
 
+
 export type ObjectId = mongoose.Types.ObjectId;
 export type ColorsAndId = ColorsDocument & { _id : any };
 export type Query = mongoose.Query< ColorsAndId[], ColorsAndId, {}, ColorsDocument>
+
 
 // Shape of user submittable metadata
 export interface MetadataSafe

@@ -63,6 +63,7 @@ export function with_route( app : Express, http_method : string, route : string,
 					collection ? create_model_for_user( collection ) : null,
 					get_json( request )
 				)
+				if ( !no_json && result_[ 'msg' ] ) result.status( 400 )
  				result.json( result_ )
 
 			}

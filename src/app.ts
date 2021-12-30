@@ -13,12 +13,13 @@ interface Everything
 }
 
 
-export default function main() : Everything
+export default async function main() : Promise<Everything>
 {
-	const app = create_app()
+
+	const app = await create_app()
+	const db = await create_db()
 	create_routes( app )
-	const db = create_db()
-	console.log( db )
+
 	return {
 		app : app,
 		db : db 

@@ -1,10 +1,15 @@
-import main from "./app"
+import create_everything from "./app"
 
-const { app } = main()
 
-const port : number = Number( process.env.PORT ) || 8000
+export async function main()
+{
 
-app.listen(
-		port,
-		() => console.log( `Listening on ${ port }.` )
-)
+	const { app } = await create_everything()
+	const port : number = Number( process.env.PORT ) || 8000
+
+	app.listen(
+			port,
+			() => console.log( `Listening on ${ port }.` )
+	)
+
+}

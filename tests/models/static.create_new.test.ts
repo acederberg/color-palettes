@@ -144,7 +144,6 @@ describe(
 			const colors : ColorsSafe = create_dummy( { varients : varients } )
 			return static_methods.creators.create_new( tests, colors )
 				.then( result => {
-					console.log( result )
 					return expect( result ).toMatchObject( colors ) } )
 		} )
 
@@ -262,7 +261,7 @@ describe( "Testing the 'create_new_from_existing'.",
 		}))
 
 		
-		it( "Test create_new_from_existing_by_id", async() => {
+		it( "Test create_new_from_existing_by_id. ", async() => {
 
 			const the_id = IDS[ 3 ]
 			const result : any = await static_methods.creators.create_new_from_existing_by_id(
@@ -287,10 +286,19 @@ describe( "Testing the 'create_new_from_existing'.",
 					}
 				)
 			)
-			console.log( result )
-			console.log( the_id )
 			expect( result?.metadata?.varients ).toEqual(
 				[ the_id.toString() ]
+			)
+
+			const original : any = await static_methods.readers.read_id( tests, the_id ).then( 
+				results => {
+					expect( results.length ).toEqual( 1 )
+					return results[ 0 ]
+				}
+			)
+			console.log( original )
+			expect( original?.metadata?.varients ).toEqual(
+				[ result._id.toString() ]
 			)
 
 		})
