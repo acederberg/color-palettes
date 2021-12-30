@@ -5,6 +5,8 @@ import { create_model_for_user, static_methods, ColorsModel } from '../models'
 const { creators, readers, deleters, updaters } = static_methods
 
 
+// MESSAGES and FIELDS
+
 export const FIELDS = [ 'id', 'ids', 'filter', 'tags' ]
 export const INSUFFICIENT_FIELDS = "Insufficient fields."
 export const NO_FILTER = "Filtering is not supported."
@@ -13,12 +15,39 @@ export const NO_UNDEFINED_FIELDS : string = `One of the following fields must be
 export const REQUEST_REQUIRED : string = "A request is required."
 export const TAGS_REQUIRES_ITEMS = "Request including tags as an object must include a tags field and it must be an array."
 export const TAGS_CONTAINMENT_VALUE : boolean = true
+export const CREATE_REQUEST_FROM_EXISTING_KEYS = [ 'origin_id', 'origin', 'amendments' ]
 
 
 const no_undefined_fields = msg( NO_UNDEFINED_FIELDS )
 const no_filter = msg( NO_FILTER )
 const no_tags = msg( NO_TAGS )
 
+
+export function msg( msg_ : string ) : Function
+{
+	// Takes these arguements since such arguements will be passed down by the decorators.
+	return function( model : ColorsModel, args : any ) : Msg
+	{
+		return { msg : msg_ }
+	}
+}
+
+
+function find_missing_fields( request : CreateRequest )
+{
+	const fields = Object.keys( request )
+	return CREATE_REQUEST_FROM_EXISTING_KEYS
+		.filter( 
+			( field ) => !fields.includes( field )
+		)
+		.map( 
+			( field ) => `'${field}'`
+		)
+}
+
+
+
+// PARSERS
 
 export function parse_tags( request : Request ) : RequestParsed
 {
@@ -49,8 +78,8 @@ export function parse_tags( request : Request ) : RequestParsed
 }
 
 
-// Decorators.
 
+// DECORATORS.
 
 export function with_decide({ method_id, method_ids, method_filter, method_intersecting_tags, method_containing_tags, method_varients }, otherwise )
 {
@@ -89,21 +118,8 @@ export function with_decide({ method_id, method_ids, method_filter, method_inter
 }
 
 
-const CREATE_REQUEST_FROM_EXISTING_KEYS = [ 'origin_id', 'origin', 'amendments' ]
 
-
-function find_missing_fields( request : CreateRequest )
-{
-	const fields = Object.keys( request )
-	return CREATE_REQUEST_FROM_EXISTING_KEYS
-		.filter( 
-			( field ) => !fields.includes( field )
-		)
-		.map( 
-			( field ) => `'${field}'`
-		)
-}
-
+// THE GOOD STUFF
 
 export async function create_palletes( model : ColorsModel, request : CreateRequest )
 {
@@ -123,16 +139,6 @@ export async function create_palletes( model : ColorsModel, request : CreateRequ
 
 	return output
 
-}
-
-
-export function msg( msg_ : string ) : Function
-{
-	// Takes these arguements since such arguements will be passed down by the decorators.
-	return function( model : ColorsModel, args : any ) : Msg
-	{
-		return { msg : msg_ }
-	}
 }
 
 
