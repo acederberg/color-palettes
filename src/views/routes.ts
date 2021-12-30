@@ -1,6 +1,6 @@
 import { Express } from 'express'
 import { create_palletes, read_palletes, update_palletes, delete_palletes } from '../controllers/static'
-import { with_route } from './decorators'
+import { with_route, with_parameterized_route } from './decorators'
 
 
 export const URI_CREATE = '/:collection_name/create'
@@ -15,6 +15,7 @@ export default function create_routes( app : Express )
 	with_route( app, 'post', URI_READ, read_palletes )
 	with_route( app, 'put', URI_UPDATE, update_palletes )
 	with_route( app, 'delete', URI_DELETE, delete_palletes )
+	with_parameterized_route( app, 'get', URI_READ, read_palletes )
 }
 
 
