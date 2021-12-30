@@ -92,6 +92,7 @@ async function create_new( model : ColorsModel, raw : ColorsSafe ) : Promise<Msg
 	}
 	const err = await model.create( args )
 		.catch( err => { msg : err } ) 
+	console.log( err )
 	return err
 }
 

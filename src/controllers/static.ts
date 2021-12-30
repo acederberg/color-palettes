@@ -6,9 +6,10 @@ const { creators, readers, deleters, updaters } = static_methods
 
 
 export const FIELDS = [ 'id', 'ids', 'filter', 'tags' ]
+export const INSUFFICIENT_FIELDS = "Insufficiently few fields to complete request."
 export const NO_FILTER = "Filtering is not supported."
 export const NO_TAGS = "Tags are not supported."
-export const NO_UNDEFINED_FIELDS : string = "One of the following fields must be used: ${FIELDS}."
+export const NO_UNDEFINED_FIELDS : string = `One of the following fields must be used: ${FIELDS}.`
 export const REQUEST_REQUIRED : string = "A request is required."
 export const TAGS_REQUIRES_ITEMS = "Request including tags as an object must include a tags field and it must be an array."
 export const TAGS_CONTAINMENT_VALUE : boolean = true
@@ -88,17 +89,25 @@ export function with_decide({ method_id, method_ids, method_filter, method_inter
 
 // const CREATE_REQUEST_FROM_EXISTING_KEYS = [ 'origin_id', 'origin', 'amendments' ]
 
-export function create_palletes( model : ColorsModel, request : CreateRequest )
+export async function create_palletes( model : ColorsModel, request : CreateRequest )
 {
 	if ( !request ) return { msg : REQUEST_REQUIRED }
-	if ( request[ 'content' ] !== undefined ) return creators.create_new( model, request[ 'content' ] )
+
+	var output
+	if ( request[ 'content' ] !== undefined ) output = await creators.create_new( model, request[ 'content' ] )
 	else if ( request[ 'origin' ] !== undefined && request[ 'origin_id' ] !== undefined && request[ 'amendments' ] !== undefined )
 	{
 		const origin = create_model_for_user( request[ 'origin' ] )
-		return creators.create_new_from_existing_by_id( origin, model, request[ 'origin_id' ], request[ 'amendments' ] )
+		output = await creators.create_new_from_existing_by_id( origin, model, request[ 'origin_id' ], request[ 'amendments' ] )
 	}
 	else
-	return
+	{
+		output = { msg : INSUFFICIENT_FIELDS }
+	}
+
+	console.log( output )
+	return output
+
 }
 
 

@@ -21,7 +21,9 @@ describe(
   "Testing some endpoints.",
   function(){
     
-    Array.from( Array( 1 ).keys() ).map( index => it( "Test posting.", async () => {
+    const N_TESTS = 3
+
+    Array.from( Array( N_TESTS ).keys() ).map( index => it( "Test posting.", async () => {
       const content = create_dummy_from_integer( index ) 
       const result = await request( app )
         .post( '/tests/create' )
@@ -30,8 +32,17 @@ describe(
         .send(
           { content : content }
         )
-      console.log( result.body )
+
+      expect( result.type ).toEqual( 'application/json' )
       expect( result.statusCode ).toBe( 200 )
+      expect( result.body ).toEqual(
+        expect.objectContaining( 
+          { 
+            metadata : expect.objectContaining( content.metadata )
+          }
+        )
+      )
+
     }))
 
 
