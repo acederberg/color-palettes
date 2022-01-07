@@ -9,22 +9,22 @@ export {
 	ColorsSafe 
 } from './types'
 
-
 export { 
 	default as queries
 } from './queries'
 
-
 export { colors_schema } from './schemas'
 
-
 export { 
-	with_exec,
-	with_update,
-	with_delete,
+	link_as_varients,
 	default as static_methods 
 } from './static'
 
+export {
+	with_exec,
+	with_update,
+	with_delete,
+} from './decorators'
 
 export { create_model_for_user } from './models'
 

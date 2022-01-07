@@ -1,5 +1,6 @@
 import { ColorsSafe, MetadataSafe, Msg, ObjectId } from './types'
 
+
 function create_msg( msg : string ) : Msg
 {
 	return { msg : [ msg ] }
@@ -7,6 +8,8 @@ function create_msg( msg : string ) : Msg
 
 
 const alphas = /^[A-Za-z0-9 ]*$/
+type strings = string[] | undefined 
+type ObjectIds = ObjectId[] | [] | undefined
 
 
 export const PARAMS = {
@@ -57,20 +60,11 @@ export function validate_colors( colors : Object ) : boolean | Msg
 	// Check the colors keys and values using regex and length.
 	
 	const errs = Object.keys( colors ).map( key => {
+
 			const value = colors[ key ]		
 			const key_passes_regex = PARAMS.colors.key_regex.test( key ) 
 			const key_has_legal_length = ( PARAMS.colors.max_key_length > key.length )
 			const value_passes_regex = PARAMS.colors.value_regex.test( value )
-
-			/*console.log({ 
-				key, 
-				value, 
-				key_passes_regex, 
-				key_regex : PARAMS.colors.key_regex, 
-				key_has_legal_length, 
-				value_regex : PARAMS.colors.value_regex, 
-				value_passes_regex : PARAMS.colors.value_regex.test( value ) 
-			})*/
 
 			if ( key_passes_regex && key_has_legal_length && value_passes_regex ){ 
 				return true
@@ -88,6 +82,7 @@ export function validate_colors( colors : Object ) : boolean | Msg
 	return ( filtered.length > 0 ) ? { msg : filtered } : true
 }
 
+
 function validate_string( key, value )
 {
 	const that = PARAMS[ key ]
@@ -103,16 +98,19 @@ function validate_string( key, value )
 	}
 	else{ return true }
 }
+
+
 export function validate_name( name : string | undefined ) : boolean | Msg
 {
 	return validate_string( 'name', name )
 }
+
+
 export function validate_description( description : string | undefined ) : boolean | Msg
 {
 	return validate_string( 'description', description )
 }
-type strings = string[] | undefined 
-type ObjectIds = ObjectId[] | [] | undefined
+
 
 export function validate_tags( tags : strings ) : boolean | Msg
 {
@@ -126,12 +124,15 @@ export function validate_tags( tags : strings ) : boolean | Msg
 	}
 	return true
 }
+
+
 export function validate_varients( varients : ObjectIds )
 {
 	if ( !varients ) return true
 	if ( varients.length > PARAMS.varients.max_length ) { return PARAMS.varients.illegal_length( varients ) }
 	return true
 }
+
 
 export function validate_metadata( metadata : MetadataSafe ) : boolean | Msg
 {
@@ -148,6 +149,7 @@ export function validate_metadata( metadata : MetadataSafe ) : boolean | Msg
 	return true
 }
 
+
 export default function validate_input( raw : ColorsSafe ) : boolean | Msg
 {
 	let result = validate_metadata( raw.metadata )
@@ -155,5 +157,4 @@ export default function validate_input( raw : ColorsSafe ) : boolean | Msg
 	result = validate_colors( raw.colors )
 	if ( result !== true ) return result
 	return true
-
 }
