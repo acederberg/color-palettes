@@ -1,11 +1,10 @@
 import { static_methods } from '../../src/models/'
 import { 
-  parse_tags, read_palletes, update_palletes, delete_palletes, 
+  delete_palletes, no_undefined_fields, parse_tags, read_palletes, update_palletes, 
   Request,
   TAGS_CONTAINMENT_VALUE, TAGS_REQUIRES_ITEMS  
 } from '../../src/controllers'
-import { no_undefined_fields } from '../../src/controllers/static'
-import { cleanUp, create_data, tests, setUp, TAGS } from '../base'
+import { cleanUp, setUp, create_data, tests, TAGS } from '../base'
 
 beforeAll( setUp )
 afterAll( cleanUp )
