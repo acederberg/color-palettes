@@ -50,3 +50,12 @@ export interface Msg
 {
 	msg : string | string[]
 }
+
+
+export interface LinkRequest
+{
+	origin : string
+	origin_id : string
+	target : string
+	target_id : string
+}

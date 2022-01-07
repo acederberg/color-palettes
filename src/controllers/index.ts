@@ -22,6 +22,7 @@ export {
 	read_palletes, 
 	update_palletes, 
 	delete_palletes, 
+	link_palletes,
 } from './static'
 
 export {

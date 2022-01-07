@@ -1,10 +1,25 @@
+import mongoose from 'mongoose'
 import { with_decide } from './decorators'
-import { create_model_for_user, static_methods, ColorsModel } from '../models'
-import { create_request_insufficient_fields, no_filter, no_tags, no_undefined_fields, REQUEST_REQUIRED } from './msg'
-import { CreateRequest } from './types'
+import { create_model_for_user, static_methods, link_as_varients, ColorsModel } from '../models'
+import { create_request_insufficient_fields, link_request_insufficient_fields, no_filter, no_tags, no_undefined_fields, REQUEST_REQUIRED } from './msg'
+import { CreateRequest, LinkRequest } from './types'
 
 
 const { creators, readers, deleters, updaters } = static_methods
+
+
+export async function link_palletes( request : LinkRequest )
+{
+	if ( !request.origin || !request.origin_id ) link_request_insufficient_fields( true )
+	else if ( !request.target || ! request.target_id ) link_request_insufficient_fields( false )
+
+	link_as_varients(
+		create_model_for_user( request.origin ),
+		create_model_for_user( request.target ),
+		new mongoose.Types.ObjectId( request.origin_id ),
+		new mongoose.Types.ObjectId( request.target_id )
+	)
+}
 
 
 export async function create_palletes( model : ColorsModel, request : CreateRequest )

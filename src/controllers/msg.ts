@@ -4,6 +4,8 @@ import { Msg, CreateRequest } from './types'
 
 // Messages 
 
+const ORIGIN = 'origin'
+const TARGET = 'target'
 export const CREATE_REQUEST_FROM_EXISTING_KEYS = [ 'origin_id', 'origin', 'amendments' ]
 export const FIELDS = [ 'id', 'ids', 'filter', 'tags' ]
 export const INSUFFICIENT_FIELDS = "Insufficient fields."
@@ -33,6 +35,7 @@ export const no_undefined_fields = ( model, request ) => {
   }
 }
 
+export const link_request_insufficient_fields = ( is_origin ) => `${INSUFFICIENT_FIELDS} ${ is_origin ? ORIGIN : TARGET } is not completely specified.`
 
 
 // Other functions 
