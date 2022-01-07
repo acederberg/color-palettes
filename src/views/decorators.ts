@@ -1,47 +1,12 @@
 import { Express } from 'express'
 
-import { Request, Tags } from '../controllers'
+import { parse_uri_query, parse_out_args } from './parsers'
+import { Request } from '../controllers'
 import { create_model_for_user } from '../models'
 
 
 const REQUIRES_BODY = "Requests made to this endpoint require a 'JSON' body."	
-const DELIMETER = ','
 
-
-// PARSERS and ERROR HANDLING
-
-export function parse_uri_query( params : any, queries : any ) : Request
-{
-	// For `GET` requests.
-	//
-	// Existing Parameters :
-	// - `collection_name` -- This will be used later.
-	//
-	// Additional Parameters :
-	// - `_id` -- A string for an objectId_.
-	// - `_ids` -- Comma separed following the above format.
-	// - `tags` -- A comma separated string of tags.
-	// - `containment` -- Determines if a all or a few of the tags
-
-	const id : string = queries?.id
-	const ids : string[] = queries?.ids?.split( DELIMETER )
-	const tags : Tags = {
-		items : queries?.tags?.split( DELIMETER ),
-		containment : queries?.containment
-	}
-	const varients : string[] = queries?.varients
-	
-	const request_ : Request = {
-		collection : '',
-		id : id,
-		ids : ids,
-		tags : !tags.items ? undefined : tags,
-		varients : varients
-	}
-	return request_
-
-}
-				
 
 export function create_error_msg( result, err )
 {
@@ -58,7 +23,11 @@ export function create_error_msg( result, err )
 
 export function with_route( app : Express, http_method : string, route : string, method : Function, no_json : boolean = false )
 {
-	// console.log( http_method, route, app[ 'get' ] )
+	// http_method : some HTTP method.
+	// route : uri to attach method to.
+	// method : Some method like `method( collection : String, ...args, request : Request | CreateRequest )`. Usually decorated by 'with_decide'.
+	// no_json : When true, then endpoint should not return json.
+
 	const get_json = no_json ? ( ( request ) => {} ) : ( ( request ) => request.body )
 
 	return app[ http_method ](
@@ -67,7 +36,7 @@ export function with_route( app : Express, http_method : string, route : string,
 
 			// Try to execute method. If a collection_name is included in the parameters, 
 			// then make a model out of it.
-			
+
 			if ( !no_json && !request.body ) 
 			{
 			
@@ -79,11 +48,14 @@ export function with_route( app : Express, http_method : string, route : string,
 			try{
 
 				const collection = request.params[ 'collection_name' ]
+
 				const result_ = await method( 
 					collection ? create_model_for_user( collection ) : null,
-					get_json( request )
+					...parse_out_args( get_json( request ) )
 				)
+
 				if ( !no_json && result_[ 'msg' ] ) result.status( 400 )
+
  				result.json( result_ )
 
 			}
