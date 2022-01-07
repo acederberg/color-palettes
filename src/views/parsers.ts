@@ -22,7 +22,7 @@ export function parse_uri_query( params : any, queries : any ) : Request
   const ids : string[] = queries?.ids?.split( DELIMETER )
   const tags : Tags = {
     items : queries?.tags?.split( DELIMETER ),
-    containment : queries?.containment
+    containment : queries?.containment && /true/i.test( queries.containment )
   }
   const varients : string[] = queries?.varients
 
@@ -40,7 +40,8 @@ export function parse_uri_query( params : any, queries : any ) : Request
 
 export function parse_out_args( request_body )
 {
-  if ( !request_body || !request_body[ AMENDMENTS ] ) return [ request_body ]
+  if ( !request_body ) return []
+  else if ( !request_body[ AMENDMENTS ] ) return [ request_body ]
 
 	// Could mutate in place, but side effects aren't in line with current design.
 	const result = { ...request_body }
@@ -49,8 +50,8 @@ export function parse_out_args( request_body )
 	// Unpacked into decorated methods in 'with_route'
 	// Thus arguement order is essential
 	return [ 
-		request_body[ AMENDMENTS ],
     result,
+		request_body[ AMENDMENTS ],
 	].filter( Boolean )
 
 }
