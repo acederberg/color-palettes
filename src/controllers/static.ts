@@ -1,41 +1,7 @@
-import { CreateRequest, Request, RequestParsed } from './types'
+import { CreateRequest, Request } from './types'
 import { create_model_for_user, static_methods, ColorsModel } from '../models'
-import {
-	create_request_insufficient_fields, no_filter, no_tags, no_undefined_fields, tags_fields_undefined,
-	REQUEST_REQUIRED, TAGS_CONTAINMENT_VALUE, TAGS_REQUIRES_ITEMS
-} from './msg'
-
-
-
-// PARSERS
-
-export function parse_tags( request : Request ) : RequestParsed
-{
-	// Only called by decide when tags take precedence.
-	// Functional parser.
-	console.log( '@parse_tags', request )
-	const raw_tags : Object = { ...request.tags } 
-	const keys = Object.keys( raw_tags )
-	const out : any = { ...request }
-
-	if ( keys.includes( '0' ) )
-	{
-		out[ 'tags' ] = {
-			items : request.tags,
-			containment : TAGS_CONTAINMENT_VALUE
-		}
-	}
-	else if ( keys.includes( 'items' ) )
-	{
-		if ( !keys.includes( 'containment' ) ){
-			out[ 'tags' ][ 'containment' ] = TAGS_CONTAINMENT_VALUE
-		}
-	}
-	else throw Error( TAGS_REQUIRES_ITEMS )
-
-	return out
-
-}
+import { create_request_insufficient_fields, no_filter, no_tags, no_undefined_fields, tags_fields_undefined, REQUEST_REQUIRED } from './msg'
+import { parse_tags } from './parsers'
 
 
 

@@ -11,7 +11,6 @@ export const NO_FILTER = "Filtering is not supported."
 export const NO_TAGS = "Tags are not supported."
 export const NO_UNDEFINED_FIELDS : string = `At least one field is required.`
 export const REQUEST_REQUIRED : string = "A request is required."
-export const TAGS_CONTAINMENT_VALUE : boolean = true
 export const TAGS_FIELDS_UNDEFINED : string = "All tags fields are undefined. Did you mean to add a uri query?"
 export const TAGS_REQUIRES_ITEMS = "Request including tags as an object must include a tags field and it must be an array."
 
@@ -19,23 +18,20 @@ export const TAGS_REQUIRES_ITEMS = "Request including tags as an object must inc
 
 // Message functions 
 
-export const create_request_insufficient_fields = ( model, request ) => {
-  return {
-    msg : INSUFFICIENT_FIELDS + ` Missing the following mutually necessary fields ${ find_missing_fields( request, CREATE_REQUEST_FROM_EXISTING_KEYS ).join(',') } or the mutually exclusive 'content' field.`
-  }
-}
-
-
-export const no_undefined_fields = ( model, request ) => {
-  return {
-    msg : NO_UNDEFINED_FIELDS + find_missing_fields( request, FIELDS )
-  }
-}
-
-
 export const no_filter = msg( NO_FILTER )
 export const no_tags = msg( NO_TAGS )
 export const tags_fields_undefined = msg( TAGS_FIELDS_UNDEFINED )
+export const create_request_insufficient_fields = ( model, request ) => {
+  return {
+    msg : INSUFFICIENT_FIELDS + ` Missing the following mutually necessary fields ${ find_missing_fields( request, CREATE_REQUEST_FROM_EXISTING_KEYS ).join(', ') } or the mutually exclusive 'content' field.`
+  }
+}
+
+export const no_undefined_fields = ( model, request ) => {
+  return {
+    msg : NO_UNDEFINED_FIELDS + ' The following fields may be used: ' + find_missing_fields( request, FIELDS ).join( ' ,' )
+  }
+}
 
 
 
