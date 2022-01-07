@@ -1,8 +1,8 @@
 import { Express } from 'express'
 
-import { parse_uri_query, parse_out_args } from './parsers'
 import { Request } from '../controllers'
 import { create_model_for_user } from '../models'
+import { parse_uri_query, parse_out_args } from './parsers'
 
 
 const REQUIRES_BODY = "Requests made to this endpoint require a 'JSON' body."	
@@ -10,7 +10,6 @@ const REQUIRES_BODY = "Requests made to this endpoint require a 'JSON' body."
 
 export function create_error_msg( result, err )
 {
-	console.log( err )
 	result.status( 500 )
 	return result.json({ 
 		msg : ( err as Error ).message

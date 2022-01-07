@@ -1,5 +1,5 @@
-import {  Msg, CreateRequest } from './types'
 import { ColorsModel } from '../models'
+import { Msg, CreateRequest } from './types'
 
 
 // Messages 
