@@ -1,6 +1,6 @@
 import request from 'supertest'
 
-import { create_dummy_from_integer } from '../base'
+import { create_dummy_from_integer, cleanUp, TAGS } from '../base'
 
 // import { URI_CREATE/*, URI_READ, URI_UPDATE, URI_DELETE */} from '../../src/views'
 import { default as create_app } from '../../src/app'
@@ -14,6 +14,8 @@ beforeAll( async () => {
 
 })
 
+
+afterAll( cleanUp )
 
 
 describe(
@@ -85,7 +87,64 @@ describe(
         
     })
 
+
+    it( "Testing a parameterized GET with the id parameter.", async () => {
+      
+      const result = await request( app )
+        .get( `/tests/read?id=${IDS[0]}` )
+        .set( 'Accept', /json/ )
+        .set( 'Content-type', 'application/json' )
+        .send()
+
+      expect( result.statusCode ).toBe( 200 )
+      expect( result.body.length ).toBe( 1 )
+      expect( result?.body[ 0 ]?._id ).toBe( IDS[ 0 ] )
+
+    })
+
    
+    it( "Testing a parameterized GET with the ids parameter.", async () => {
+
+      const M = 3
+      expect( M ).toBeLessThanOrEqual( N_TESTS )
+
+      const result = await request( app )
+        .get( `/tests/read?ids=${ IDS.slice( 0, M ).join( ',' ) }` )
+        .set( 'Accept', /json/ )
+        .set( 'Content-type', 'application/json' )
+        .send()
+
+      expect( result.statusCode ).toBe( 200 )
+      expect( result.body.length ).toBe( M )
+      expect( 
+        result.body.map(
+          item => item._id
+        )
+      ).toEqual( 
+        expect.arrayContaining(
+          IDS.slice( 0, M )
+        )
+      )
+
+    })
+    
+
+    it( "Testing a parameterized GET with the tags parameter.", async () => {
+
+      const M = 3
+      expect( M ).toBeLessThanOrEqual( TAGS.length )
+
+      const result = await request( app )
+        .get( `/tests/read?tags=${ TAGS.slice( 0, M ).join( ',' ) }?containment=true` )
+        .set( 'Accept', /json/ )
+        .set( 'Content-type', 'application/json' )
+        .send()
+
+      expect( result.statusCode ).toBe( 200 )
+      expect( result.body.length )
+
+    })
+
     it( "Reading using a json post request.", async () => {
       
       const result = await request( app )
