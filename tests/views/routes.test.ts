@@ -161,13 +161,12 @@ describe(
     })
     
 
-
     it( "Reading with an empty request is bad.", async () => {
     
       const result = await request( app )
         .post( '/tests/read' )
         .set( 'Accept', /json/ )
-        .set( 'Content-type', 'application/json' )
+        .set( 'Content-Type', 'application/json' )
         .send({})
 
       console.log( result.body )
@@ -175,6 +174,27 @@ describe(
 
     })
 
+    
+    it( "Updating an entry...", async () => {
+
+      const result = await request( app )
+        .put( '/tests/update' )
+        .set( 'Accept', /json/ )
+        .set( 'Content-Type', 'application/json' )
+        .send({
+          id : IDS[ 0 ],
+          updates : {
+            'metadata.name' : 'UPDATED'
+          }
+        })
+      
+      console.log( JSON.stringify( result.body, null, 1 ) )
+      expect( result.statusCode ).toBe( 200 )
+      expect( result.body.length ).toBe( 1 )
+      expect( result?.body[ 0 ]?.metadata.name ).toBe( 'UPDATED' )
+
+    })
+    
 
     it( "Deleting the above data in 'more_tests'.", async () => {
 
