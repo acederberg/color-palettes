@@ -11,10 +11,10 @@ export const URI_DELETE = '/:collection_name/delete'
 
 export default function create_routes( app : Express )
 {
-	with_route( app, 'post', URI_CREATE, create_palletes )
-	with_route( app, 'post', URI_READ, read_palletes )
-	with_route( app, 'put', URI_UPDATE, update_palletes )
-	with_route( app, 'delete', URI_DELETE, delete_palletes )
+	with_route( app, 'post', 		URI_CREATE, 	create_palletes )
+	with_route( app, 'post', 		URI_READ, 		read_palletes 	)
+	with_route( app, 'put', 		URI_UPDATE, 	update_palletes )
+	with_route( app, 'delete', 	URI_DELETE, 	delete_palletes )
 	with_parameterized_route( app, 'get', URI_READ, read_palletes )
 }
 

@@ -23,7 +23,6 @@ export function parse_uri_query( params : any, queries : any ) : Request
 	// - `tags` -- A comma separated string of tags.
 	// - `containment` -- Determines if a all or a few of the tags
 
-	console.log( params, queries, DELIMETER )
 	const id : string = queries?.id
 	const ids : string[] = queries?.ids?.split( DELIMETER )
 	const tags : Tags = {
@@ -98,7 +97,7 @@ export function with_route( app : Express, http_method : string, route : string,
 
 export function with_parameterized_route( app : Express, http_method : string, route : string, method : Function )
 {
-
+	// Uses default parsing.
 	return app[ http_method ](
 		route,
 		async ( request, result ) => {

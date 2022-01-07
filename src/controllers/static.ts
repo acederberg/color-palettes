@@ -25,11 +25,13 @@ const create_request_insufficient_fields = ( model, request ) => {
 		msg : INSUFFICIENT_FIELDS + ` Missing the following mutually necessary fields ${ find_missing_fields( request, CREATE_REQUEST_FROM_EXISTING_KEYS ).join(',') } or the mutually exclusive 'content' field.` 
 	}
 }
+
 export const no_undefined_fields = ( model, request ) => {
 	return {
 		msg : NO_UNDEFINED_FIELDS + find_missing_fields( request, FIELDS )
 	}
 }
+
 const no_filter = msg( NO_FILTER )
 const no_tags = msg( NO_TAGS )
 const tags_fields_undefined = msg( TAGS_FIELDS_UNDEFINED )
@@ -115,11 +117,14 @@ export function with_decide({ method_id, method_ids, method_filter, method_inter
 		else if ( request.tags !== undefined )
 		{
 			const parsed = parse_tags( request )
-			console.log( '@with_decide', parsed )
-			if ( !parsed.tags || !parsed.tags.items || !parsed.tags.containment ) return tags_fields_undefined()
-			return parsed.tags?.containment 
-				? method_containing_tags( model, ...args, request.tags )
-				: method_intersecting_tags( model, ...args, request.tags )
+			if ( !parsed.tags || !parsed?.tags.items )
+			{
+				return tags_fields_undefined()
+			}
+			const result = parsed.tags.containment 
+				? method_containing_tags( model, ...args, parsed.tags.items )
+				: method_intersecting_tags( model, ...args, parsed.tags.items )
+			return result
 		}
 		else if ( request.varients !== undefined )
 		{
