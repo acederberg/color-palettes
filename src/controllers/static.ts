@@ -1,7 +1,7 @@
-import mongoose from 'mongoose'
 import { with_decide } from './decorators'
 import { create_model_for_user, static_methods, link_as_varients, ColorsModel } from '../models'
 import { create_request_insufficient_fields, link_request_insufficient_fields, no_filter, no_tags, no_undefined_fields, REQUEST_REQUIRED } from './msg'
+import { parse_link_request_to_args } from './parsers'
 import { CreateRequest, LinkRequest } from './types'
 
 
@@ -13,14 +13,9 @@ export async function link_palletes( request : LinkRequest )
 	console.log( '@link_palletes', JSON.stringify( request, null, 1 ) )
 
 	if ( !request.origin || !request.origin_id ) return link_request_insufficient_fields( true )
-	else if ( !request.target || ! request.target_id ) return link_request_insufficient_fields( false )
+	else if ( !request.target_id ) return link_request_insufficient_fields( false )
 
-	return link_as_varients(
-		create_model_for_user( request.origin ),
-		create_model_for_user( request.target ),
-		new mongoose.Types.ObjectId( request.origin_id ),
-		new mongoose.Types.ObjectId( request.target_id )
-	)
+	return link_as_varients( ...parse_link_request_to_args( request ) )
 }
 
 

@@ -1,5 +1,5 @@
 import { TAGS_REQUIRES_ITEMS } from './msg'
-import { Request, RequestParsed } from './types'
+import { LinkRequest, Request, RequestParsed } from './types'
 
 
 export const TAGS_CONTAINMENT_VALUE : boolean = true
@@ -35,4 +35,18 @@ export function parse_tags( request : Request ) : RequestParsed
 }
 
 
+import mongoose from 'mongoose'
+import { create_model_for_user, ColorsModel, ObjectId } from '../models'
 
+
+export function parse_link_request_to_args( request : LinkRequest ) : [ ColorsModel, ColorsModel, ObjectId, ObjectId ]
+{
+  // If only origin is specified, the the target is assumed to be the origin.
+  const target = request.target || request.origin
+  return [
+    create_model_for_user( request.origin ),
+    create_model_for_user( target ),
+    new mongoose.Types.ObjectId( request.origin_id ),
+    new mongoose.Types.ObjectId( request.target_id )
+  ]
+}
