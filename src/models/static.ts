@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 import { with_update, with_delete, with_exec } from './decorators'
 import queries from './queries'
 import { ColorsSafe, ColorsModel, ColorsAndId, Msg, ObjectId, VarientsMethods } from './types'
-//import { create_model_for_user } from './models'
+import { create_model_for_user } from './models'
 import validate from './validate'
 
 
@@ -22,11 +22,8 @@ const CREATE_VARIENTS_MODIFIER = ( method : VarientsMethods, origin : ColorsMode
 	}
 	return modifier
 }
-/*
-export const CREATE_VARIENTS_PUSHER = ( origin : ColorsModel, origin_id : ObjectId ) => CREATE_VARIENTS_MODIFIER( '$push', origin, origin_id )
-export const CREATE_VARIENTS_PULLER = ( origin : ColorsModel, origin_id : ObjectId ) => CREATE_VARIENTS_MODIFIER( '$pull', origin, origin_id ) 
-*/
- 
+
+
 async function create_new( model : ColorsModel, raw : ColorsSafe ) : Promise<Msg | void | boolean | ColorsAndId >
 {
 	// Turn a raw request into a database object.
@@ -122,18 +119,39 @@ export async function link_as_varients( method : VarientsMethods, origin : Color
 }
 
 
-/*
+
 export async function find_varients( model : ColorsModel, _id : ObjectId )
 {
-	const result = await model.findById({ _id : _id }).exec()
-	if ( !result ) return { msg : VARIENT_ALREADY_EXISTS }
 
-	return result.metadata.varients.map( 
-		varient => get_model_from_user( varient.origin )
-			.findById( origin_id ).remove()
-	)
+	console.log( '@find_varients', JSON.stringify({ collection : model.modelName, _id }) )
+
+	const result = await model.findById({ _id : _id }).exec()
+	if ( !result?.metadata?.varients ) return { msg : VARIENT_ALREADY_EXISTS }
+	else
+	{
+		console.log( '@find_varients', JSON.stringify( result ) )
+
+		let varients : any[] = [] ;
+		let _result : any ;
+
+		// Must use a for loop to let promises resolve before returning
+		for ( const varient of result.metadata.varients )
+		{
+				console.log( varient )
+
+				_result = await create_model_for_user( varient.origin )
+					.findById( varient.origin_id ).exec()
+
+				console.log( _result )
+
+				varients.push( _result )
+		}
+
+		console.log( '@find_varients', JSON.stringify( varients ) )
+
+		return varients
+	}
 }
-*/
 
 
 // DELETE METHODS ----------------------------------------------------------------------------/ 

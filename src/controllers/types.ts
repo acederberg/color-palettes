@@ -40,6 +40,12 @@ export interface CreateRequest
 }
 
 
+export interface VarientsRequest
+{
+	id : string
+}
+
+
 export interface RequestParsed extends Request
 {
 	tags ?: Tags

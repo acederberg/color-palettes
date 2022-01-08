@@ -1,5 +1,8 @@
+import mongoose from 'mongoose'
+
+import { create_model_for_user, ColorsModel, ObjectId, VarientsMethods } from '../models'
 import { TAGS_REQUIRES_ITEMS } from './msg'
-import { LinkRequest, Request, RequestParsed } from './types'
+import { LinkRequest, Request, RequestParsed, VarientsRequest } from './types'
 
 
 export const TAGS_CONTAINMENT_VALUE : boolean = true
@@ -35,10 +38,6 @@ export function parse_tags( request : Request ) : RequestParsed
 }
 
 
-import mongoose from 'mongoose'
-import { create_model_for_user, ColorsModel, ObjectId, VarientsMethods } from '../models'
-
-
 export function parse_link_request_to_args( request : LinkRequest ) : [ VarientsMethods, ColorsModel, ColorsModel, ObjectId, ObjectId ]
 {
   // If only origin is specified, the the target is assumed to be the origin.
@@ -51,4 +50,11 @@ export function parse_link_request_to_args( request : LinkRequest ) : [ Varients
     new mongoose.Types.ObjectId( request.origin_id ),
     new mongoose.Types.ObjectId( request.target_id )
   ]
+}
+
+
+export function parse_varients_request_to_args( request : VarientsRequest ) : [ ObjectId ]
+{
+  return [ new mongoose.Types.ObjectId( request.id ) ]
+
 }

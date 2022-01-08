@@ -1,8 +1,8 @@
 import { with_decide } from './decorators'
-import { create_model_for_user, static_methods, link_as_varients, ColorsModel } from '../models'
+import { create_model_for_user, static_methods, link_as_varients, find_varients as _find_varients, ColorsModel } from '../models'
 import { create_request_insufficient_fields, link_request_insufficient_fields, no_filter, no_tags, no_undefined_fields, REQUEST_REQUIRED } from './msg'
-import { parse_link_request_to_args } from './parsers'
-import { CreateRequest, LinkRequest } from './types'
+import { parse_link_request_to_args, parse_varients_request_to_args } from './parsers'
+import { CreateRequest, LinkRequest, VarientsRequest } from './types'
 
 
 const { creators, readers, deleters, updaters } = static_methods
@@ -10,12 +10,20 @@ const { creators, readers, deleters, updaters } = static_methods
 
 export async function link_palletes( request : LinkRequest )
 {
-	console.log( '@link_palletes', JSON.stringify( request, null, 1 ) )
-
 	if ( !request.origin || !request.origin_id ) return link_request_insufficient_fields( true )
 	else if ( !request.target_id ) return link_request_insufficient_fields( false )
 
 	return link_as_varients( ...parse_link_request_to_args( request ) )
+}
+
+
+export async function read_varients( model : ColorsModel, request : VarientsRequest )
+{
+	console.log( '@read_varients', JSON.stringify( request, null, 1 ) )
+
+	if ( !request.id ) return { msg : REQUEST_REQUIRED }
+
+	return _find_varients( model, ...parse_varients_request_to_args( request ) )
 }
 
 

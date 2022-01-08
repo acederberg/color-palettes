@@ -17,6 +17,7 @@ export {
 export { colors_schema } from './schemas'
 
 export { 
+	find_varients,
 	link_as_varients,
 	default as static_methods 
 } from './static'

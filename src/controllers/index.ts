@@ -23,11 +23,13 @@ export {
 	update_palletes, 
 	delete_palletes, 
 	link_palletes,
+	read_varients
 } from './static'
 
 export {
 	Tags, 
 	Request, 
 	CreateRequest,
-	RequestParsed
+	RequestParsed,
+	VarientsRequest
 } from './types'
