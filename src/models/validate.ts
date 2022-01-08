@@ -1,4 +1,4 @@
-import { ColorsSafe, MetadataSafe, Msg, ObjectId } from './types'
+import { ColorsSafe, MetadataSafe, Msg, Varients } from './types'
 
 
 function create_msg( msg : string ) : Msg
@@ -9,7 +9,6 @@ function create_msg( msg : string ) : Msg
 
 const alphas = /^[A-Za-z0-9 ]*$/
 type strings = string[] | undefined 
-type ObjectIds = ObjectId[] | [] | undefined
 
 
 export const PARAMS = {
@@ -126,7 +125,7 @@ export function validate_tags( tags : strings ) : boolean | Msg
 }
 
 
-export function validate_varients( varients : ObjectIds )
+export function validate_varients( varients : Varients | undefined ) : boolean | Msg
 {
 	if ( !varients ) return true
 	if ( varients.length > PARAMS.varients.max_length ) { return PARAMS.varients.illegal_length( varients ) }

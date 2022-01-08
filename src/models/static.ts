@@ -8,10 +8,13 @@ import validate from './validate'
 
 // NB : Most of the exports are decorated functions contained in the exports section.
 export const NO_SUCH_TARGET = "The specified target does not exist."
-export const CREATE_VARIENTS_PUSHER = ( some_id ) => { 
+export const CREATE_VARIENTS_PUSHER = ( origin : ColorsModel, origin_id : ObjectId ) => { 
 	return {
 	'$push' : {
-		'metadata.varients' :	some_id
+		'metadata.varients' :	{
+			origin_id,
+			origin : origin.modelName
+		}
 	}
 }}
 
@@ -76,18 +79,20 @@ async function create_new_from_existing_by_id( origin : ColorsModel, target : Co
 // UPDATE METHODS ----------------------------------------------------------------------------/ 
 
 
+export function link_as_varient( origin : ColorsModel, target : ColorsModel, origin_id : ObjectId, target_id : ObjectId )
+{
+	return origin.findByIdAndUpdate( 
+		origin_id, 
+		CREATE_VARIENTS_PUSHER( target, target_id ) 
+	).exec()
+}
+
+
 export async function link_as_varients( origin : ColorsModel, target : ColorsModel, origin_id : ObjectId, target_id : ObjectId )
 {
-	console.log( '@link_as_varients', JSON.stringify( { origin, origin_id, target, target_id }, null, 1 ) )
-	await origin.findByIdAndUpdate( 
-		origin_id, 
-		CREATE_VARIENTS_PUSHER( target_id ) 
-	).exec()
-	
-	await target.findByIdAndUpdate( 
-		target_id, 
-		CREATE_VARIENTS_PUSHER( origin_id ) 
-	).exec()
+	console.log( '@link_as_varients', JSON.stringify( { origin : origin.modelName, target : origin.modelName, origin_id, target_id }, null, 1 ) )
+	await link_as_varient( origin, target, origin_id, target_id )
+	await link_as_varient( target, origin, target_id, origin_id )
 }
 
 
@@ -127,5 +132,6 @@ const static_methods = {
 		update_varients : with_update( queries.varients )
 	},
 }
+
 export default static_methods
 

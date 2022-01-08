@@ -1,6 +1,13 @@
 import mongoose, { Schema } from "mongoose"
 
-const metadata_schema_args = {
+
+const varient_schema = new Schema( {
+	origin_id : mongoose.Schema.Types.ObjectId,
+	origin : String
+})
+
+
+const metadata_schema = new Schema( {
 	created : {
 		type : Date, 
 		required : true
@@ -12,11 +19,12 @@ const metadata_schema_args = {
 		required : true
 	},
 	tags : [ String ],
-	varients : [ String ]//mongoose.Schema.Types.ObjectId
-}
+	varients : [ varient_schema ]
+})
+
 
 export const colors_schema = new Schema( {
 	_id : mongoose.Schema.Types.ObjectId,
 	colors : Object,
-	metadata : metadata_schema_args
-} )
+	metadata : metadata_schema
+})

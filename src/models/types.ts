@@ -7,13 +7,21 @@ export type ColorsAndId = ColorsDocument & { _id : any };
 export type Query = mongoose.Query< ColorsAndId[], ColorsAndId, {}, ColorsDocument>
 
 
+export interface Varient
+{
+	origin_id : ObjectId;
+	origin : string;
+}
+export type Varients = Varient[]
+
+
 // Shape of user submittable metadata
 export interface MetadataSafe
 {
 	description?: string;
 	name?: string;
 	tags?: string[];
-	varients?: ObjectId[] ;
+	varients?: Varients ;
 }
 
 
@@ -40,6 +48,7 @@ export interface Colors extends ColorsSafe
 	colors : Object;
 	metadata : Metadata;
 }
+
 
 // The real deal.
 // These types will have their constructors in `models`.
