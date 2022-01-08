@@ -78,6 +78,7 @@ async function create_new_from_existing_by_id( origin : ColorsModel, target : Co
 
 export async function link_as_varients( origin : ColorsModel, target : ColorsModel, origin_id : ObjectId, target_id : ObjectId )
 {
+	console.log( '@link_as_varients', JSON.stringify( { origin, origin_id, target, target_id }, null, 1 ) )
 	await origin.findByIdAndUpdate( 
 		origin_id, 
 		CREATE_VARIENTS_PUSHER( target_id ) 

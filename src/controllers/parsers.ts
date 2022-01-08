@@ -11,7 +11,6 @@ export function parse_tags( request : Request ) : RequestParsed
 {
   // Only called by decide when tags take precedence.
   // Functional parser.
-  console.log( '@parse_tags', request )
   const raw_tags : Object = { ...request.tags }
   const keys = Object.keys( raw_tags )
   const out : any = { ...request }

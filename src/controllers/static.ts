@@ -10,10 +10,12 @@ const { creators, readers, deleters, updaters } = static_methods
 
 export async function link_palletes( request : LinkRequest )
 {
-	if ( !request.origin || !request.origin_id ) link_request_insufficient_fields( true )
-	else if ( !request.target || ! request.target_id ) link_request_insufficient_fields( false )
+	console.log( '@link_palletes', JSON.stringify( request, null, 1 ) )
 
-	link_as_varients(
+	if ( !request.origin || !request.origin_id ) return link_request_insufficient_fields( true )
+	else if ( !request.target || ! request.target_id ) return link_request_insufficient_fields( false )
+
+	return link_as_varients(
 		create_model_for_user( request.origin ),
 		create_model_for_user( request.target ),
 		new mongoose.Types.ObjectId( request.origin_id ),

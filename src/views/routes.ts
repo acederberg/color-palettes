@@ -19,9 +19,9 @@ export function create_link( app : Express )
 		async ( request, result ) => {
 			try
 			{
-				await link_palletes( request.body )
+				const _result = await link_palletes( request.body )
 				result.status( 200 )
-				result.send()
+				result.send( _result )
 			}
 			catch ( err )
 			{
