@@ -8,6 +8,7 @@ import validate from './validate'
 
 // NB : Most of the exports are decorated functions contained in the exports section.
 export const NO_SUCH_TARGET = "The specified target does not exist."
+export const VARIENT_ALREADY_EXISTS = "The specified varient already exists."
 export const CREATE_VARIENTS_PUSHER = ( origin : ColorsModel, origin_id : ObjectId ) => { 
 	return {
 	'$push' : {
@@ -79,20 +80,45 @@ async function create_new_from_existing_by_id( origin : ColorsModel, target : Co
 // UPDATE METHODS ----------------------------------------------------------------------------/ 
 
 
-export function link_as_varient( origin : ColorsModel, target : ColorsModel, origin_id : ObjectId, target_id : ObjectId )
+export async function link_as_varient( origin : ColorsModel, target : ColorsModel, origin_id : ObjectId, target_id : ObjectId )
 {
-	return origin.findByIdAndUpdate( 
+	// See if a varient is already defined
+	// First find origin, if not found, return a msg
+	// If something is found, check that the varients do not contain target_id
+	const result : any = await origin.findById( origin_id )
+	
+	console.log( '@link_as_varient, result = ', result )
+	
+	if ( !result ) return { msg : NO_SUCH_TARGET }
+
+	const exists = result.metadata.varients
+		.find( varient => varient.origin_id === target_id )
+
+	console.log( '@link_as_varient, exists = ', exists )
+
+	return !exists ? origin.findByIdAndUpdate( 
 		origin_id, 
 		CREATE_VARIENTS_PUSHER( target, target_id ) 
-	).exec()
+	).exec() : { msg : VARIENT_ALREADY_EXISTS }
 }
 
 
 export async function link_as_varients( origin : ColorsModel, target : ColorsModel, origin_id : ObjectId, target_id : ObjectId )
 {
 	console.log( '@link_as_varients', JSON.stringify( { origin : origin.modelName, target : origin.modelName, origin_id, target_id }, null, 1 ) )
-	await link_as_varient( origin, target, origin_id, target_id )
-	await link_as_varient( target, origin, target_id, origin_id )
+
+	// First linkage
+	let result = await link_as_varient( origin, target, origin_id, target_id )
+	console.log( '@link_as_varients', JSON.stringify( result ) )
+	console.log( !result || result['msg' ] )
+	if ( !result || result[ 'msg' ] ) return result
+
+	// Second linkage
+	result = await link_as_varient( target, origin, target_id, origin_id )
+	console.log( '@link_as_varients', JSON.stringify( result ) )
+	if ( !result || result[ 'msg' ] !== null ) return result
+
+	return 
 }
 
 
