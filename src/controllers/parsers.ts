@@ -36,14 +36,16 @@ export function parse_tags( request : Request ) : RequestParsed
 
 
 import mongoose from 'mongoose'
-import { create_model_for_user, ColorsModel, ObjectId } from '../models'
+import { create_model_for_user, ColorsModel, ObjectId, VarientsMethods } from '../models'
 
 
-export function parse_link_request_to_args( request : LinkRequest ) : [ ColorsModel, ColorsModel, ObjectId, ObjectId ]
+export function parse_link_request_to_args( request : LinkRequest ) : [ VarientsMethods, ColorsModel, ColorsModel, ObjectId, ObjectId ]
 {
   // If only origin is specified, the the target is assumed to be the origin.
   const target = request.target || request.origin
+  const method : VarientsMethods = request.method || '$push'
   return [
+    method,
     create_model_for_user( request.origin ),
     create_model_for_user( target ),
     new mongoose.Types.ObjectId( request.origin_id ),

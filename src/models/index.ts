@@ -1,4 +1,5 @@
 export { 
+	VarientsMethods,
 	ObjectId,
 	MetadataSafe,
 	Metadata, 

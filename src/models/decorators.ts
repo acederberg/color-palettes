@@ -48,7 +48,9 @@ export function with_delete( method : Function ) : Function
     // Find the documents in the collection corresponding to `model`, save them for return, and `delete` them.
     return (
       async result => {
+        // Find result to return.
         const results = await method( model, ...args ).exec()
+        // Delete.
         await method( model, ...args ).remove().exec()
         return results
       }

@@ -1,4 +1,4 @@
-import { ColorsSafe } from '../models'
+import { ColorsSafe, VarientsMethods } from '../models'
 
 
 export type StringArray = string[]
@@ -54,8 +54,9 @@ export interface Msg
 
 export interface LinkRequest
 {
+	method : VarientsMethods
 	origin : string
 	origin_id : string
-	target : string
+	target ?: string
 	target_id : string
 }

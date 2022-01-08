@@ -2,23 +2,30 @@ import mongoose from 'mongoose'
 
 import { with_update, with_delete, with_exec } from './decorators'
 import queries from './queries'
-import { ColorsSafe, ColorsModel, ColorsAndId, Msg, ObjectId } from './types'
+import { ColorsSafe, ColorsModel, ColorsAndId, Msg, ObjectId, VarientsMethods } from './types'
+//import { create_model_for_user } from './models'
 import validate from './validate'
 
 
 // NB : Most of the exports are decorated functions contained in the exports section.
 export const NO_SUCH_TARGET = "The specified target does not exist."
 export const VARIENT_ALREADY_EXISTS = "The specified varient already exists."
-export const CREATE_VARIENTS_PUSHER = ( origin : ColorsModel, origin_id : ObjectId ) => { 
-	return {
-	'$push' : {
+
+// Varients pushers and pullers
+const CREATE_VARIENTS_MODIFIER = ( method : VarientsMethods, origin : ColorsModel, origin_id : ObjectId ) => { 
+	const modifier = {}
+	modifier[ method ] = {
 		'metadata.varients' :	{
 			origin_id,
 			origin : origin.modelName
 		}
 	}
-}}
-
+	return modifier
+}
+/*
+export const CREATE_VARIENTS_PUSHER = ( origin : ColorsModel, origin_id : ObjectId ) => CREATE_VARIENTS_MODIFIER( '$push', origin, origin_id )
+export const CREATE_VARIENTS_PULLER = ( origin : ColorsModel, origin_id : ObjectId ) => CREATE_VARIENTS_MODIFIER( '$pull', origin, origin_id ) 
+*/
  
 async function create_new( model : ColorsModel, raw : ColorsSafe ) : Promise<Msg | void | boolean | ColorsAndId >
 {
@@ -66,6 +73,7 @@ async function create_new_from_existing_by_id( origin : ColorsModel, target : Co
 	// UPDATES
 	// Update the varients sections.
 	await link_as_varients( 
+		'$push',
 		origin, target, 
 		original[ '_id' ], initialized[ '_id' ]
 	)
@@ -80,7 +88,7 @@ async function create_new_from_existing_by_id( origin : ColorsModel, target : Co
 // UPDATE METHODS ----------------------------------------------------------------------------/ 
 
 
-export async function link_as_varient( origin : ColorsModel, target : ColorsModel, origin_id : ObjectId, target_id : ObjectId )
+export async function link_as_varient( method : VarientsMethods , origin : ColorsModel, target : ColorsModel, origin_id : ObjectId, target_id : ObjectId )
 {
 	// See if a varient is already defined
 	// First find origin, if not found, return a msg
@@ -94,24 +102,38 @@ export async function link_as_varient( origin : ColorsModel, target : ColorsMode
 
 	return !exists ? origin.findByIdAndUpdate( 
 		origin_id, 
-		CREATE_VARIENTS_PUSHER( target, target_id ) 
+		CREATE_VARIENTS_MODIFIER( method, target, target_id ) 
 	).exec() : { msg : VARIENT_ALREADY_EXISTS }
 }
 
 
-export async function link_as_varients( origin : ColorsModel, target : ColorsModel, origin_id : ObjectId, target_id : ObjectId )
+export async function link_as_varients( method : VarientsMethods, origin : ColorsModel, target : ColorsModel, origin_id : ObjectId, target_id : ObjectId )
 {
 
 	// First linkage
-	let result = await link_as_varient( origin, target, origin_id, target_id )
+	let result = await link_as_varient( method, origin, target, origin_id, target_id )
 	if ( !result || result[ 'msg' ] ) return result
 
 	// Second linkage
-	result = await link_as_varient( target, origin, target_id, origin_id )
+	result = await link_as_varient( method, target, origin, target_id, origin_id )
 	if ( !result || result[ 'msg' ]  ) return result
 
 	return 
 }
+
+
+/*
+export async function find_varients( model : ColorsModel, _id : ObjectId )
+{
+	const result = await model.findById({ _id : _id }).exec()
+	if ( !result ) return { msg : VARIENT_ALREADY_EXISTS }
+
+	return result.metadata.varients.map( 
+		varient => get_model_from_user( varient.origin )
+			.findById( origin_id ).remove()
+	)
+}
+*/
 
 
 // DELETE METHODS ----------------------------------------------------------------------------/ 

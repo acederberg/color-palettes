@@ -5,6 +5,7 @@ import mongoose from 'mongoose'
 export type ObjectId = mongoose.Types.ObjectId;
 export type ColorsAndId = ColorsDocument & { _id : any };
 export type Query = mongoose.Query< ColorsAndId[], ColorsAndId, {}, ColorsDocument>
+export type VarientsMethods = '$push' | '$pull'
 
 
 export interface Varient
