@@ -83,7 +83,14 @@ describe(
           colors : new_colors
         })
       )
-      expect( result.body?.metadata?.varients ).toEqual([ the_id ])
+      expect( result.body?.metadata?.varients?.length ).toEqual( 1 )
+      expect( result.body?.metadata?.varients )
+        .toEqual([ 
+          expect.objectContaining({
+            origin_id : the_id,
+            origin : 'tests' 
+          })
+        ])
         
     })
 
@@ -156,7 +163,12 @@ describe(
       expect( result.body.length ).toBe( 1 )
       console.log( result.body[ 0 ] )
       expect( result.statusCode ).toBe( 200 )
-      expect( result?.body[ 0 ]?.metadata.varients ).toEqual([ the_new_id ])
+      expect( result?.body[ 0 ]?.metadata.varients ).toEqual([
+        expect.objectContaining({
+          origin_id : the_new_id,
+          origin : 'tests'
+        })
+      ])
     
     })
     

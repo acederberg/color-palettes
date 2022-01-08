@@ -134,10 +134,13 @@ describe(
 			const varients = 'a'.repeat( PARAMS.varients.max_length + 1 ).split('a').map( value => new mongoose.Types.ObjectId() )
 			const colors : ColorsSafe = create_dummy( { varients : varients } )
 			return static_methods.creators.create_new( tests, colors )
-				.then( result => expect( result ).toEqual( PARAMS.varients.illegal_length( varients ) ) )
+				.then( 
+					result => expect( result )
+					.toEqual( PARAMS.varients.illegal_length( varients ) ) 
+				)
 		} )
 
-
+/*
 		it( "Good data. ( An appropriate number of varients )", () => {
 			expect.assertions( 1 )
 			const varients = [ 'This is a test. Tests make your code suck less.'.substring( 0, PARAMS.varients.max_length - 1 ) ]
@@ -146,7 +149,7 @@ describe(
 				.then( result => {
 					return expect( result ).toMatchObject( colors ) } )
 		} )
-
+*/
 
 	}
 )
@@ -286,9 +289,9 @@ describe( "Testing the 'create_new_from_existing'.",
 					}
 				)
 			)
-			expect( result?.metadata?.varients ).toEqual(
-				[ the_id.toString() ]
-			)
+			expect( result?.metadata?.varients.length ).toEqual( 1 )
+			console.log( result?.metadata?.varients[ 0 ].origin_id, the_id )
+			expect( result?.metadata?.varients[ 0 ].origin_id ).toEqual( the_id )
 
 			const original : any = await static_methods.readers.read_id( tests, the_id ).then( 
 				results => {
@@ -297,9 +300,11 @@ describe( "Testing the 'create_new_from_existing'.",
 				}
 			)
 			console.log( original )
-			expect( original?.metadata?.varients ).toEqual(
-				[ result._id.toString() ]
-			)
+			expect( original?.metadata?.varients ).toEqual([ 
+				expect.objectContaining({
+					origin_id : result._id 
+				})
+			])
 
 		})
 

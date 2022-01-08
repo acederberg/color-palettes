@@ -87,14 +87,10 @@ export async function link_as_varient( origin : ColorsModel, target : ColorsMode
 	// If something is found, check that the varients do not contain target_id
 	const result : any = await origin.findById( origin_id )
 	
-	console.log( '@link_as_varient, result = ', result )
-	
 	if ( !result ) return { msg : NO_SUCH_TARGET }
 
 	const exists = result.metadata.varients
 		.find( varient => varient.origin_id === target_id )
-
-	console.log( '@link_as_varient, exists = ', exists )
 
 	return !exists ? origin.findByIdAndUpdate( 
 		origin_id, 
@@ -105,18 +101,14 @@ export async function link_as_varient( origin : ColorsModel, target : ColorsMode
 
 export async function link_as_varients( origin : ColorsModel, target : ColorsModel, origin_id : ObjectId, target_id : ObjectId )
 {
-	console.log( '@link_as_varients', JSON.stringify( { origin : origin.modelName, target : origin.modelName, origin_id, target_id }, null, 1 ) )
 
 	// First linkage
 	let result = await link_as_varient( origin, target, origin_id, target_id )
-	console.log( '@link_as_varients', JSON.stringify( result ) )
-	console.log( !result || result['msg' ] )
 	if ( !result || result[ 'msg' ] ) return result
 
 	// Second linkage
 	result = await link_as_varient( target, origin, target_id, origin_id )
-	console.log( '@link_as_varients', JSON.stringify( result ) )
-	if ( !result || result[ 'msg' ] !== null ) return result
+	if ( !result || result[ 'msg' ]  ) return result
 
 	return 
 }
