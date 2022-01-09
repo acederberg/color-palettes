@@ -19,8 +19,6 @@ export async function link_palletes( request : LinkRequest )
 
 export async function read_varients( model : ColorsModel, request : VarientsRequest )
 {
-	console.log( '@read_varients', JSON.stringify( request, null, 1 ) )
-
 	if ( !request.id ) return { msg : REQUEST_REQUIRED }
 
 	return _find_varients( model, ...parse_varients_request_to_args( request ) )

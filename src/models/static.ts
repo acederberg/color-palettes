@@ -122,32 +122,19 @@ export async function link_as_varients( method : VarientsMethods, origin : Color
 
 export async function find_varients( model : ColorsModel, _id : ObjectId )
 {
-
-	console.log( '@find_varients', JSON.stringify({ collection : model.modelName, _id }) )
-
 	const result = await model.findById({ _id : _id }).exec()
 	if ( !result?.metadata?.varients ) return { msg : VARIENT_ALREADY_EXISTS }
 	else
 	{
-		console.log( '@find_varients', JSON.stringify( result ) )
-
 		let varients : any[] = [] ;
-		let _result : any ;
 
 		// Must use a for loop to let promises resolve before returning
 		for ( const varient of result.metadata.varients )
 		{
-				console.log( varient )
-
-				_result = await create_model_for_user( varient.origin )
-					.findById( varient.origin_id ).exec()
-
-				console.log( _result )
-
-				varients.push( _result )
+			await create_model_for_user( varient.origin )
+				.findById( varient.origin_id ).exec()
+				.then( _result => varients.push( _result ) )
 		}
-
-		console.log( '@find_varients', JSON.stringify( varients ) )
 
 		return varients
 	}
