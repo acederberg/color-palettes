@@ -12,7 +12,9 @@ export const NO_SUCH_TARGET = "The specified target does not exist."
 export const VARIENT_ALREADY_EXISTS = "The specified varient already exists."
 
 // Varients pushers and pullers
-const CREATE_VARIENTS_MODIFIER = ( method : VarientsMethods, origin : ColorsModel, origin_id : ObjectId ) => { 
+export const PULL = '$pull'
+export const PUSH = '$push'
+export const CREATE_VARIENTS_MODIFIER = ( method : VarientsMethods, origin : ColorsModel, origin_id : ObjectId ) => { 
 	const modifier = {}
 	modifier[ method ] = {
 		'metadata.varients' :	{
@@ -70,7 +72,7 @@ async function create_new_from_existing_by_id( origin : ColorsModel, target : Co
 	// UPDATES
 	// Update the varients sections.
 	await link_as_varients( 
-		'$push',
+		PUSH,
 		origin, target, 
 		original[ '_id' ], initialized[ '_id' ]
 	)
@@ -110,17 +112,17 @@ export async function link_as_varients( method : VarientsMethods, origin : Color
 	// First linkage
 	let result = await link_as_varient( method, origin, target, origin_id, target_id )
 	if ( !result || result[ 'msg' ] ) return result
-
+	
 	// Second linkage
 	result = await link_as_varient( method, target, origin, target_id, origin_id )
 	if ( !result || result[ 'msg' ]  ) return result
-
+	
 	return 
 }
 
 
 
-export async function find_varients( model : ColorsModel, _id : ObjectId )
+export async function find_varients( model : ColorsModel, _id : ObjectId, callback : Function = result => result )
 {
 	const result = await model.findById({ _id : _id }).exec()
 	if ( !result?.metadata?.varients ) return { msg : VARIENT_ALREADY_EXISTS }
@@ -133,7 +135,10 @@ export async function find_varients( model : ColorsModel, _id : ObjectId )
 		{
 			await create_model_for_user( varient.origin )
 				.findById( varient.origin_id ).exec()
-				.then( _result => varients.push( _result ) )
+				.then( _result => {
+					varients.push( _result ) 
+					callback( _result )
+				})
 		}
 
 		return varients
