@@ -1,5 +1,5 @@
-//import { MetadataSafe, ColorsSafe } from '../models/types'
-import { HTTPEnum,/* Data,*/ CRUDEnum, APIRequest } from './types'
+import { Varients, MetadataSafe, ColorsSafe } from '../models/types'
+import { HTTPEnum, Data, CRUDEnum, APIRequest } from './types'
 
 
 const OPERATIONS : Object = {
@@ -9,8 +9,21 @@ const OPERATIONS : Object = {
   delete : 'DELETE'
 }
 const CREATE_URI : Function = ( collection, operation ) => `/${ collection }/${ operation }`
-const HEADERS : Object = {
+const HEADERS = {
   'Content-Type' : 'application/json'
+}
+
+
+export function getPallete( collection : string, id : string )
+{
+  return fetch(
+    `${ CREATE_URI( collection, 'read' ) }/id=${ id }`,
+    {
+      method : 'GET',
+      headers : HEADERS
+    }
+  )
+    .then( result => result.json() )
 }
 
 
@@ -52,4 +65,47 @@ export function createCRUD( collection : string, handle_err : Function )
     _update : createMakeRequest( collection, 'update', {}, handle_err ),
     _delete : createMakeRequest( collection, 'destroy', {}, handle_err )
   }
+}
+
+
+// Classes 
+export class MetadataState implements MetadataSafe
+{
+
+  constructor( readonly id : string, public description : string, public name : string, public tags : string[], public varients : Varients )
+  {  
+  }
+
+}
+
+export class ColorsState implements ColorsSafe
+{
+  constructor( readonly id : string, public colors : object, public metadata : object )
+  {
+  }
+}
+
+
+export class PalleteFetcher implements Data
+{
+  // 
+  readonly create
+  readonly read
+  readonly update
+  readonly destroy
+   
+  private state 
+
+  constructor( readonly collection : string, readonly id : string )
+  {
+    this.state = this.getState()
+    console.log( this.state )
+  }
+
+  async getState()
+  {
+    const pallete = await getPallete( this.collection, this.id )
+    return new ColorsState( pallete.id, pallete.colors, pallete.metadata )
+  }
+
 }
