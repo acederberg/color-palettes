@@ -57,29 +57,21 @@ export function with_delete( method : Function ) : Function
         // results might be a list or might just be an item
         if ( !( '0' in results ) ) results = [ results ]
 
-        console.log( model.modelName )
-
         // Get varients for each result in results. 
         // When this varient is not defined then remove
         for ( const a_result of results )
         {
-          const varients = await find_varients( 
+          await find_varients( 
             model, 
             a_result._id,
-            ( _varient ) => {
-              console.log( '@callback:_varient', JSON.stringify( _varient, null, 1 ) )
-
-              // 
-              const mod = CREATE_VARIENTS_MODIFIER( 
+            _varient => _varient.update( 
+              CREATE_VARIENTS_MODIFIER( 
                 PULL, 
                 model, 
                 a_result.id 
               )
-              console.log( '@callback:mod', mod )
-              _varient.update( mod ).exec()
-            }
+            ).exec()
           )
-          console.log( '@with_delete:varients', JSON.stringify( varients ) )
         }
 
         // Delete.
