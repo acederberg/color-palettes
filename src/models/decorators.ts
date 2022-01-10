@@ -1,3 +1,4 @@
+import { CREATE_VARIENTS_MODIFIER, PULL, find_varients } from './static'
 import { ColorsModel } from './types'
 
 
@@ -40,8 +41,6 @@ export function with_update( method : Function ) : Function
   }
 }
 
-import { CREATE_VARIENTS_MODIFIER, PULL, find_varients } from './static'
-//import { create_model_for_user } from './models'
 
 export function with_delete( method : Function ) : Function
 {
