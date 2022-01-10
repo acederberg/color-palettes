@@ -4,7 +4,7 @@
   "description": "A typescript api for a color picker",
   "main": "index.js",
   "scripts": {
-    "start": "tsc-watch --project '.'  --outDir ./dist --onSuccess 'node ./dist/src/index.js'",
+    "start": "tsc-watch --project '.'  --outDir ./dist --onSuccess 'node ./dist/src/entrypoint.js'",
     "test": "tsc-watch --onSuccess 'jest ./tests --forceExit'",
     "build": "rm -rf './dist' && tsc"
   },

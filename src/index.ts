@@ -1,7 +1,9 @@
+import { Express } from 'express'
+
 import create_everything from "./app"
 
 
-export async function main()
+export default async function main() : Express
 {
 
 	const { app } = await create_everything()
@@ -12,6 +14,7 @@ export async function main()
 			() => console.log( `Listening on ${ port }.` )
 	)
 
+	return app
+
 }
 
-main()
