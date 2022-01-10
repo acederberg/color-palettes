@@ -1,14 +1,14 @@
 import { HTTPEnum, CRUDEnum, APIRequest } from './types'
 
 
-const OPERATIONS : Object = {
+export const OPERATIONS : Object = {
   create : 'POST',
   read : 'POST',
   update : 'PUT',
   delete : 'DELETE'
 }
-const CREATE_URI : Function = ( collection, operation ) => `/${ collection }/${ operation }`
-const HEADERS = {
+export const CREATE_URI : Function = ( collection, operation ) => `/${ collection }/${ operation }`
+export const HEADERS = {
   'Content-Type' : 'application/json'
 }
 
