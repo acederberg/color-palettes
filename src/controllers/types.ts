@@ -16,12 +16,13 @@ export interface Tags
 export interface Request
 {
 
-	collection : string ;
+	collection ?: string ;
 	limit ?: number ;
 	id ?: string ;
 	ids ?: string[] ;
 	filter ?: any ;
 	tags ?: Tags | string[] ;
+	updates ?: any;
 	varients ?: string[] ;
 
 }

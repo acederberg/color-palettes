@@ -36,24 +36,28 @@ export function createMakeRequest( collection : string, operation : CRUDEnum, he
   // handle_err : error handler, e.g. an alert.
 
   const _headers : any = { ...HEADERS, ...headers }
-  const _uri : string = CREATE_URI( collection )
+  const _uri : string = CREATE_URI( collection, operation )
   const _method : HTTPEnum = OPERATIONS[ operation ]
 
   function handle_result( result )
   {
-    if ( !result.ok ) handle_err( result )
+    if ( !result.ok ) handle_err( result.json() )
     return result.json()
   }
 
+  console.log( _uri )
 
-  return ( data : APIRequest ) => fetch(
-    _uri, {
-      method : _method,
-      headers : _headers,
-      body : JSON.stringify( data )
-    }
-  )
-    .then( handle_result )
+  return ( data : APIRequest ) => { 
+    console.log( JSON.stringify( data ), _method )
+    return fetch(
+      _uri, {
+        method : _method,
+        headers : _headers,
+        body : JSON.stringify( data )
+      }
+    )
+      .then( handle_result )
+  }
 }
 
 
@@ -63,7 +67,7 @@ export function createCRUD( collection : string, handle_err : Function )
     _create : createMakeRequest( collection, 'create', {}, handle_err ),
     _read : createMakeRequest( collection, 'read', {}, handle_err ),
     _update : createMakeRequest( collection, 'update', {}, handle_err ),
-    _delete : createMakeRequest( collection, 'destroy', {}, handle_err )
+    _delete : createMakeRequest( collection, 'delete', {}, handle_err )
   }
 }
 
