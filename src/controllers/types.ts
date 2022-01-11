@@ -31,8 +31,8 @@ export interface CreateRequest
 {
 	// From existing
 	origin ?: string ;
-	origin_id : any ;
-	amendments : any ;
+	origin_id ?: any ;
+	amendments ?: any ;
 
 	// New
 	content ?: ColorsSafe ;

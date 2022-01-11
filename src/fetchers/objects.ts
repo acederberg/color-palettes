@@ -117,7 +117,7 @@ export class PalleteFetcher implements Data
 
   async refreshState()
   {
-    const pallete = await getPallete( this.collection, this.id )
+    const pallete : any = await getPallete( this.collection, this.id )
     return new State( pallete.id, pallete.colors, pallete.metadata )
   }
 
