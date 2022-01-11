@@ -15,7 +15,7 @@ export function with_validator( validator : Function )
 
     method_descriptor.set = function( args : T ){
       const is_valid = validator( args ) 
-      if ( is_valid === true ) return method( args )
+      if ( is_valid === true ) return method.call( this, args )
       else
       {
         throw Error( 
