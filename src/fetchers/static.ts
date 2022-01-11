@@ -1,4 +1,5 @@
 import { HTTPEnum, CRUDEnum, APIRequest } from './types'
+import 'cross-fetch/polyfill'
 
 
 export const OPERATIONS : Object = {
@@ -7,7 +8,7 @@ export const OPERATIONS : Object = {
   update : 'PUT',
   delete : 'DELETE'
 }
-export const CREATE_URI : Function = ( collection, operation ) => `/${ collection }/${ operation }`
+export const CREATE_URI : Function = ( collection, operation ) => `${ process.env.API_URI }/${ collection }/${ operation }`
 export const HEADERS = {
   'Content-Type' : 'application/json'
 }

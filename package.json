@@ -5,26 +5,27 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc-watch --project '.'  --outDir ./dist --onSuccess 'node ./dist/src/entrypoint.js'",
-    "test": "tsc-watch --onSuccess 'jest ./tests --forceExit'",
+    "test": "tsc-watch --onSuccess 'env-cmd --file .env.test jest ./tests --forceExit'",
     "build": "rm -rf './dist' && tsc"
   },
   "author": "Adrian Cederberg",
   "license": "ISC",
   "dependencies": {
-    "env-cmd": "^10.1.0",
+    "cross-fetch": "^3.1.4",
     "express": "^4.17.1",
     "fetch": "^1.1.0",
-    "jest": "^27.3.1",
     "mongoose": "^6.0.12",
-    "nodemon": "^2.0.14",
-    "reflect-metadata": "^0.1.13",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
     "supertest": "^6.1.6",
     "ts-jest": "^27.0.7",
     "tsc-watch": "^4.5.0",
-    "typescript": "^4.4.4"
-  },
-  "devDependencies": {
+    "typescript": "^4.4.4",
+    "env-cmd": "^10.1.0",
     "@types/jest": "^27.0.2",
+    "jest": "^27.3.1",
+    "nodemon": "^2.0.14",
     "ts-node": "^10.4.0"
   }
 }
