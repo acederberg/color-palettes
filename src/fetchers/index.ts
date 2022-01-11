@@ -1,5 +1,6 @@
 export { with_validator, FORMAT_PROPERTY_VALIDATION_ERROR_MSG } from './decorators'
 export { MetadataState, State, PalleteFetcher } from './objects'
+
 export {
   createMakeRequest,
   getPallete,
@@ -8,9 +9,10 @@ export {
   HEADERS,
   OPERATIONS
 } from './static'
+
 export { 
   APIRequest,
   HTTPEnum,
   CRUDEnum,
-  Data
+  Fetcher
 } from './types'

@@ -1,7 +1,7 @@
 import { with_validator } from './decorators'
 import { Varients, MetadataSafe, ColorsSafe } from '../models'
 import { getPallete } from './static'
-import { Data } from './types'
+import { Fetcher } from './types'
 import { validate_colors, validate_description, validate_name, validate_tags } from '../models/validate'
 
 
@@ -99,7 +99,7 @@ export class State implements ColorsSafe
 }
 
 
-export class PalleteFetcher implements Data
+export class PalleteFetcher implements Fetcher
 {
 
   readonly create
