@@ -1,16 +1,28 @@
-import { with_validator } from './decorators'
+import { accessor_with_validator } from './decorators'
 import { Varients, MetadataSafe, ColorsSafe } from '../models'
 import { getPallete } from './static'
 import { Fetcher } from './types'
-import { validate_colors, validate_description, validate_name, validate_tags } from '../models/validate'
+import { validate_colors, validate_description, validate_name, validate_tags, validate_varients } from '../models/validate'
 
 
 // Classes for client side validation.
 export class MetadataState implements MetadataSafe
 {
 
-  constructor( readonly id : string, private _description : string, public _name : string, public _tags : string[], public _varients : Varients )
+
+  private _description
+  private _name
+  private _tags
+  private _varients
+
+
+  constructor( readonly id : string, _description : string, _name : string, _tags : string[], _varients : Varients )
   {
+    // Must be assigned this way, and not by declaring visibilty in arguements to get validation.
+    this.description = _description
+    this.name = _name
+    this.tags = _tags
+    this.varients = _varients
   }
  
   
@@ -21,7 +33,7 @@ export class MetadataState implements MetadataSafe
     return this._description
   }
 
-  @with_validator( validate_description )
+  @accessor_with_validator( validate_description )
   set description( new_description : string )
   { 
     this._description = new_description 
@@ -35,7 +47,7 @@ export class MetadataState implements MetadataSafe
     return this._name
   }
 
-  @with_validator( validate_name )
+  @accessor_with_validator( validate_name )
   set name( new_name : string )
   {
     this._name = new_name
@@ -49,7 +61,7 @@ export class MetadataState implements MetadataSafe
     return this._tags
   }
 
-  @with_validator( validate_tags )
+  @accessor_with_validator( validate_tags )
   set tags( new_tags : string[] )
   {
     this._tags = new_tags
@@ -63,6 +75,7 @@ export class MetadataState implements MetadataSafe
     return this._varients
   }
 
+  @accessor_with_validator( validate_varients )
   set varients( new_varients : Varients )
   {
     this._varients = new_varients
@@ -81,7 +94,7 @@ export class State implements ColorsSafe
 
   get colors(){ return this._colors }
 
-  @with_validator( validate_colors )
+  @accessor_with_validator( validate_colors )
   set colors( new_colors : object )
   { 
     this._colors = new_colors 

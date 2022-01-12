@@ -13,6 +13,13 @@ describe(
       value => 'a'.repeat( PARAMS.tags.max_length - 1 )
     )
 
+    const bad_name = 'a'.repeat( PARAMS.name.max_length + 1 ) 
+    const bad_description = 'a'.repeat( PARAMS.description.max_length + 1 ) 
+    const bad_tags =
+      Array( Array( PARAMS.tags.max_tags ) ).map( 
+      value => 'a'.repeat( PARAMS.tags.max_length + 1 )
+    )
+
 
     it( "Assigning M with legal constructor values.", () => {
       expect( 
@@ -28,7 +35,42 @@ describe(
       expect( M.name ).toEqual( test_name )
       expect( M.description ).toEqual( test_description )
       expect( M.tags ).toEqual( test_tags )
-    
+    })
+
+
+    it( "Attempting to call constructor with bad values.", () => {
+  
+      expect(
+        () => new MetadataState(
+          '1',
+          bad_description,
+          bad_name,
+          bad_tags,
+          []
+        )
+      ).toThrowError()
+
+
+      expect(
+        () => new MetadataState(
+          '2',
+          test_description,
+          bad_name,
+          test_tags,
+          []
+        )
+      ).toThrowError()
+
+  
+      expect(
+        () => new MetadataState(
+          '3',
+          test_description, 
+          test_name,
+          bad_tags,
+          []
+        )
+      ).toThrowError()
 
     })
 
@@ -36,7 +78,7 @@ describe(
     it( "Testing validation for the description property.", () => {
       
       expect( 
-        () => { M.description = 'a'.repeat( PARAMS.description.max_length + 1 ) }
+        () => { M.description = bad_description }
       ).toThrowError()
 
       expect(
@@ -49,7 +91,7 @@ describe(
     it( "Testing validation for the name property.", () => {
       
       expect(
-        () => { M.name = 'a'.repeat( PARAMS.name.max_length + 1 ) }
+        () => { M.name = bad_name }
       ).toThrowError()
 
       expect(
@@ -57,6 +99,20 @@ describe(
       ).not.toThrowError()
 
     })
+
+
+    it( "Testing validation for the tags property.", () => {
+      
+      expect(
+        () => { M.tags = bad_tags }
+      ).toThrowError()
+
+      expect(
+        () => { M.tags = test_tags }
+      ).not.toThrowError()
+
+    })
+  
 
   }
 )
