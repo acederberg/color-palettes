@@ -1,11 +1,17 @@
 import { accessor_with_validator } from './decorators'
 import { Varients, MetadataSafe, ColorsSafe } from '../models'
-import { getPallete } from './static'
+import { createCRUD, getPallete } from './static'
 import { Fetcher } from './types'
 import { validate_colors, validate_description, validate_name, validate_tags, validate_varients } from '../models/validate'
 
 
+const METHOD_IS_NOT_DEFINED = () => { msg : "Method is not defined :(" }
+
+
+// IMPLEMENTATIONS OF SCHEMAS ---------------------------------------------------------------------------------------------------------- //
 // Classes for client side validation.
+
+
 export class MetadataState implements MetadataSafe
 {
 
@@ -25,7 +31,19 @@ export class MetadataState implements MetadataSafe
     this.tags = _tags
     this.varients = _varients
   }
- 
+
+
+  dump() : MetadataSafe & { _id : string }
+  {
+    return {
+      _id : this.id,
+      description : this.description,
+      name : this.name,
+      tags : this.tags,
+      varients : this.varients
+    }
+  }
+
  
   // Description
 
@@ -120,29 +138,118 @@ export class State implements ColorsSafe
   }
 
 
+  dump()
+  {
+    return {
+      colors : this.colors,
+      metadata : this._metadata.dump()
+    }
+  }
+
 }
 
 
-export class PalleteFetcher implements Fetcher
-{
+// Fetching plus validation.
 
-  readonly create
-  readonly read
-  readonly update
-  readonly destroy
+
+export class CRUD implements Fetcher
+{
+  // So that I don't have to repeat this. Not really for direct instantiation.
+  // This will be useful when I implement authentication.
+
+  readonly _create
+  readonly _read
+  readonly _update
+  readonly _delete
+
+  constructor( readonly collection, public handle_err )
+  {
+    
+    const { _create, _read, _update, _delete } = createCRUD( this.collection, handle_err )
+    this._create = _create
+    this._read = _read
+    this._update = _update
+    this._delete = _delete
+
+  }
+
+  create(){ return METHOD_IS_NOT_DEFINED() }
+  read(){ return METHOD_IS_NOT_DEFINED() }
+  update(){ return METHOD_IS_NOT_DEFINED() }
+  delete(){ return METHOD_IS_NOT_DEFINED() }
+
+}
+
+
+export class PalleteFetcher extends CRUD
+{
+  // For the modification of palletes.
+  // State is to be modified by the ui.
 
   private state
 
-  constructor( readonly collection : string, readonly id : string )
+
+  constructor( readonly collection : string, readonly id : string, handle_err )
   {
+    super( collection, handle_err )
     this.state = this.refreshState()
-    console.log( this.state )
   }
+
 
   async refreshState()
   {
     const pallete : any = await getPallete( this.collection, this.id )
     return new State( pallete.id, pallete.colors, pallete.metadata )
+  }
+
+  
+  create() 
+  {
+    // Create in collection new from internals
+    this._create( this.state.dump() )
+  }
+  
+
+  read()
+  {
+    this._read({ id : this.state.id })
+  }
+
+ 
+  update()
+  {
+    // update from internals
+    this._update({
+      id : this.state.id,
+      update : {
+        '$set' : this.state.dump()
+      }
+    })
+  }
+
+
+  delete()
+  {
+    this._delete({
+      id : this.state.id
+    })
+  }
+
+
+  show()
+  {
+    console.log( JSON.stringify( this.state ) )
+  }
+
+}
+
+
+export class CollectionFetcher extends CRUD
+{
+
+  constructor( collection : string, handle_err : Function )
+  {
+    super( collection, handle_err )  
   }
 
 }

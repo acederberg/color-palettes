@@ -9,5 +9,5 @@ export interface Fetcher
   create : Function
   read : Function
   update : Function
-  destroy : Function
+  delete : Function
 }
