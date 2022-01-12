@@ -9,23 +9,24 @@ import { validate_colors, validate_description, validate_name, validate_tags, va
 export class MetadataState implements MetadataSafe
 {
 
-
+  readonly id
   private _description
   private _name
   private _tags
   private _varients
 
 
-  constructor( readonly id : string, _description : string, _name : string, _tags : string[], _varients : Varients )
+  constructor( id : string, _description : string, _name : string, _tags : string[], _varients : Varients )
   {
     // Must be assigned this way, and not by declaring visibilty in arguements to get validation.
+    this.id = id
     this.description = _description
     this.name = _name
     this.tags = _tags
     this.varients = _varients
   }
  
-  
+ 
   // Description
 
   get description()
@@ -87,8 +88,12 @@ export class MetadataState implements MetadataSafe
 export class State implements ColorsSafe
 {
 
-  constructor( readonly id : string, public _colors : object, public _metadata : MetadataState )
+  private _colors 
+
+
+  constructor( readonly id : string, _colors : object, public _metadata : MetadataState )
   {
+    this.colors = _colors
   }
 
 
@@ -103,9 +108,15 @@ export class State implements ColorsSafe
 
   get metadata(){ return this._metadata }
 
-  set metadata( validate_metadata : MetadataState )
+  set metadata( new_metadata : MetadataSafe )
   {
-    this._metadata = validate_metadata
+    this._metadata = new MetadataState( 
+      '',
+      new_metadata.description || '',  
+      new_metadata.name || '',
+      new_metadata.tags || [], 
+      new_metadata.varients || []
+    )
   }
 
 

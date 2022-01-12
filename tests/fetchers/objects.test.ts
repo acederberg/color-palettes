@@ -1,25 +1,46 @@
-import { MetadataState } from '../../src/fetchers'
-import { MetadataSafe, PARAMS } from '../../src/models'
+import { MetadataState, State } from '../../src/fetchers'
+import { /*ColorsSafe, MetadataSafe, */PARAMS } from '../../src/models'
+
+
+// Constants used throughout the tests
+
+const test_colors = {
+  red : '#ff5555',
+  blue : '#338aff',
+  green : '#8aff55'
+}
+
+const test_name = 'a'.repeat( PARAMS.name.max_length - 1 )
+const test_description = 'a'.repeat( PARAMS.description.max_length - 1)
+const test_tags = Array( Array( PARAMS.tags.max_tags ) ).map( 
+  value => 'a'.repeat( PARAMS.tags.max_length - 1 )
+)
+
+const bad_colors = {
+  red : '#f000',
+  yellow : 'arejgbnqe2-39<F2>75yc',
+  purple : '#8a55fff'
+}
+
+const bad_name = 'a'.repeat( PARAMS.name.max_length + 1 ) 
+const bad_description = 'a'.repeat( PARAMS.description.max_length + 1 ) 
+const bad_tags =
+  Array( Array( PARAMS.tags.max_tags ) ).map( 
+  value => 'a'.repeat( PARAMS.tags.max_length + 1 )
+)
+
+
+// Class instances used between tests.
+
+let M : MetadataState ;
+let S : State ; 
+
+
 
 describe( 
   "Testing the 'metadataState' object",
   function()
   {
-
-    let M : MetadataSafe ;
-    const test_name = 'a'.repeat( PARAMS.name.max_length - 1 )
-    const test_description = 'a'.repeat( PARAMS.description.max_length - 1)
-    const test_tags = Array( Array( PARAMS.tags.max_tags ) ).map( 
-      value => 'a'.repeat( PARAMS.tags.max_length - 1 )
-    )
-
-    const bad_name = 'a'.repeat( PARAMS.name.max_length + 1 ) 
-    const bad_description = 'a'.repeat( PARAMS.description.max_length + 1 ) 
-    const bad_tags =
-      Array( Array( PARAMS.tags.max_tags ) ).map( 
-      value => 'a'.repeat( PARAMS.tags.max_length + 1 )
-    )
-
 
     it( "Assigning M with legal constructor values.", () => {
       expect( 
@@ -113,6 +134,57 @@ describe(
 
     })
   
+
+  }
+)
+
+
+describe(
+  "Testing the 'State' object.",
+  function()
+  {
+
+    it( "Instantiate with good parameters", () => {
+
+      expect(       
+        () => { S = new State( '4', test_colors, M ) }
+      ).not.toThrowError()
+
+      console.log( JSON.stringify( S ) )
+
+    }) 
+
+
+    it( "Instantiate with bad parameters", () => {
+
+      expect(
+        () => { new State( '5', bad_colors, M ) }
+      ).toThrowError()
+
+    })
+
+
+    it( "Assign bad colors to existing", () => {
+      
+      expect(
+        () => { S.colors = bad_colors }
+      ).toThrowError()
+        
+    })
+
+
+    it( "Assign bad metadata to existing", () => {
+
+      expect(
+        () => { S.metadata = { 
+          description : bad_description, 
+          name : bad_name, 
+          tags : bad_tags,
+          varients : []
+        }}
+      ).toThrowError()
+
+    })
 
   }
 )
