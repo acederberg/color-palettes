@@ -1,12 +1,12 @@
 import { ColorsModel } from '../models'
-import { tags_fields_undefined } from './msg'
+import { tags_fields_undefined, incorrect_all_key } from './msg'
 import { parse_tags } from './parsers'
 import { Request } from './types'
 
 
 // DECORATORS.
 
-export function with_decide({ method_id, method_ids, method_filter, method_intersecting_tags, method_containing_tags, method_varients }, otherwise )
+export function with_decide({ method_id, method_ids, method_filter, method_intersecting_tags, method_containing_tags, method_varients, method_all }, otherwise )
 {
   return function ( model : ColorsModel, request : Request, ...args )
   {
@@ -39,7 +39,17 @@ export function with_decide({ method_id, method_ids, method_filter, method_inter
     }
     else if ( request.varients !== undefined )
     {
-      return method_varients( model, request )
+      return method_varients( model, request.varients )
+    }
+    else if ( request.all !== undefined )
+    {
+      if ( request.all === process.env.API_ALL_KEY ){
+        return method_all( model )
+      }
+      else
+      {
+        return incorrect_all_key()
+      }
     }
     else
     {

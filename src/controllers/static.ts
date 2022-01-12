@@ -1,6 +1,6 @@
 import { with_decide } from './decorators'
 import { create_model_for_user, static_methods, link_as_varients, find_varients as _find_varients, ColorsModel } from '../models'
-import { create_request_insufficient_fields, link_request_insufficient_fields, no_filter, no_tags, no_undefined_fields, REQUEST_REQUIRED } from './msg'
+import { create_request_insufficient_fields, link_request_insufficient_fields, no_all, no_filter, no_tags, no_undefined_fields, REQUEST_REQUIRED } from './msg'
 import { parse_link_request_to_args, parse_varients_request_to_args } from './parsers'
 import { CreateRequest, LinkRequest, VarientsRequest } from './types'
 
@@ -49,6 +49,7 @@ export async function create_palletes( model : ColorsModel, request : CreateRequ
 
 export const read_palletes = with_decide(
 	{
+		method_all : readers.read_all,
 		method_id : readers.read_id,
 		method_ids : readers.read_ids,
 		method_filter : readers.read_filter,
@@ -62,6 +63,7 @@ export const read_palletes = with_decide(
 
 export const delete_palletes = with_decide(
 	{
+		method_all : deleters.delete_all,
 		method_id : deleters.delete_id,
 		method_ids : deleters.delete_ids,
 		method_filter : no_filter,
@@ -75,6 +77,7 @@ export const delete_palletes = with_decide(
 
 export const update_palletes = with_decide(
 	{
+		method_all : no_all,
 		method_id : updaters.update_id,
 		method_ids : updaters.update_ids,
 		method_filter : updaters.update_filter,

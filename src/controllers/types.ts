@@ -15,7 +15,7 @@ export interface Tags
 
 export interface Request
 {
-
+	all ?: string ;
 	collection ?: string ;
 	limit ?: number ;
 	id ?: string ;
