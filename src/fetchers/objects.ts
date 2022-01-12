@@ -206,20 +206,20 @@ export class PalleteFetcher extends CRUD
   create() 
   {
     // Create in collection new from internals
-    this._create( this.state.dump() )
+    return this._create( this.state.dump() )
   }
   
 
   read()
   {
-    this._read({ id : this.state.id })
+    return this._read({ id : this.state.id })
   }
 
  
   update()
   {
     // update from internals
-    this._update({
+    return this._update({
       id : this.state.id,
       update : {
         '$set' : this.state.dump()
@@ -230,7 +230,7 @@ export class PalleteFetcher extends CRUD
 
   delete()
   {
-    this._delete({
+    return this._delete({
       id : this.state.id
     })
   }
@@ -250,6 +250,24 @@ export class CollectionFetcher extends CRUD
   constructor( collection : string, handle_err : Function )
   {
     super( collection, handle_err )  
+  }
+
+
+  create()
+  {
+    return this._create({ all : process.env.API_ALL_KEY })
+  }
+
+
+  read()
+  {
+    return this._read({ all : process.env.API_ALL_KEY })
+  }
+
+
+  delete()
+  {
+    return this._delete({ all : process.env.API_ALL_KEY })
   }
 
 }
