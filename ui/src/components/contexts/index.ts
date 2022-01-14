@@ -1,5 +1,5 @@
 export {
-	Model
+	Modes
 } from './types'
 
 export {
