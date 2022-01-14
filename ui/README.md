@@ -38,3 +38,62 @@ This will use typescript and react since statefulness of components is important
 - **Variables in functions and classe members** - Such names should be lowercase and delimited with underscores.
 - **Variables in modules** - ( aka Boomers yelp review format underscore delimited. )
 
+
+## Components
+
+### Cell
+
+- Consumer of `GlobalContext` and `PalleteContext`.
+- `Pane` of `evergreen-ui`.
+- Contains either a name or a color code. 
+- Color code cells should be able to bring up a color picker. 
+- Clicking off should result in state change and possible validation error ( from `PalleteFetcher.state` ).
+
+
+### Pallete
+
+- Consumer of `GlobalContext` and `PalleteContext`.
+- CRUD included via `PalleteFetchers`s.
+- `Pane` from `evergreen-ui`
+- A collection of `Cell`s.
+- Ability to add or delete cells by nullifying either field.
+- Ability to get `JSON`.
+- ML completion?
+
+
+### PalletePreview
+
+- Consumer of `GlobalContext` and `CollectionContext`.
+- Displays colors with no editing capability and no names. 
+- Clicking should modify the global state to change the mode to `'pallete'` and set `GlobalState.palleteId`.
+
+
+### Collection
+
+- Consumer of `GlobalContext` and `CollectionContext`.
+- CRUD included via `PalleteFetchers`s.
+- Pagination of various `Pallete` previews. Read about pagination with `evergreen-ui` [here](https://evergreen.segment.com/components/pagination).
+- Clicking on any `PalletePreview` should change the mode to `'pallete'` and set `GlobalState.collectionName`.
+
+
+### Collections
+
+- Consumer of `GlobalContext` and `CollectionsContext`.
+- CRUD inlcuded via `CollectionFetcher`s.
+- Pagination of various `CollectionPreviews`.
+- Clicking on any `CollectionPreview` should change the mode to `'collection'`
+- Roughly the same as the `Collection` component.
+- No CRUD.
+
+
+### ValidationError
+
+- `Dailogue` from `evergreen-ui`.
+- Renders validator error from the `Fetcher`s or the API.
+- Exit button.
+
+
+### JSONDialogue
+
+- Consumer of `GlobalContext` and `PalleteContext`.
+- View a pallete as `JSON`.
