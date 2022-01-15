@@ -1,0 +1,82 @@
+[
+  {
+    "_id" : "000000000000000000000000",
+    "colors" : {
+      "red" : "#ff5555",
+      "lightRed" : "#ff8888",
+      "blue" : "#558aff",
+      "lightBlue" : "#aaaaff",
+      "green" : "#55ff8a",
+      "lightGreen" : "#aaffac"
+    },
+    "metadata" : {
+      "name" : "Default Pallete",
+      "description" : "This is the default pallete.",
+      "tags" : [ "defaults" ]
+    }
+  },
+  {
+    "_id" : "000000000000000000000001",
+    "colors" : {
+      "background": "#3C0315",
+      "black": "#282A2E",
+      "blue": "#2257FF",
+      "brightBlack": "#676E7A",
+      "brightBlue": "#2257FF",
+      "brightCyan": "#11FFFF",
+      "brightGreen": "#22FF22",
+      "brightPurple": "#AC79BB",
+      "brightRed": "#FF3333",
+      "brightWhite": "#FFFFFD",
+      "brightYellow": "#FFFF57",
+      "cursorColor": "#FFFFFF",
+      "cyan": "#57FFFF",
+      "foreground": "#FFF2E8",
+      "green": "#57FF00",
+      "name": "RaspberryNeon",
+      "purple": "#7D498F",
+      "red": "#FF5757",
+      "selectionBackground": "#FFFFFF",
+      "white": "#FFFFFD",
+      "yellow": "#FF3700"
+    },
+    "metadata" : {
+      "name" : "RaspberryNeon",
+      "description" : "Awesome WSL Theme",
+      "tags" : [ "bright", "wsl", "defaults", "neon", "raspberry" ],
+      "varients" : [ "000000000000000000000002" ]
+    }
+  },
+  {
+    "_id" : "000000000000000000000002",
+    "colors" : {
+      "background": "#3C0315",
+      "black": "#282A2E",
+      "blue": "#2257FF",
+      "brightBlack": "#676E7A",
+      "brightBlue": "#2257FF",
+      "brightCyan": "#11FFFF",
+      "brightGreen": "#22FF22",
+      "brightPurple": "#AC79BB",
+      "brightRed": "#FF3333",
+      "brightWhite": "#FFFFFD",
+      "brightYellow": "#FFFF57",
+      "cursorColor": "#FFFFFF",
+      "cyan": "#57FFFF",
+      "foreground": "#FFF2E8",
+      "green": "#57FF00",
+      "name": "RaspberryNeon",
+      "purple": "#7D498F",
+      "red": "#FF5757",
+      "selectionBackground": "#FFFFFF",
+      "white": "#FFFFFD",
+      "yellow": "#FF3700"
+    },
+    "metadata" : {
+      "name" : "Raspberry",
+      "description" : "Another Awesome WSL Theme",
+      "tags" : [ "bright", "wsl", "defaults", "neon", "raspberry" ],
+      "varients" : [ "000000000000000000000001" ]
+    }
+  }
+]
