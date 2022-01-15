@@ -1,2 +1,11 @@
 import app from './index'
-app()
+import add_defaults from './models/add_defaults'
+
+async function main()
+{
+	await app()
+	add_defaults()
+}
+
+
+main()

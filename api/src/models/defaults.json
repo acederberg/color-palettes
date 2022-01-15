@@ -11,7 +11,7 @@
     },
     "metadata" : {
       "name" : "Default Pallete",
-      "description" : "This is the default pallete.",
+      "description" : "This is the default pallete",
       "tags" : [ "defaults" ]
     }
   },
@@ -33,7 +33,6 @@
       "cyan": "#57FFFF",
       "foreground": "#FFF2E8",
       "green": "#57FF00",
-      "name": "RaspberryNeon",
       "purple": "#7D498F",
       "red": "#FF5757",
       "selectionBackground": "#FFFFFF",
@@ -65,7 +64,6 @@
       "cyan": "#57FFFF",
       "foreground": "#FFF2E8",
       "green": "#57FF00",
-      "name": "RaspberryNeon",
       "purple": "#7D498F",
       "red": "#FF5757",
       "selectionBackground": "#FFFFFF",

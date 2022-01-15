@@ -1,9 +1,10 @@
 import mongoose from 'mongoose'
 
 import { with_update, with_delete, with_exec } from './decorators'
-import queries from './queries'
-import { ColorsSafe, ColorsModel, ColorsAndId, Msg, ObjectId, VarientsMethods } from './types'
+import { ColorsSafe, ColorsModel, ColorsAndId, Msg, ObjectId, VarientsMethods, Varient } from './types'
 import { create_model_for_user } from './models'
+
+import queries from './queries'
 import validate from './validate'
 
 
@@ -26,13 +27,34 @@ export const CREATE_VARIENTS_MODIFIER = ( method : VarientsMethods, origin : Col
 }
 
 
-async function create_new( model : ColorsModel, raw : ColorsSafe ) : Promise<Msg | void | boolean | ColorsAndId >
+function parse_varient( model : ColorsModel, varient : any ) : Varient
+{
+	// Since strings have length and `instanceof` sucks.
+	if ( varient.length )
+	{
+		return {
+			origin_id : new mongoose.Types.ObjectId( varient as string ),
+			origin : model.modelName
+		}
+	}
+	else
+	{
+		return {
+			origin_id : new mongoose.Types.ObjectId( varient.origin_id ),
+			origin : varient.origin
+		}
+	}
+
+}
+
+
+export async function create_new( model : ColorsModel, raw : ColorsSafe, custom_id : any = undefined ) : Promise<Msg | void | boolean | ColorsAndId >
 {
 	// Turn a raw request into a database object.
 	const validated = validate( raw )
 	if ( validated !== true ){ return validated }
 	const args = {
-		_id : new mongoose.Types.ObjectId(),
+		_id : new mongoose.Types.ObjectId( custom_id ),
 		colors : raw.colors,
 		metadata : {
 			created : new Date(),
@@ -40,11 +62,16 @@ async function create_new( model : ColorsModel, raw : ColorsSafe ) : Promise<Msg
 			modified : [],
 			name : raw.metadata.name,
 			tags : raw.metadata.tags,
-			varients : raw.metadata.varients ? raw.metadata.varients : []
+			varients : raw.metadata.varients 
+				? raw.metadata.varients.map(
+					varient => parse_varient( model, varient )
+				)
+				: []
 		}
 	}
 	const err = await model.create( args )
 		.catch( err => { msg : err } ) 
+	console.log( '@create_new::err', JSON.stringify( err, null, 1 ) )
 	return err
 }
 
@@ -58,7 +85,7 @@ function to_raw( not_raw : ColorsAndId ) : ColorsSafe
 }
 
 
-async function create_new_from_existing_by_id( origin : ColorsModel, target : ColorsModel, _id : ObjectId, amendments : Object )
+export async function create_new_from_existing_by_id( origin : ColorsModel, target : ColorsModel, _id : ObjectId, amendments : Object )
 {
 
 	// Find original
