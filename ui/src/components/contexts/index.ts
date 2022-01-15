@@ -7,12 +7,15 @@ export {
 } from './objects'
 
 export {
+	CollectionFetcher,
 	CollectionContext,
 	CollectionContextProvider,
+	getCollectionFetchers,
 	CollectionsContext,
 	CollectionsContextProvider,
 	GlobalContext,
 	GlobalContextProvider,
+	PalleteFetcher,
 	PalleteContext,
 	PalleteContextProvider,
 } from './contexts'

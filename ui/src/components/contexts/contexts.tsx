@@ -5,18 +5,32 @@ import { GlobalState } from './objects'
 
 // Fetcher imports
 import { getCollectionFetchers, CollectionFetcher, PalleteFetcher } from '../../../api/src/fetchers'
+export { getCollectionFetchers, CollectionFetcher, PalleteFetcher }
+
+
+// Constants
+
+const DEFAULTS_COLLECTION_NAME = "defaults"
+const DEFAULTS_COLLECTION_ID = "000000000000000000000001" 
+const DEFAULT_GLOBAL_CONTEXT_VALUE = new GlobalState() 
+const DEFAULT_COLLECTIONS_CONTEXT_VALUE = new getCollectionFetchers() 
+const DEFAULT_COLLECTION_CONTEXT_VALUE = new CollectionContext( DEFAULTS_COLLECTION_NAME ) 
+const DEFAULT_PALLETE_CONTEXT_VALUE = new PalleteContext( DEFAULTS_COLLECTION_NAME, DEFAULTS_COLLECTION_ID ) 
 
 
 // Contexts.
+
 // - `GlobalContext` -- Decides view mode, one of 'collections', 'collection', or 'pallete'.
 // - `CollectionState` -- Decides which collection and what of it to show in the 'collection' view mode. Holds a CollectionFetcher.
 // - `PalleteState` -- Decides which pallete is shown and holds a `PalleteFetcher`.
 
-const GlobalContext = React.createConext 
-const CollectionsContext = React.createContext( getCollectionFetchers() )
-const CollectionContext = React.createContext( new CollectionContext() )
-const PalleteContext = React.createContext( new PalleteContext() )
+const GlobalContext = createContext( DEFAULT_COLLECTIONS_CONTEXT_VALUE )
+const CollectionsContext = createContext( DEFAULT_COLLECTIONS_CONTEXT_VALUE )
+const CollectionContext = createContext( DEFAULT_COLLECTION_CONTEXT_VALUE )
+const PalleteContext = createContext( DEFAULT_PALLETES_CONTEXT_VALUE )
 
+
+// Providers of Context.
 
 export function GlobalContextProvider({ children, initGlobalContext })
 {
