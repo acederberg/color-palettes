@@ -1,4 +1,4 @@
-export function with_global_state_update<T>( target : any, propertyKey : string, descriptor : PropertyDescriptor )
+export function with_global_context_invokation<T>( target : any, propertyKey : string, descriptor : PropertyDescriptor )
 {
   const method = descriptor.set
   descriptor.set = async function( arg : T )

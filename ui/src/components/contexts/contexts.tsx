@@ -4,7 +4,7 @@ import { Context } from 'react'
 import { GlobalState } from './objects'
 
 // Fetcher imports
-import { getCollectionFetchers, CollectionFetcher, PalleteFetcher } from '../../../api/src/fetchers'
+import { getCollectionFetchers, CollectionFetcher, PalleteFetcher } from '../../../../api/src/fetchers'
 export { getCollectionFetchers, CollectionFetcher, PalleteFetcher }
 
 
@@ -12,10 +12,11 @@ export { getCollectionFetchers, CollectionFetcher, PalleteFetcher }
 
 const DEFAULTS_COLLECTION_NAME = "defaults"
 const DEFAULTS_COLLECTION_ID = "000000000000000000000001" 
-const DEFAULT_GLOBAL_CONTEXT_VALUE = new GlobalState() 
-const DEFAULT_COLLECTIONS_CONTEXT_VALUE = new getCollectionFetchers() 
-const DEFAULT_COLLECTION_CONTEXT_VALUE = new CollectionContext( DEFAULTS_COLLECTION_NAME ) 
-const DEFAULT_PALLETE_CONTEXT_VALUE = new PalleteContext( DEFAULTS_COLLECTION_NAME, DEFAULTS_COLLECTION_ID ) 
+
+export const DEFAULT_GLOBAL_CONTEXT_VALUE = new GlobalState() 
+export const DEFAULT_COLLECTIONS_CONTEXT_VALUE = new getCollectionFetchers() 
+export const DEFAULT_COLLECTION_CONTEXT_VALUE = new CollectionContext( DEFAULTS_COLLECTION_NAME ) 
+export const DEFAULT_PALLETE_CONTEXT_VALUE = new PalleteContext( DEFAULTS_COLLECTION_NAME, DEFAULTS_COLLECTION_ID ) 
 
 
 // Contexts.
@@ -24,10 +25,10 @@ const DEFAULT_PALLETE_CONTEXT_VALUE = new PalleteContext( DEFAULTS_COLLECTION_NA
 // - `CollectionState` -- Decides which collection and what of it to show in the 'collection' view mode. Holds a CollectionFetcher.
 // - `PalleteState` -- Decides which pallete is shown and holds a `PalleteFetcher`.
 
-const GlobalContext = createContext( DEFAULT_COLLECTIONS_CONTEXT_VALUE )
-const CollectionsContext = createContext( DEFAULT_COLLECTIONS_CONTEXT_VALUE )
-const CollectionContext = createContext( DEFAULT_COLLECTION_CONTEXT_VALUE )
-const PalleteContext = createContext( DEFAULT_PALLETES_CONTEXT_VALUE )
+export const GlobalContext = createContext( DEFAULT_COLLECTIONS_CONTEXT_VALUE )
+export const CollectionsContext = createContext( DEFAULT_COLLECTIONS_CONTEXT_VALUE )
+export const CollectionContext = createContext( DEFAULT_COLLECTION_CONTEXT_VALUE )
+export const PalleteContext = createContext( DEFAULT_PALLETES_CONTEXT_VALUE )
 
 
 // Providers of Context.
@@ -40,7 +41,7 @@ export function GlobalContextProvider({ children, initGlobalContext })
 }
 
 
-export function CollectionConextProvider({ children, collectionsFetcher })
+export function CollectionContextProvider({ children, collectionsFetcher })
 {
 	return <CollectionContext.Provider value = { collectionsFetcher }>
 		{ children }
@@ -62,4 +63,4 @@ export function PalleteContextProvider({ children, palleteFetcher })
 	return <PalleteContext.Provider value = { palleteFetcher }>
 		{ children }
 	</PalleteContext.Provider>
-}
+}

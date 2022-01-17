@@ -28,6 +28,6 @@ export class GlobalState
 
 
   @with_global_state_update
-  set palleteId( new_pallete_id : string ){ this.collectionName
+  set palleteId( new_pallete_id : string ){ this.collectionName }
 
 }
