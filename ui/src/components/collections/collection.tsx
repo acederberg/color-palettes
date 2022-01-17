@@ -1,4 +1,4 @@
 export default function({ collectionName })
 {
-	return </>
+	return <div/>
 }

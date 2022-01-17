@@ -1,4 +1,6 @@
-export default collections()
+import { Pane } from 'evergreen-ui'
+
+export default function Collections()
 {
-	return </>
+	return <Pane></Pane>
 }

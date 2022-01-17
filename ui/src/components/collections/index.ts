@@ -1,3 +1,3 @@
-export { default as collection } from './collection'
-export { default as collections } from './collections'
-export { default as collection_preview } from './collection_preview'
+export { default as Collection } from './collection'
+export { default as Collections } from './collections'
+export { default as CollectionPreview } from './collectionPreview'
