@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { GlobalStateProvider, GlobalState, Pallete, Collection, Collections } from './components'
+import { GlobalContextProvider, GlobalState, Pallete, Collection, Collections } from './components'
 
 
 const GLOBAL_STATE = new GlobalState( 'collection' )  
@@ -15,7 +15,7 @@ export default function App()
 	const [ mode, setMode ] = useState( 'collection' )
 	GLOBAL_STATE.invokeGlobalStateUpdate = setMode
 
-	return <GlobalStateProvider initValue = { GLOBAL_STATE }>
+	return <GlobalContextProvider initValue = { GLOBAL_STATE }>
 		{
 			mode === 'collections'
 			? <Collections/>
@@ -29,6 +29,6 @@ export default function App()
 					palleteCollectionName = { GLOBAL_STATE.collectionName }
 				/>
 		}
-	</GlobalStateProvider>
+	</GlobalContextProvider>
 
 }
