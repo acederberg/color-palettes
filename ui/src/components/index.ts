@@ -9,15 +9,15 @@ export {
 	Modes,
   PalleteContext,
   PalleteContextProvider,
-} from 'contexts'
+} from './contexts'
 
 export {
-  collections,
-  collection,
-  collection_preview
+  Collections,
+  Collection,
+  CollectionPreview
 } from './collections'
 
 export {
-  pallete,
-  pallete_preview
+  Pallete,
+  PalletePreview
 } from './palletes'
