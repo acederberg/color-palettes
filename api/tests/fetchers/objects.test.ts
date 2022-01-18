@@ -1,9 +1,12 @@
-import { MetadataState, State } from '../../src/fetchers'
+import { PalleteFetcher } from '../../src/fetchers'
+import { MetadataState, State, CRUD, METHOD_IS_NOT_DEFINED } from '../../src/fetchers/objects'
 import { /*ColorsSafe, MetadataSafe, */PARAMS } from '../../src/models'
 
 
 // Constants used throughout the tests
 
+const DEFAULTS_COLLECTION : string = "defaults"
+const DEFAULTS_ID : string = "000000000000000000000001"
 const test_colors = {
   red : '#ff5555',
   blue : '#338aff',
@@ -184,6 +187,69 @@ describe(
         }}
       ).toThrowError()
 
+    })
+
+  }
+)
+
+
+describe(
+  "Testing the CRUD base object.",
+  function()
+  {
+
+    let A_CRUD
+
+    it( "Constructor should make an object with '_create', '_read', '_update', and '_delete'.", () => {
+      
+      A_CRUD = new CRUD( "tests", ( err ) => { msg : err } )
+      console.log( Object.keys( A_CRUD ) )
+
+      expect( Object.keys( A_CRUD ) ).toEqual(
+        expect.arrayContaining([ '_create', '_read', '_update', '_delete' ])
+      )
+
+      expect( A_CRUD.read() ).toEqual( METHOD_IS_NOT_DEFINED() ) 
+
+    })
+
+  }
+)
+
+
+describe(
+  "Testing PalleteFetcher",
+  function()
+  {
+
+    let PALLETE_FETCHER
+    let FETCHED
+
+    it( "Testing pallete_fetcher constructor", () => {
+
+      expect( () => {
+        PALLETE_FETCHER = new PalleteFetcher( DEFAULTS_COLLECTION, DEFAULTS_ID, ( err ) => { msg : err } )
+      } ).not.toThrowError()
+
+    })
+
+
+    it( "Testing pallete_fetcher.read'.", () => {
+
+      FETCHED = PALLETE_FETCHER.read()
+      console.log( FETCHED )
+      expect( FETCHED ).not.toMatchObject({ msg : expect.stringContaining("") })
+
+    })
+
+
+    it( "Testing 'pallete_fetcher.update'.", () => {
+      PALLETE_FETCHER.state.color.green = "#00ff00"
+      PALLETE_FETCHER.update()
+    })
+
+    it( "Testing 'pallete_fetcher.delete'.", () => {
+      
     })
 
   }

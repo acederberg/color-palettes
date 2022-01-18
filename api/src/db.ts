@@ -5,6 +5,7 @@ let connection : any
 
 export default async function create_db() 
 {
+	console.log( process.env.DB_URI )
 	if ( !process.env.DB_URI ){ 
 		throw Error( `DB_URI=${ process.env.DB_URI } if false-y.` )
 	}

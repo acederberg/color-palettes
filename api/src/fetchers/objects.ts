@@ -5,7 +5,7 @@ import { Fetcher } from './types'
 import { validate_colors, validate_description, validate_name, validate_tags, validate_varients } from '../models/validate'
 
 
-const METHOD_IS_NOT_DEFINED = () => { msg : "Method is not defined :(" }
+export const METHOD_IS_NOT_DEFINED = () => { msg : "Method is not defined :(" }
 
 
 // IMPLEMENTATIONS OF SCHEMAS ---------------------------------------------------------------------------------------------------------- //

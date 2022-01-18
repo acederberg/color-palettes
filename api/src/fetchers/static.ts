@@ -17,7 +17,7 @@ export const HEADERS = {
 export function getPallete( collection : string, id : string )
 {
   return fetch(
-    `${ CREATE_URI( collection, 'read' ) }/id=${ id }`,
+    `${ CREATE_URI( collection, 'read' ) }?id=${ id }`,
     {
       method : 'GET',
       headers : HEADERS
