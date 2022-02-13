@@ -1,8 +1,8 @@
 {
-  "name": "api",
-  "version": "1.0.0",
-  "description": "A typescript api for a color picker",
-  "main": "index.js",
+  "name": "palletes-fetchers",
+  "version": "1.0.11",
+  "description": "Objects to simplifly use of github.com/acederberg/collor-palletes-api.",
+  "main": "./dist/src/fetchers/index.js",
   "scripts": {
     "start": "tsc-watch --project '.'  --outDir ./dist --onSuccess 'node ./dist/src/entrypoint.js'",
     "test": "tsc-watch --onSuccess 'env-cmd --file .env.test jest ./tests --forceExit'",
@@ -17,15 +17,18 @@
     "mongoose": "^6.0.12",
     "reflect-metadata": "^0.1.13"
   },
+  "files": [
+    "dist/src/**/*"
+  ],
   "devDependencies": {
-    "supertest": "^6.1.6",
-    "ts-jest": "^27.0.7",
-    "tsc-watch": "^4.5.0",
-    "typescript": "^4.4.4",
-    "env-cmd": "^10.1.0",
     "@types/jest": "^27.0.2",
+    "env-cmd": "^10.1.0",
     "jest": "^27.3.1",
     "nodemon": "^2.0.14",
-    "ts-node": "^10.4.0"
+    "supertest": "^6.1.6",
+    "ts-jest": "^27.0.7",
+    "ts-node": "^10.4.0",
+    "tsc-watch": "^4.5.0",
+    "typescript": "^4.4.4"
   }
 }

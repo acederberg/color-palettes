@@ -1,0 +1,24 @@
+# Miscillanious
+
+Dockerfile 
+docker-compose.yaml 
+jest.config.js 
+package-lock.json 
+package.json 
+tsconfig.json
+
+# directories
+
+pack_tests
+node_modules 
+coverage
+src 
+tests 
+
+# Globs
+
+.env.*
+*.tar
+*.tgz
+*.swo
+*.swp
