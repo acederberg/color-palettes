@@ -1,0 +1,44 @@
+image : node:latest
+
+
+stages :
+  - test
+  - publish
+  - build
+
+
+test :
+  stage : test
+  script :
+    - echo $PWD
+    - cd api
+    - npm install .
+    - npm run test
+  artifacts :
+    paths :
+      - node_modules
+  cache :
+    untracked : true
+    paths :
+      - node_modules
+
+
+publish:
+  stage: publish
+  only :
+    - triggers
+  script:
+    # Versioning should be done on commit, not in the pipeline.
+    - echo $PWD
+    - cd api
+    - |
+      if ( 
+        test $( git diff package.json | grep '[+] *version' | wc --word ) -gt 0
+      ); 
+      then
+        npm login --username $NPM_USERNAME --password $NPM_PASSWORD
+        npm run build
+        npm publish
+      else
+        echo "Version has not changed. Not publishing."
+      fi

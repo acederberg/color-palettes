@@ -1,6 +1,6 @@
 {
   "name": "palletes-fetchers",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Objects to simplifly use of github.com/acederberg/collor-palletes-api.",
   "main": "./dist/src/fetchers/index.js",
   "scripts": {
