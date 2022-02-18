@@ -4,8 +4,9 @@
   "description": "Objects to simplifly use of github.com/acederberg/collor-palletes-api.",
   "main": "./dist/src/fetchers/index.js",
   "scripts": {
-    "start": "tsc-watch --project '.'  --outDir ./dist --onSuccess 'node ./dist/src/entrypoint.js'",
-    "test": "tsc-watch --onSuccess 'env-cmd --file .env.test jest ./tests --forceExit'",
+    "start": "env-cmd --file .env.dev tsc-watch --project '.' --outDir ./dist --onSuccess 'node ./dist/src/entrypoint.js'",
+    "start-test": "tsc-watch --onSuccess 'npm test'",
+    "test" : "env-cmd --file .env.test jest ./tests --forceExit",
     "build": "rm -rf './dist' && tsc"
   },
   "author": "Adrian Cederberg",

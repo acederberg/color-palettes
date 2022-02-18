@@ -5,9 +5,9 @@ let connection : any
 
 export default async function create_db() 
 {
-	console.log( process.env.DB_URI )
+	console.log( `mongo url: ${process.env.DB_URI}` )
 	if ( !process.env.DB_URI ){ 
-		throw Error( `DB_URI=${ process.env.DB_URI } if false-y.` )
+		throw Error( `DB_URI=${ process.env.DB_URI } is false-y.` )
 	}
 	connection = await mongoose.connect( process.env.DB_URI )     
 }
