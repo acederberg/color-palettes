@@ -4,10 +4,21 @@
   "description": "Objects to simplifly use of github.com/acederberg/collor-palletes-api.",
   "main": "./dist/src/fetchers/index.js",
   "scripts": {
+    "help" : "cat 'doc/scripts.md' | less ",
+
     "start": "env-cmd --file .env.dev tsc-watch --project '.' --outDir ./dist --onSuccess 'node ./dist/src/entrypoint.js'",
-    "start-test": "tsc-watch --onSuccess 'npm test'",
-    "test" : "env-cmd --file .env.test jest ./tests --forceExit",
-    "build": "rm -rf './dist' && tsc"
+    "start-test": "tsc-watch --onSuccess 'npm run test'",
+    "start-test-fetchers" : "FETCHERS_AWAIT_API_TIME=15 FETCHERS_TESTS_LOOP=1 sh ./scripts/test_fetchers.sh",
+    "start-test-fetchers-no-service" : "tsc-watch --onSuccess 'npm run test-fetchers-no-service --onlyFailed'",
+
+    "test" : "env-cmd --file .env.test jest --verbose --onlyChanged --testPathPattern './tests/(models|views|controllers)' --forceExit",
+    "test-fetchers-no-service" : "env-cmd --file .env.test jest --verbose --onlyChanged --testPathPattern './tests/fetchers/' --color --forceExit",
+    "test-fetchers" : "FETCHERS_AWAIT_API_TIME=15 sh ./scripts/test_fetchers.sh",
+    "test-publish" : "./scripts/test_publish.sh",
+
+    "build": "rm -rf './dist' && tsc",
+    "build-images" : "echo 'script not yet defined.'",
+    "destroy-artifacts" : "for item in coverage dist pack_tests; do test -d $item && rm -r $item ; done"
   },
   "author": "Adrian Cederberg",
   "license": "ISC",

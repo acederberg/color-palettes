@@ -10,6 +10,7 @@ Common scripts :
 Test scripts :
 - **npx run start-test** -- Run the 'test' script in watch mode
 - **npx run start-test-fetchers** -- Run the tests for fetchers only. This also starts another process in a docker container and requires docker.
+- **npx run start-test-fetchers-no-service** -- Run the tests for fetchers without the docker tasks.
 - **npx run test** -- Run all tests besides the tests for fetchers.
 - **npx run test-fetchers** -- Run tests for the fetchers only.
 - **npx run test-fetchers-no-service** -- Test fetchers without starting docker containers and app. Only works if app is running somewhere. 
