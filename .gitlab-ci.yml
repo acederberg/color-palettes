@@ -12,21 +12,30 @@ test :
   script :
     - echo $PWD
     - cd api
+    - echo 'DB_URI=mongodb://dev:goofy@mongodb?directConnection=true&serverSelectionTimeoutMS=2000' >> .env.test
+    - echo 'API_URI=http://localhost:1337' >> .env.test
+    - echo "API_ALL_KEY='This enables you to use the \"all\" field'" >> .env.test
+    - docker compose --file docker-compose.yaml up --detach
     - npm install .
-    - npm run test
+    # This one must be run in the docker contain explicitly
+    - docker exec api npm run test
+    # This one runs various commands in docker containers such as building, starting the api, and running tests.
+    - FETCHERS_AWAIT_API_TIME=15 FETCHERS_TESTS_LOOP=0 LAZY=0 ./scripts/test_fetchers.sh
   artifacts :
     paths :
-      - node_modules
+      - api/node_modules
+      - api/.env.test
   cache :
     untracked : true
     paths :
-      - node_modules
+      - api/node_modules
 
 
 publish:
   stage: publish
   only :
-    - triggers
+    changes :
+      - package.json
   script:
     # Versioning should be done on commit, not in the pipeline.
     - echo $PWD
@@ -42,3 +51,9 @@ publish:
       else
         echo "Version has not changed. Not publishing."
       fi
+
+
+test : 
+  stage : build
+  only :
+
