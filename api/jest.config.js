@@ -11,3 +11,8 @@ module.exports = {
   coverageDirectory: "coverage",
   coverageProvider: "v8"
 };
+// Some useful flags :
+// - testNamePattern
+// - testPathPattern
+// - onlyFailed
+// - onlyChanged

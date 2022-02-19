@@ -7,11 +7,12 @@
     "help" : "cat 'doc/scripts.md' | less ",
 
     "start": "env-cmd --file .env.dev tsc-watch --project '.' --outDir ./dist --onSuccess 'node ./dist/src/entrypoint.js'",
-    "start-test": "tsc-watch --onSuccess 'npm run test'",
+    "start-test-api": "tsc-watch --onSuccess 'npm run test-api'",
     "start-test-fetchers" : "FETCHERS_AWAIT_API_TIME=1 FETCHERS_TESTS_LOOP=1 LAZY=1 sh ./scripts/test_fetchers.sh",
     "start-test-fetchers-no-service" : "tsc-watch --onSuccess 'env-cmd --file .env.test jest --verbose --testPathPattern ./tests/fetchers/ --color --detectOpenHandles --forceExit'", 
 
-    "test" : "env-cmd --file .env.test jest --verbose --testPathPattern './tests/(models|views|controllers)' --detectOpenHandles --forceExit",
+    "test-api" : "env-cmd --file .env.test jest --verbose --testPathPattern './tests/(models|views|controllers)' --detectOpenHandles --forceExit",
+    "test-everything" : "for cmd in 'test-api' 'test-fetchers'; do eval \"npm run $cmd\"; done",
     "test-fetchers-no-service" : "env-cmd --file .env.test jest --verbose --testPathPattern './tests/fetchers/' --color --detectOpenHandles --forceExit",
     "test-fetchers" : "FETCHERS_AWAIT_API_TIME=15 FETCHERS_TESTS_LOOP=0 LAZY=1 ./scripts/test_fetchers.sh",
     "test-publish" : "./scripts/test_publish.sh",

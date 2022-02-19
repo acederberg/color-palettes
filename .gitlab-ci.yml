@@ -53,7 +53,3 @@ publish:
       fi
 
 
-test : 
-  stage : build
-  only :
-
