@@ -230,27 +230,30 @@ describe(
       expect( () => {
         PALLETE_FETCHER = new PalleteFetcher( DEFAULTS_COLLECTION, DEFAULTS_ID, ( err ) => { msg : err } )
       } ).not.toThrowError()
-
+      console.log( PALLETE_FETCHER )
     })
 
 
-    it( "Testing pallete_fetcher.read'.", () => {
+    it( "Testing pallete_fetcher.read'.", async () => {
 
-      FETCHED = PALLETE_FETCHER.read()
-      console.log( FETCHED )
+      FETCHED = await PALLETE_FETCHER.read()
+        .then( result => { console.log( result ) ; return result } )
+        .catch( err => console.log( err ) )
+      expect( FETCHED ).not.toBe( undefined )
       expect( FETCHED ).not.toMatchObject({ msg : expect.stringContaining("") })
 
     })
 
 
-    it( "Testing 'pallete_fetcher.update'.", () => {
-      PALLETE_FETCHER.state.color.green = "#00ff00"
-      PALLETE_FETCHER.update()
-    })
-
-    it( "Testing 'pallete_fetcher.delete'.", () => {
-      
-    })
+//    it( "Testing 'pallete_fetcher.update'.", async () => {
+//      console.log( PALLETE_FETCHER.state )
+//      PALLETE_FETCHER.state.colors.green = "#00ff00"
+//      await PALLETE_FETCHER.update()
+//    })
+//
+//    it( "Testing 'pallete_fetcher.delete'.", () => {
+//      
+//    })
 
   }
 )

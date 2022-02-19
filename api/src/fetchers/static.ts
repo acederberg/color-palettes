@@ -24,10 +24,11 @@ export function getPallete( collection : string, id : string )
     }
   )
     .then( result => result.json() )
+    .catch( err => { throw err } )
 }
 
 
-export function createMakeRequest( collection : string, operation : CRUDEnum, headers : object, handle_err : Function )
+export function createMakeRequest( collection : string, operation : CRUDEnum, headers : object, handle_err : Function, handle_exception = ( err ) => { throw err } ) 
 {
   // Make a request with JSON data.
   // collection : Collection to which a pallete belongs.
@@ -43,6 +44,7 @@ export function createMakeRequest( collection : string, operation : CRUDEnum, he
   {
     if ( !result.ok ) handle_err( result.json() )
     return result.json()
+      .catch( err => { throw err } )
   }
 
   console.log( _uri )
@@ -57,6 +59,7 @@ export function createMakeRequest( collection : string, operation : CRUDEnum, he
       }
     )
       .then( handle_result )
+      .catch( handle_exception )
   }
 }
 

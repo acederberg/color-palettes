@@ -72,7 +72,6 @@ describe(
 
 
     it( "Testing the 'createCRUD' '_delete' method.", async () => {
-      console.log( "Testing 'delete'" )
       const result = await _delete( request_read )
       expect( result.map( result => result._id ) )
         .toEqual(

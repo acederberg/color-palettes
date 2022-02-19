@@ -1,6 +1,6 @@
 import { accessor_with_validator } from './decorators'
 import { Varients, MetadataSafe, ColorsSafe } from '../models'
-import { createCRUD, getPallete } from './static'
+import { createCRUD/*, getPallete*/ } from './static'
 import { Fetcher } from './types'
 import { validate_colors, validate_description, validate_name, validate_tags, validate_varients } from '../models/validate'
 
@@ -151,7 +151,6 @@ export class State implements ColorsSafe
 
 // Fetching plus validation.
 
-
 export class CRUD implements Fetcher
 {
   // So that I don't have to repeat this. Not really for direct instantiation.
@@ -186,22 +185,24 @@ export class PalleteFetcher extends CRUD
   // For the modification of palletes.
   // State is to be modified by the ui.
 
+  private initialId
   private state
 
 
   constructor( readonly collection : string, readonly id : string, handle_err )
   {
     super( collection, handle_err )
-    this.state = this.refreshState()
+    this.initialId = id
+//  this.state = this.refreshState()
   }
 
-
+/*
   async refreshState()
   {
     const pallete : any = await getPallete( this.collection, this.id )
     return new State( pallete.id, pallete.colors, pallete.metadata )
   }
-
+*/
   
   create() 
   {
@@ -212,7 +213,7 @@ export class PalleteFetcher extends CRUD
 
   read()
   {
-    return this._read({ id : this.state.id })
+    return this._read({ id : this.state ? this.state.id : this.initialId })
   }
 
  
