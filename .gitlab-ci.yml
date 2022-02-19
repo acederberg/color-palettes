@@ -1,13 +1,61 @@
-image : node:latest
-
+# You might want to look at this very helpful document about the appropraite structure of this yaml file:
+# https://docs.gitlab.com/ee/ci/yaml/#include
 
 stages :
+  - get-git
   - test
-  - publish
+  - publish-fetchers
   - build
 
 
-test :
+.pre :
+  script :
+    - echo 'Killing all active containers...'
+    - docker stop $( docker ps -aq ) 
+    - docker rm $( docker ps -aq )
+
+
+get-git :
+  tags :
+    - api
+    - build 
+    - publish
+    - test
+  stage : get-git
+  script :
+    # This must be done since this uses the local runner for docker commands which are ubiquitas.
+    - echo $PWD
+    - echo "Manually fetchering git repository" 
+    - source ~/.bashrc
+    - >
+      if ( 
+        test $( ls -a | grep --max-count=1 .git | wc --words ) -eq 1 
+      ); 
+      then 
+        echo 'Fetching git repository...'
+        git restore .
+        git fetch && git checkout origin/main
+      else
+        echo 'Cloning git repository...'
+        echo $GIT_IS_ALIVE
+        git clone https://acederberg:$RUNNER_TOKEN_FOR_PALLETES@gitlab.com/adrn.cederberg123/color-palletes.git .
+        git checkout origin/main
+      fi
+
+
+test-api :
+  only :
+    changes :
+      - .gitlab-ci.yml
+      - ./api/src
+      - ./api/test
+      - ./api/tsconfig.json
+      - ./api/package.json
+  tags :
+    - api
+    - build
+    - test
+    - publish
   stage : test
   script :
     - echo $PWD
@@ -15,10 +63,10 @@ test :
     - echo 'DB_URI=mongodb://dev:goofy@mongodb?directConnection=true&serverSelectionTimeoutMS=2000' >> .env.test
     - echo 'API_URI=http://localhost:1337' >> .env.test
     - echo "API_ALL_KEY='This enables you to use the \"all\" field'" >> .env.test
-    - docker compose --file docker-compose.yaml up --detach
+    - docker compose --file docker-compose.yaml up --detach --build
     - npm install .
     # This one must be run in the docker contain explicitly
-    - docker exec api npm run test
+    - docker exec api npm run test-api
     # This one runs various commands in docker containers such as building, starting the api, and running tests.
     - FETCHERS_AWAIT_API_TIME=15 FETCHERS_TESTS_LOOP=0 LAZY=0 ./scripts/test_fetchers.sh
   artifacts :
@@ -31,12 +79,18 @@ test :
       - api/node_modules
 
 
-publish:
-  stage: publish
+publish-api :
+  stage : publish-fetchers
+  tags :
+    - api
+    - publish
   only :
     changes :
-      - package.json
-  script:
+      - .gitlab-ci.yml
+      - ./api/package.json
+      - ./api/src
+      - ./api/webpack*
+  script :
     # Versioning should be done on commit, not in the pipeline.
     - echo $PWD
     - cd api
@@ -53,3 +107,20 @@ publish:
       fi
 
 
+build-api :
+  stage : build
+  tags :
+    - build
+  only :
+    changes : 
+      - .gitlab-ci.yml
+      - ./api/src
+      - ./api/Dockerfile.prod
+  script :
+    - echo "Building..."
+
+.post :
+  script :
+    - docker stop $( docks ps -aq )
+    - docker rm $( docker ps -aq )
+    - npm run destory-artifacts
