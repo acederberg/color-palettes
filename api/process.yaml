@@ -1,0 +1,5 @@
+app :
+  - name : express-typescript-api
+    script : ./dist/entrypoint.js
+    exec_mode : cluster
+    instances : 1

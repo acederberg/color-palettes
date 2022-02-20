@@ -1,0 +1,19 @@
+# vi: set ft=dockerfile :
+
+FROM node:16.14.0-alpine
+
+ENV NODE_ENV=production
+WORKDIR /home/node/app
+COPY ./package.json ./package-lock.json ./
+RUN npm install .
+RUN npm install -g pm2 
+RUN mkdir dist
+COPY process.yaml .
+COPY ./dist/src ./dist
+RUN chown -R node:node .
+
+# Dont want tests in there
+USER node
+
+# ENTRYPOINT [ "pm2", "process.yaml" ]
+ENTRYPOINT [ "sh" ]

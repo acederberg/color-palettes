@@ -1,0 +1,18 @@
+# Probably should not use this in production.
+# Instead, ansible should have its own way of deploying this.
+version : '3.7'
+services : 
+  mongodb : 
+    extends :
+      service : mongodb
+      file : ./docker-compose.yaml
+  api :
+    build : 
+      context : './'
+      dockerfile : 'Dockerfile.prod'
+    ports : [ 1337 ]
+    tty : true
+networks :
+  back :
+    driver : 'bridge'
+    attachable : true
