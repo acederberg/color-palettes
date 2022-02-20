@@ -1,8 +1,17 @@
 # You might want to look at this very helpful document about the appropraite structure of this yaml file:
 # https://docs.gitlab.com/ee/ci/yaml/#include
 
+.api_changes : &api_changes 
+  - .gitlab-ci.yml
+  - ./api/src
+  - ./api/test
+  - ./api/tsconfig.json
+  - ./api/package.json
+
+
 variables :
   GIT_STRATAGY : none
+
 
 stages :
   - get-git
@@ -67,14 +76,9 @@ containers-api :
 
 
 installs-api :
+  # Should not waste the time if we do not need to
   only :
-    # Should not waste the time if we do not need to
-    changes :
-      - .gitlab-ci.yml
-      - ./api/src
-      - ./api/test
-      - tsconfig.json
-      - ./api/package.json
+    changes : *api_changes
   tags : 
     - api 
     - build
@@ -84,16 +88,19 @@ installs-api :
   script :
     # while the node user has an id of 998. So to fix this problem the id of the node user must be set to 998.
     - docker exec api npm install .
+  artifacts :
+    untracked : true
+    paths :
+      - ./api/node_modules
+  cache :
+    untracked : true
+    paths :
+      - ./api/node_modules
 
 
 test-api :
   only :
-    changes :
-      - .gitlab-ci.yml
-      - ./api/src
-      - ./api/test
-      - ./api/tsconfig.json
-      - ./api/package.json
+    changes : *api_changes
   tags :
     - api
     - build
@@ -109,16 +116,13 @@ test-api :
     # This one must be run in the docker contain explicitly
     - docker exec api npm run test-api
     # This one runs various commands in docker containers such as building, starting the api, and running tests.
+    - chmod -R +x ./scripts
     - FETCHERS_AWAIT_API_TIME=15 FETCHERS_TESTS_LOOP=0 LAZY=0 ./scripts/test_fetchers.sh
   artifacts :
-    paths :
-      - api/node_modules
-      - api/coverage
-      - api/.env.test
-  cache :
     untracked : true
     paths :
-      - api/node_modules
+      - api/coverage
+      - api/.env.test
 
 
 publish-api :
@@ -127,11 +131,7 @@ publish-api :
     - api
     - publish
   only :
-    changes :
-      - .gitlab-ci.yml
-      - ./api/package.json
-      - ./api/src
-      - ./api/webpack*
+    changes : *api_changes
   script :
     # Versioning should be done on commit, not in the pipeline.
     - echo $PWD
@@ -147,7 +147,7 @@ publish-api :
       else
         echo "Version has not changed. Not publishing."
       fi
-
+  
 
 build-api :
   stage : build
@@ -160,6 +160,7 @@ build-api :
       - ./api/Dockerfile.prod
   script :
     - echo "Building..."
+
 
 .post :
   script :

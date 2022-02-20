@@ -16,8 +16,7 @@ npm_script="npm run ${npm_script_prefix}test-fetchers-no-service"
 if ( test $LAZY ); then
 	echo -e "ENVIRONMENT:\n\tFETCHERS_TESTS_LOOP=${FETCHERS_TESTS_LOOP}\n\tFETCHERS_AWAIT_API=${FETCHERS_AWAIT_API_TIME}\n\tLAZY=${LAZY}"
 	echo "WARNING: Not building ./src and assuming the docker containers are alread started."
-else clear \
-	&& docker compose --file ./docker-compose.yaml up --detach --build \
+else docker compose --file ./docker-compose.yaml up --detach --build \
 	&& docker exec api bash -c "npm run build" 
 fi
 
@@ -35,7 +34,6 @@ docker exec --detach api bash -c "node ./dist/src/entrypoint.js" \
 	&& sleep 1 \
 	&& echo "To reduce wait time set 'FETCHERS_AWAIT_API_TIME' to the desired waiting time in seconds." \
 	&& sleep $FETCHERS_AWAIT_API_TIME \
-	&& clear \
 	&& echo "Running $npm_script..." \
 	&& docker exec api bash -c "$npm_script"
 
