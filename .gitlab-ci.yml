@@ -1,8 +1,13 @@
 # You might want to look at this very helpful document about the appropraite structure of this yaml file:
 # https://docs.gitlab.com/ee/ci/yaml/#include
 
+variables :
+  GIT_STRATAGY : none
+
 stages :
   - get-git
+  - containers
+  - install
   - test
   - publish-fetchers
   - build
@@ -43,6 +48,44 @@ get-git :
       fi
 
 
+containers-api :
+  tags :
+    - api
+    - build
+    - docker
+    - test
+    - publish
+  stage : containers
+  script :
+    # Since linux is stupid I have to set correct permissions on the script first.
+    # For whatever reason the chowning things as node results in ownership by the vagrant user.
+    # It looks like the problem arizes from the vagrant user and the node user both having an id of 1000
+    # Run docker compose file, fix the stupid permissions issue.
+    - docker compose --file ./api/docker-compose.yaml up --build --detach
+    - docker exec -u 0 api usermod --uid 998 node 
+    - docker exec -u 0 api groupmod --gid 998 node
+
+
+installs-api :
+  only :
+    # Should not waste the time if we do not need to
+    changes :
+      - .gitlab-ci.yml
+      - ./api/src
+      - ./api/test
+      - tsconfig.json
+      - ./api/package.json
+  tags : 
+    - api 
+    - build
+    - test
+    - publish
+  stage : install
+  script :
+    # while the node user has an id of 998. So to fix this problem the id of the node user must be set to 998.
+    - docker exec api npm install .
+
+
 test-api :
   only :
     changes :
@@ -60,11 +103,9 @@ test-api :
   script :
     - echo $PWD
     - cd api
-    - echo 'DB_URI=mongodb://dev:goofy@mongodb?directConnection=true&serverSelectionTimeoutMS=2000' >> .env.test
+    - echo 'DB_URI=mongodb://dev:goofy@mongodb?directConnection=true&serverSelectionTimeoutMS=2000' > .env.test
     - echo 'API_URI=http://localhost:1337' >> .env.test
     - echo "API_ALL_KEY='This enables you to use the \"all\" field'" >> .env.test
-    - docker compose --file docker-compose.yaml up --detach --build
-    - npm install .
     # This one must be run in the docker contain explicitly
     - docker exec api npm run test-api
     # This one runs various commands in docker containers such as building, starting the api, and running tests.
@@ -72,6 +113,7 @@ test-api :
   artifacts :
     paths :
       - api/node_modules
+      - api/coverage
       - api/.env.test
   cache :
     untracked : true

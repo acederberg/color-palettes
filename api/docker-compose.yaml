@@ -14,8 +14,11 @@ services :
         protocol : 'tcp'
     volumes :
       - source : '.'
-        target : '/app'
+        target : '/home/node/app'
         type : 'bind'
+      - './dist:/app/dist'
+      - './node_modules:/app/node_modules'
+      - './coverage:/app/coverage'
     tty : true
   mongodb :
     container_name : 'mongodb'
