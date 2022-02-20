@@ -9,8 +9,17 @@
   - ./api/package.json
 
 
+.api_rules : &api_rules
+  # About complex rules : https://docs.gitlab.com/ee/ci/jobs/job_control.html#complex-rules
+  # Roughly speaking, list items are 'or'ed together while the boolean of each list item in the 'and'ing of its pieces.
+  - if : '$ALL == "1"'
+  - changes : *api_changes
+  - when : 'manual'
+
+
 variables :
   GIT_STRATAGY : none
+  ALL : 1
 
 
 stages :
@@ -39,7 +48,7 @@ get-git :
   script :
     # This must be done since this uses the local runner for docker commands which are ubiquitas.
     - echo $PWD
-    - echo "Manually fetchering git repository" 
+    - echo "Manually fetching git repository" 
     - source ~/.bashrc
     - >
       if ( 
@@ -58,6 +67,7 @@ get-git :
 
 
 containers-api :
+  rules : *api_rules
   tags :
     - api
     - build
@@ -77,8 +87,7 @@ containers-api :
 
 installs-api :
   # Should not waste the time if we do not need to
-  only :
-    changes : *api_changes
+  rules : *api_rules
   tags : 
     - api 
     - build
@@ -99,8 +108,7 @@ installs-api :
 
 
 test-api :
-  only :
-    changes : *api_changes
+  rules : *api_rules
   tags :
     - api
     - build
@@ -130,8 +138,7 @@ publish-api :
   tags :
     - api
     - publish
-  only :
-    changes : *api_changes
+  rules : *api_rules
   script :
     # Versioning should be done on commit, not in the pipeline.
     - echo $PWD
