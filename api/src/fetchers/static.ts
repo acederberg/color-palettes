@@ -47,10 +47,7 @@ export function createMakeRequest( collection : string, operation : CRUDEnum, he
       .catch( err => { throw err } )
   }
 
-  console.log( _uri )
-
   return ( data : APIRequest ) => { 
-    console.log( JSON.stringify( data ), _method )
     return fetch(
       _uri, {
         method : _method,

@@ -5,6 +5,7 @@ import { Fetcher } from './types'
 import { validate_colors, validate_description, validate_name, validate_tags, validate_varients } from '../models/validate'
 
 
+export const INVALID_STATE = "Invalid state."
 export const METHOD_IS_NOT_DEFINED = () => { msg : "Method is not defined :(" }
 
 
@@ -30,6 +31,19 @@ export class MetadataState implements MetadataSafe
     this.name = _name
     this.tags = _tags
     this.varients = _varients
+  }
+  
+
+  static fromRaw( raw : any )
+  {
+    if ( !raw ) return { 'msg' : INVALID_STATE }
+    return new MetadataState(
+      raw._id,
+      raw.description,
+      raw.name,
+      raw.tags,
+      raw.varients
+    )
   }
 
 
@@ -111,9 +125,19 @@ export class State implements ColorsSafe
 
   constructor( readonly id : string, _colors : object, public _metadata : MetadataState )
   {
-    this.colors = _colors
+    this.colors = _colors ? _colors : {}
   }
-
+  
+  static fromRaw( raw : any )
+  { 
+    console.log( raw )
+    if ( !raw || !raw.metadata ) return { 'msg' : INVALID_STATE }
+    return new State(
+      raw._id,
+      raw.colors,
+      MetadataState.fromRaw( raw.metadata )
+    )
+  }
 
   get colors(){ return this._colors }
 
@@ -185,24 +209,16 @@ export class PalleteFetcher extends CRUD
   // For the modification of palletes.
   // State is to be modified by the ui.
 
-  private initialId
-  private state
+  readonly initialId
+  public state
 
 
-  constructor( readonly collection : string, readonly id : string, handle_err )
+  constructor( readonly collection : string, initialId : string | null, handle_err )
   {
     super( collection, handle_err )
-    this.initialId = id
-//  this.state = this.refreshState()
+    this.initialId = initialId
   }
 
-/*
-  async refreshState()
-  {
-    const pallete : any = await getPallete( this.collection, this.id )
-    return new State( pallete.id, pallete.colors, pallete.metadata )
-  }
-*/
   
   create() 
   {
@@ -211,21 +227,34 @@ export class PalleteFetcher extends CRUD
   }
   
 
-  read()
+  async read()
   {
-    return this._read({ id : this.state ? this.state.id : this.initialId })
+    // Read state from api, return it
+    const result = await this._read({ id : this.state ? this.state.id : this.initialId })
+      .catch( this.handle_err )
+      .then( result => { console.log( result ); return result[ 0 ] } )
+    // If not a resume, notify client
+    if ( !result ) throw Error()
+    // Cast to 'State'
+    const fromRaw = State.fromRaw( result )
+    this.state = fromRaw 
+    return fromRaw
   }
 
  
-  update()
+  async update()
   {
-    // update from internals
-    return this._update({
+    // update from internals.
+    // Fetch new state and return it if it is okay.
+    const dumped = this.state.dump()
+    const result = await this._update({
       id : this.state.id,
       update : {
-        '$set' : this.state.dump()
+        '$set' : dumped 
       }
     })
+      .catch( this.handle_err )
+    return result
   }
 
 
