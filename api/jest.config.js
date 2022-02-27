@@ -9,7 +9,12 @@ module.exports = {
   bail: 1,
   collectCoverage: true,
   coverageDirectory: "coverage",
-  coverageProvider: "v8"
+  coverageProvider: "v8",
+  globals: {
+    'ts-jest': {
+        isolatedModules: true
+    }
+  },
 };
 // Some useful flags :
 // - testNamePattern
