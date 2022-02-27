@@ -48,6 +48,9 @@ function parse_varient( model : ColorsModel, varient : any ) : Varient
 }
 
 
+// CREATE methods
+
+
 export async function create_new( model : ColorsModel, raw : ColorsSafe, custom_id : any = undefined ) : Promise<Msg | void | boolean | ColorsAndId >
 {
 	// Turn a raw request into a database object.

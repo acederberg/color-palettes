@@ -1,9 +1,11 @@
 import { Express } from 'express'
 
 //import { create_model_for_user } from '../models'
-import { create_palletes, read_palletes, update_palletes, delete_palletes } from '../controllers/static'
-import { with_route, with_parameterized_route, create_error_msg } from './decorators'
 import { link_palletes, read_varients } from '../controllers'
+import { create_palletes, read_palletes, update_palletes, delete_palletes } from '../controllers/static'
+import { add_defaults } from '../models'
+
+import { with_route, with_parameterized_route, create_error_msg } from './decorators'
 
 
 export const URI_CREATE = '/:collection_name/create'
@@ -12,6 +14,7 @@ export const URI_UPDATE = '/:collection_name/update'
 export const URI_DELETE = '/:collection_name/delete'
 export const URI_LINK = '/link'
 export const URI_VARIENTS = '/:collection_name/varients'
+export const URI_CREATE_DEFAULT_PALLETES = '/create_defaults'
 
 
 function with_catch_internal_error( method : Function )
@@ -45,6 +48,22 @@ export function create_link_varients( app : Express )
 	)
 }
 
+
+export function create_create_default_palletes( app : Express )
+{
+	const method = with_catch_internal_error(
+		async ( request, result ) => {
+			const _result = await add_defaults()
+			result.status( 200 )
+			result.send( _result )
+		}
+	)
+	
+	app.patch(
+		URI_CREATE_DEFAULT_PALLETES,
+		method
+	)
+}
 /*
 export function create_read_varients( app : Express )
 {
@@ -68,6 +87,7 @@ export default function create_routes( app : Express )
 {
 	// Ad hoc
 	create_link_varients( app )
+	create_create_default_palletes( app )
 	//create_read_varients( app )
 
 	// Decorated

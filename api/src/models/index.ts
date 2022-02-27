@@ -24,14 +24,15 @@ export {
 	default as static_methods 
 } from './static'
 
+export { create_model_for_user } from './models'
+
 export {
 	with_exec,
 	with_update,
 	with_delete,
 } from './decorators'
 
-export { create_model_for_user } from './models'
-
+export { default as add_defaults } from './add_defaults'
 
 export { PARAMS } from './validate'
 

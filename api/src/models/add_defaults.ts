@@ -18,7 +18,7 @@ export default async function main()
       const found = await defaults.findById( item._id ).exec()
         .then( ( result ) => {
           console.log( '='.repeat( 100 ) )
-          console.log( 'found = ', JSON.stringify( result, null, 1 ) )
+          console.log( 'found = ', JSON.stringify( result, null ) )
           return result
         })
 
