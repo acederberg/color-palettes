@@ -53,7 +53,10 @@ export function create_create_default_palletes( app : Express )
 {
 	const method = with_catch_internal_error(
 		async ( request, result ) => {
-			const _result = await add_defaults()
+			
+			const collection = request.body?.collection
+			console.log( collection )
+			const _result = await add_defaults( collection )
 			result.status( 200 )
 			result.send( _result )
 		}
