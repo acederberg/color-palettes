@@ -3,6 +3,7 @@ import { Varients, MetadataSafe, ColorsSafe } from '../models'
 import { createCRUD/*, getPallete*/ } from './static'
 import { Fetcher } from './types'
 import { validate_colors, validate_description, validate_name, validate_tags, validate_varients } from '../models/validate'
+import 'cross-fetch/polyfill'
 
 
 export const INVALID_STATE = "Invalid state."
@@ -135,7 +136,7 @@ export class State implements ColorsSafe
     return new State(
       raw._id,
       raw.colors,
-      MetadataState.fromRaw( raw.metadata )
+      <MetadataState>MetadataState.fromRaw( raw.metadata )
     )
   }
 
@@ -196,7 +197,7 @@ export class CRUD implements Fetcher
 
   }
 
-  create(){ return METHOD_IS_NOT_DEFINED() }
+  create( ...args ){ return METHOD_IS_NOT_DEFINED() }
   read(){ return METHOD_IS_NOT_DEFINED() }
   update(){ return METHOD_IS_NOT_DEFINED() }
   delete(){ return METHOD_IS_NOT_DEFINED() }
@@ -220,10 +221,27 @@ export class PalleteFetcher extends CRUD
   }
 
   
-  create() 
+  async create( raw : any ) 
   {
+    // Asynchronous to match the other methods.
     // Create in collection new from internals
-    return this._create( this.state.dump() )
+    let result 
+    if ( this.state ) 
+    {
+      result = await this._create({
+        "content" : { ...( raw || this.state.dump() ) } 
+      })
+        .then( 
+          // When 200 status should not have a `Msg`
+          result => State.fromRaw( result ) 
+        )
+        .catch( err => {
+          this.handle_err( err ) 
+        })
+      this.state = result
+      console.log( result )
+    }
+    return result
   }
   
 
@@ -234,7 +252,7 @@ export class PalleteFetcher extends CRUD
       .catch( this.handle_err )
       .then( result => { console.log( result ); return result[ 0 ] } )
     // If not a resume, notify client
-    if ( !result ) throw Error()
+    if ( !result ) return Object()
     // Cast to 'State'
     const fromRaw = State.fromRaw( result )
     this.state = fromRaw 
@@ -258,11 +276,22 @@ export class PalleteFetcher extends CRUD
   }
 
 
-  delete()
+  async delete()
   {
-    return this._delete({
+    // Destory the value and return dumped state.
+    // If something goes wrong, the api will tell you
+    console.log( this.state.id )
+
+    if ( !this.state ) return 
+
+    const dumped = this.state.dump()
+    const result = await this._delete({
       id : this.state.id
     })
+      .catch( this.handle_err )
+    this.state = null ;
+    console.log( result )
+    return dumped
   }
 
 

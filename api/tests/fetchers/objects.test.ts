@@ -39,6 +39,16 @@ let M : MetadataState ;
 let S : State ; 
 
 
+beforeAll( () => fetch( 
+    `${ process.env.API_URI }/create_defaults`,
+    { method : 'PATCH' }
+  ) 
+  .catch( async ( err ) => {
+    err = await err
+    throw Error( `API responded with status ${ err.status_code }. err = ${ err }` )
+  })
+)
+
 
 describe( 
   "Testing the 'metadataState' object",
@@ -223,10 +233,11 @@ describe(
   {
 
     let PALLETE_FETCHER
-    let FETCHED
+    let PALLETE, POPPED
 
     it( "Testing pallete_fetcher constructor", () => {
 
+      console.log( '====================================================================================================================' )
       expect( 
         () => {
           PALLETE_FETCHER = new PalleteFetcher( DEFAULTS_COLLECTION, DEFAULTS_ID, ( err ) => { throw err } )
@@ -234,37 +245,62 @@ describe(
       ).not.toThrowError()
       expect( PALLETE_FETCHER.initialId ).not.toBeFalsy()
       expect( PALLETE_FETCHER.state ).toBeFalsy()
+
     })
 
 
     it( "Testing pallete_fetcher.read'.", async () => {
 
-      FETCHED = await PALLETE_FETCHER.read()
+      console.log( '=====================================================================================' )
+      PALLETE = await PALLETE_FETCHER.read()
         .then( result => { console.log( result ) ; return result } )
         .catch( err => { throw err } )
       
-      console.log( FETCHED )
-      expect( FETCHED ).not.toMatchObject({ msg : expect.stringContaining("") })
+      console.log( PALLETE )
+      expect( PALLETE ).not.toMatchObject({ msg : expect.stringContaining("") })
       // underscored since fetched should be a state object
-      expect( Object.keys( FETCHED ) ).toEqual( 
+      expect( Object.keys( PALLETE ) ).toEqual( 
         expect.arrayContaining([ '_metadata', '_colors' ])
       )
-      expect( FETCHED.colors ).not.toBeFalsy()
+      expect( PALLETE.colors ).not.toBeFalsy()
 
     })
 
 
     it( "Testing 'pallete_fetcher.update'.", async () => {
       // PALLETE_FETCHER.state.colors.green = "#00ff00"
-      FETCHED = await PALLETE_FETCHER.update()
+      console.log( '=====================================================================================' )
+      const result = await PALLETE_FETCHER.update()
         .catch( err => { throw err } )
-      expect( FETCHED ).not.toBeFalsy()
+      expect( result.length ).toBe( 0 )
     })
 
+    it( "Testing 'pallete_fetcher.delete'.", async () => {
+      console.log( '=====================================================================================' )
+      // Delete the object. Should have pallete returned abd state nullified
+      POPPED = await PALLETE_FETCHER.delete()
+        .catch( err => { throw err } )
+  
+      expect( POPPED ).not.toBeFalsy()
+      expect( PALLETE.dump() ).toMatchObject( POPPED )
+      expect( PALLETE.state ).toBeFalsy()
+      
+      const result = await PALLETE_FETCHER.read()
+        .catch( err => { throw err } )
 
-    it( "Testing 'pallete_fetcher.delete'.", () => {
-          
+      expect( result ).toStrictEqual( {} )
+    
     })
 
+    it( "Testing 'pallete_fetcher.create' using the entry deleted in the previous test.", async() => {
+      
+      PALLETE_FETCHER.state = PALLETE
+      const result = await PALLETE_FETCHER.create()
+        .catch( err => { throw err } )
+      console.log( result, PALLETE_FETCHER.state )
+      expect( result.colors ).toMatchObject( PALLETE_FETCHER.state.dump().colors )
+      expect( result.id ).not.toStrictEqual( PALLETE.initialId )
+
+    })
   }
 )

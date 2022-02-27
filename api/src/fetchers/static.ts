@@ -28,7 +28,7 @@ export function getPallete( collection : string, id : string )
 }
 
 
-export function createMakeRequest( collection : string, operation : CRUDEnum, headers : object, handle_err : Function, handle_exception = ( err ) => { throw err } ) 
+export function createMakeRequest( collection : string, operation : CRUDEnum, headers : object, handle_err = ( err ) => { throw err } ) 
 {
   // Make a request with JSON data.
   // collection : Collection to which a pallete belongs.
@@ -44,19 +44,29 @@ export function createMakeRequest( collection : string, operation : CRUDEnum, he
   {
     if ( !result.ok ) handle_err( result.json() )
     return result.json()
-      .catch( err => { throw err } )
+      .catch( async ( err ) => { 
+        
+        
+      } )
   }
 
   return ( data : APIRequest ) => { 
-    return fetch(
-      _uri, {
-        method : _method,
-        headers : _headers,
-        body : JSON.stringify( data )
-      }
-    )
+    const args = {
+      method : _method,
+      headers : _headers,
+      body : JSON.stringify( data )
+    }
+    console.log( args )
+  
+    return fetch( _uri, args )
       .then( handle_result )
-      .catch( handle_exception )
+      .catch( async ( err ) => { 
+        console.log( err )
+        err = await err
+        console.log( err )
+        return handle_err( Error( `API returned with status ${ err.status_code }.` ) )
+      } )
+
   }
 }
 
