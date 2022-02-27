@@ -227,10 +227,13 @@ describe(
 
     it( "Testing pallete_fetcher constructor", () => {
 
-      expect( () => {
-        PALLETE_FETCHER = new PalleteFetcher( DEFAULTS_COLLECTION, DEFAULTS_ID, ( err ) => { msg : err } )
-      } ).not.toThrowError()
-      console.log( PALLETE_FETCHER )
+      expect( 
+        () => {
+          PALLETE_FETCHER = new PalleteFetcher( DEFAULTS_COLLECTION, DEFAULTS_ID, ( err ) => { throw err } )
+        } 
+      ).not.toThrowError()
+      expect( PALLETE_FETCHER.initialId ).not.toBeFalsy()
+      expect( PALLETE_FETCHER.state ).toBeFalsy()
     })
 
 
@@ -238,22 +241,30 @@ describe(
 
       FETCHED = await PALLETE_FETCHER.read()
         .then( result => { console.log( result ) ; return result } )
-        .catch( err => console.log( err ) )
-      expect( FETCHED ).not.toBe( undefined )
+        .catch( err => { throw err } )
+      
+      console.log( FETCHED )
       expect( FETCHED ).not.toMatchObject({ msg : expect.stringContaining("") })
+      // underscored since fetched should be a state object
+      expect( Object.keys( FETCHED ) ).toEqual( 
+        expect.arrayContaining([ '_metadata', '_colors' ])
+      )
+      expect( FETCHED.colors ).not.toBeFalsy()
 
     })
 
 
-//    it( "Testing 'pallete_fetcher.update'.", async () => {
-//      console.log( PALLETE_FETCHER.state )
-//      PALLETE_FETCHER.state.colors.green = "#00ff00"
-//      await PALLETE_FETCHER.update()
-//    })
-//
-//    it( "Testing 'pallete_fetcher.delete'.", () => {
-//      
-//    })
+    it( "Testing 'pallete_fetcher.update'.", async () => {
+      // PALLETE_FETCHER.state.colors.green = "#00ff00"
+      FETCHED = await PALLETE_FETCHER.update()
+        .catch( err => { throw err } )
+      expect( FETCHED ).not.toBeFalsy()
+    })
+
+
+    it( "Testing 'pallete_fetcher.delete'.", () => {
+          
+    })
 
   }
 )
