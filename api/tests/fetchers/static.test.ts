@@ -5,7 +5,7 @@ import { CreateRequest, Request } from '../../src/controllers/types'
   
 
 const TESTS : string = 'tests'
-const HANDLE_ERROR : Function = ( err ) => { throw Error( JSON.stringify( err ) ) } 
+const HANDLE_ERROR = ( err ) => { throw Error( JSON.stringify( err ) ) } 
 
 
 describe(
@@ -18,7 +18,7 @@ describe(
 
 
     it( "Testing the 'createMakeRequest' method.", async () => {
-      const create : Function = createMakeRequest( TESTS, 'create', HEADERS, HANDLE_ERROR )
+      const create = createMakeRequest( TESTS, 'create', HEADERS, HANDLE_ERROR )
       const request_content = create_dummy_from_integer(0) 
       const request : CreateRequest = { content : request_content }
 

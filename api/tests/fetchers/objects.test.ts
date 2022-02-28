@@ -1,5 +1,4 @@
-import { PalleteFetcher } from '../../src/fetchers'
-import { MetadataState, State, CRUD, METHOD_IS_NOT_DEFINED } from '../../src/fetchers/objects'
+import { PalleteFetcher, CollectionFetcher, MetadataState, State, CRUD, METHOD_IS_NOT_DEFINED } from '../../src/fetchers'
 import { /*ColorsSafe, MetadataSafe, */PARAMS } from '../../src/models'
 
 
@@ -213,7 +212,6 @@ describe(
     it( "Constructor should make an object with '_create', '_read', '_update', and '_delete'.", () => {
       
       A_CRUD = new CRUD( "tests", ( err ) => { msg : err } )
-      console.log( Object.keys( A_CRUD ) )
 
       expect( Object.keys( A_CRUD ) ).toEqual(
         expect.arrayContaining([ '_create', '_read', '_update', '_delete' ])
@@ -237,7 +235,6 @@ describe(
 
     it( "Testing pallete_fetcher constructor", () => {
 
-      console.log( '====================================================================================================================' )
       expect( 
         () => {
           PALLETE_FETCHER = new PalleteFetcher( DEFAULTS_COLLECTION, DEFAULTS_ID, ( err ) => { throw err } )
@@ -251,12 +248,10 @@ describe(
 
     it( "Testing pallete_fetcher.read'.", async () => {
 
-      console.log( '=====================================================================================' )
       PALLETE = await PALLETE_FETCHER.read()
         .then( result => { console.log( result ) ; return result } )
         .catch( err => { throw err } )
       
-      console.log( PALLETE )
       expect( PALLETE ).not.toMatchObject({ msg : expect.stringContaining("") })
       // underscored since fetched should be a state object
       expect( Object.keys( PALLETE ) ).toEqual( 
@@ -268,15 +263,16 @@ describe(
 
 
     it( "Testing 'pallete_fetcher.update'.", async () => {
+      
       // PALLETE_FETCHER.state.colors.green = "#00ff00"
-      console.log( '=====================================================================================' )
       const result = await PALLETE_FETCHER.update()
         .catch( err => { throw err } )
       expect( result.length ).toBe( 0 )
+
     })
 
     it( "Testing 'pallete_fetcher.delete'.", async () => {
-      console.log( '=====================================================================================' )
+      
       // Delete the object. Should have pallete returned abd state nullified
       POPPED = await PALLETE_FETCHER.delete()
         .catch( err => { throw err } )
@@ -297,10 +293,83 @@ describe(
       PALLETE_FETCHER.state = PALLETE
       const result = await PALLETE_FETCHER.create()
         .catch( err => { throw err } )
-      console.log( result, PALLETE_FETCHER.state )
       expect( result.colors ).toMatchObject( PALLETE_FETCHER.state.dump().colors )
       expect( result.id ).not.toStrictEqual( PALLETE.initialId )
 
     })
+  }
+)
+
+
+describe( "Testing 'CollectionFetcher'.", 
+  function()
+  {
+    let COLLECTION_FETCHER
+    const PALLETE = {
+      'colors' : {
+        a : '#000',
+        b : '#111',
+        c : '#222',
+        d : '#333',
+        e : '#444',
+        f : '#555',
+        g : '#666',
+        h : '#777'
+      },
+      metadata : {
+        tags : [ 'a', 'test', 'for', 'client' ],
+        description : 'A test for client',
+        name : 'Test',
+        varients : []
+      }
+    }
+
+    it( "Testing 'CollectionFetcher' constructor.", () => {
+      expect(
+        () => {
+          COLLECTION_FETCHER = new CollectionFetcher( 'tests', ( err ) => { throw err } )
+        }
+      ).not.toThrowError()
+    })
+
+
+    it( "Testing 'CollectionFetcher.create'.", async () => {
+      // Create defaults
+      let result = await COLLECTION_FETCHER.create()
+        .catch( err => { throw err } )
+      expect( result ).toBe( undefined )
+
+      result = await COLLECTION_FETCHER.create( PALLETE )
+        .catch( err => { throw err } ) 
+      expect( result ).toMatchObject( PALLETE )
+    })
+
+
+    it( "Testing 'CollectionFetcher.read'.", async () => {
+      let result = await COLLECTION_FETCHER.read()
+        .catch( err => { throw err } )
+      expect( result.length ).toStrictEqual( 4 ) 
+    })
+
+
+    it( "Testing 'CollectionFetcher.update'.", async () => {
+      let result = await COLLECTION_FETCHER.update(
+        { amendments : { '$set' : { 'colors' : { 'white' : '#fff' } } } }
+      )
+      console.log( result )
+      expect( result )
+    })
+
+
+    it( "Testing 'CollectionFetcher.delete'.", async () => {
+      let result = await COLLECTION_FETCHER.delete()
+        .catch( err => { throw err } )
+      expect( result.length ).toStrictEqual( 4 )
+
+      result = await COLLECTION_FETCHER.read()
+      expect( result.length ).toStrictEqual( 0 )
+    })
+
+    console.log( COLLECTION_FETCHER )
   }
 )
