@@ -198,8 +198,11 @@ const static_methods = {
 	},
 	deleters : {
 		delete_all : with_delete( queries.all_ ),
+		delete_containing_tags : with_delete( queries.containing_tags ),
+		delete_filter : with_delete( queries.filter ),
 		delete_id : with_delete( queries.id ),
 		delete_ids : with_delete( queries.ids ),
+		delete_intersecting_tags : with_delete( queries.intersecting_tags ), 
 		delete_varients : with_delete( queries.varients )
 	},
 	updaters : {

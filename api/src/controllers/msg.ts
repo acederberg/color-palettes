@@ -10,14 +10,14 @@ export const CREATE_REQUEST_FROM_EXISTING_KEYS = [ 'origin_id', 'origin', 'amend
 export const FIELDS = [ 'id', 'ids', 'filter', 'tags' ]
 export const INCORRECT_ALL_KEY = "Key to access 'all' is not correct."
 export const INSUFFICIENT_FIELDS = "Insufficient fields."
-export const NO_ALL = "The 'all' key is not supported."
-export const NO_FILTER = "Filtering is not supported."
-export const NO_TAGS = "Tags are not supported."
+export const NO_ALL = "The 'all' key is not allowed."
+export const NO_FILTER = "Filtering is not allowed."
+export const NO_TAGS = "Tags are not allowed."
 export const NO_UNDEFINED_FIELDS : string = `At least one field is required.`
+export const NO_VARIENTS = "Varients are not allowed."
 export const REQUEST_REQUIRED : string = "A request is required."
 export const TAGS_FIELDS_UNDEFINED : string = "All tags fields are undefined. Did you mean to add a uri query?"
 export const TAGS_REQUIRES_ITEMS = "Request including tags as an object must include a tags field and it must be an array."
-
 
 
 // Message functions 
@@ -26,6 +26,7 @@ export const incorrect_all_key = msg( INCORRECT_ALL_KEY )
 export const no_all = msg( NO_ALL )
 export const no_filter = msg( NO_FILTER )
 export const no_tags = msg( NO_TAGS )
+export const no_varients = msg( NO_VARIENTS )
 export const tags_fields_undefined = msg( TAGS_FIELDS_UNDEFINED )
 export const create_request_insufficient_fields = ( model, request ) => {
   return {
