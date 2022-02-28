@@ -1,4 +1,7 @@
-export { accessor_with_validator, FORMAT_PROPERTY_VALIDATION_ERROR_MSG } from './decorators'
+export { 
+  accessor_with_validator, 
+  FORMAT_PROPERTY_VALIDATION_ERROR_MSG 
+} from './decorators'
 
 export {
   createMakeRequest,
@@ -19,5 +22,9 @@ export {
 
 export {
   CollectionFetcher,
-  PalleteFetcher
+  PalleteFetcher,
+  MetadataState,
+  State,
+  CRUD,
+  METHOD_IS_NOT_DEFINED
 } from './objects'

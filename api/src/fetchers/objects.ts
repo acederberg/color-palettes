@@ -1,9 +1,8 @@
 import { accessor_with_validator } from './decorators'
 import { Varients, MetadataSafe, ColorsSafe } from '../models'
-import { createCRUD/*, getPallete*/ } from './static'
+import { addDefaults, createCRUD/*, getPallete*/ } from './static'
 import { Fetcher } from './types'
 import { validate_colors, validate_description, validate_name, validate_tags, validate_varients } from '../models/validate'
-import 'cross-fetch/polyfill'
 
 
 export const INVALID_STATE = "Invalid state."
@@ -198,9 +197,9 @@ export class CRUD implements Fetcher
   }
 
   create( ...args ){ return METHOD_IS_NOT_DEFINED() }
-  read(){ return METHOD_IS_NOT_DEFINED() }
-  update(){ return METHOD_IS_NOT_DEFINED() }
-  delete(){ return METHOD_IS_NOT_DEFINED() }
+  read( ...args ){ return METHOD_IS_NOT_DEFINED() }
+  update( ...args ){ return METHOD_IS_NOT_DEFINED() }
+  delete( ...args ){ return METHOD_IS_NOT_DEFINED() }
 
 }
 
@@ -305,28 +304,50 @@ export class PalleteFetcher extends CRUD
 
 export class CollectionFetcher extends CRUD
 {
-
-  constructor( collection : string, handle_err : Function )
+  // Client for entire collections.
+  // No internal state.
+  constructor( collection : string, handle_err )
   {
     super( collection, handle_err )  
   }
 
-
-  create()
+  create( template : ColorsSafe | undefined = undefined )
   {
-    return this._create({ all : process.env.API_ALL_KEY })
+    // Template required since a new collection will only 'stick' if there is an item in the collection
+    // It is as simple as posting to the collection.
+    return template ? this._create({ 
+      content : template
+    }) : addDefaults( this.collection )
+      .catch( this.handle_err )
   }
 
-
-  read()
+  read( request : Request )
   {
-    return this._read({ all : process.env.API_ALL_KEY })
+    return this._read({ 
+      all : process.env.API_ALL_KEY, 
+      ...request 
+    })
+      .catch( this.handle_err )
   }
 
-
-  delete()
+  update( request : Request )
   {
-    return this._delete({ all : process.env.API_ALL_KEY })
+    return this._update({ 
+      all : process.env.API_ALL_KEY, 
+      ...request 
+    })
+      .catch( this.handle_err )
+  }
+
+  delete( request : Request )
+  {
+    return this._delete({ 
+      all : process.env.API_ALL_KEY, 
+      ...request 
+    })
+      .catch( this.handle_err )
   }
 
 }
+
+

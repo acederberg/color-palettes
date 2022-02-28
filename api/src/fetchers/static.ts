@@ -24,7 +24,25 @@ export function getPallete( collection : string, id : string )
     }
   )
     .then( result => result.json() )
-    .catch( err => { throw err } )
+}
+
+
+export function addDefaults( collection : string ) 
+{
+  return fetch(
+    `${process.env.API_URI}/create_defaults`,
+    {
+      method : 'PATCH',
+      body : JSON.stringify({
+        collection : collection
+      }),
+      headers : {
+        'Content-type' : 'application/json'
+      }
+    }
+  )
+    .then( result => !collection ? result.json() : undefined )
+
 }
 
 
@@ -61,17 +79,13 @@ export function createMakeRequest( collection : string, operation : CRUDEnum, he
     return fetch( _uri, args )
       .then( handle_result )
       .catch( async ( err ) => { 
-        console.log( err )
         err = await err
-        console.log( err )
-        return handle_err( Error( `API returned with status ${ err.status_code }.` ) )
-      } )
-
+        return handle_err( Error( `API returned with status ${ err.status_code }. err = ${ JSON.stringify( err ) }.` ) ) } )
   }
 }
 
 
-export function createCRUD( collection : string, handle_err : Function )
+export function createCRUD( collection : string, handle_err )
 {
   return {
     _create : createMakeRequest( collection, 'create', {}, handle_err ),
